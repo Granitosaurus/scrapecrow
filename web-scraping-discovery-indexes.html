@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title> Scrapecrow - Web Scraping Target Discovery: Indexes</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css"
+    integrity="sha256-XoaMnoYC5TH6/+ihMEnospgm0J1PM/nioxbOUdnM8HY=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://scrapecrow.com/theme/css/main.css" />
+  <link rel="stylesheet" href="https://scrapecrow.com/theme/css/applause-button.css" />
+  <script src="https://scrapecrow.com/theme/applause-button.js"></script>
+  <link href="Scrapecrow/feeds/all.atom.xml" type="application/atom+xml" rel="alternate"
+    title="Scrapecrow Full Atom Feed" />
+  <link href="Scrapecrow/atom.xml" type="application/atom+xml" rel="alternate"
+    title="Scrapecrow Atom Feed" />
+  <link href="Scrapecrow/rss.xml" type="application/rss+xml" rel="alternate"
+    title="Scrapecrow RSS Feed" />
+  <link href="Scrapecrow/feeds/{slug}.atom.xml" type="application/atom+xml"
+    rel="alternate" title="Scrapecrow Categories Atom Feed" />
+
+<meta name="author" content="Bernardas Ališauskas" />
+<meta name="description" content="The most common web scraping target discovery technique: recursive crawling. How does it work? What are the pros and cons and the most optimal execution paterns?" />
+<meta property="og:site_name" content="Scrapecrow"/>
+<meta property="og:title" content="Web Scraping Target Discovery: Indexes"/>
+<meta property="og:description" content="The most common web scraping target discovery technique: recursive crawling. How does it work? What are the pros and cons and the most optimal execution paterns?"/>
+<meta property="og:locale" content="en_US"/>
+<meta property="og:url" content="https://scrapecrow.com/web-scraping-discovery-indexes.html"/>
+<meta property="og:type" content="article"/>
+<meta property="article:published_time" content="2021-09-19 00:00:00+02:00"/>
+<meta property="article:modified_time" content=""/>
+<meta property="article:author" content="https://scrapecrow.com/author/bernardas-alisauskas.html">
+<meta property="article:section" content="articles"/>
+<meta property="article:tag" content="discovery"/>
+<meta property="article:tag" content="python"/>
+<meta property="article:tag" content="index"/>
+<meta property="og:image" content="/images/logo.svg">
+</head>
+
+<body>
+  <div class="columns main">
+    <div class="column left-pane">
+    </div>
+    <div class="center-pane is-full">
+      <nav class="navbar" role="navigation" aria-label="main navigation">
+        <div class="navbar-brand">
+          <a class="navbar-item" href="https://scrapecrow.com">
+            <img src="/images/logo.svg" width="50"></img>
+          </a>
+          <a class="navbar-item" href="https://scrapecrow.com">Scrapecrow</a>
+          <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+          </a>
+        </div>
+        <div class="navbar-menu">
+          <div class="navbar-start">
+            <a class="navbar-item" href="/pages/about.html">about</a>
+            <a class="navbar-item" href="/pages/hire.html">hire</a>
+            <a class="navbar-item" href="/pages/coffee.html">☕</a>
+            <a class="navbar-item" href="https://matrix.to/#/#web-scraping:matrix.org">#web-scraping on matrix</a>
+          </div>
+        </div>
+      </nav>
+      <div style="background-color: orange;">THIS IS A PREVIEW</div> <!-- -->
+      <div class="columns">
+<div class="content column">
+  <div class="post-meta">
+<div class="post-meta">
+    <a href="https://scrapecrow.com/category/articles.html" class="category">articles</a>
+    &mdash;
+    <span title="2021-09-19T00:00:00+02:00">Sun 19 September 2021</span></br>
+    <a href="https://scrapecrow.com/tag/discovery.html" class="tag">discovery</a>
+    <a href="https://scrapecrow.com/tag/python.html" class="tag">python</a>
+    <a href="https://scrapecrow.com/tag/index.html" class="tag">index</a>
+    </br>
+</div>  </div>
+  <h1>Web Scraping Target Discovery: Indexes</h1>
+  <div class="post-content">
+    <!--insert table of contents between text and first header-->
+    <p>Target discovery in web-scraping is how the scraper explores target website to find scraping targets. For example to scrape product data of an e-commerce website we would need to find urls to each individual product. This step is called "discovery".</p>
+<p>Discovering targets to scrape in web scraping is often a challenging and important  task. This series of blog posts covers common target discovery approaches, click this tag for more <a href="/tag/discovery-methods.html">#discovery-methods</a></p>
+<p>Using various public indexers is a often viable target discovery strategy. It is mostly used as a last resort or as a supplementary technique for difficult discovery-difficult targets.  </p>
+<p>Public indexers that crawl the web through more complex scraping rules might pickup hard to find targets and we can take advantage of that in our little web scraper. In other words as the spirit of web-scraping goes: it's smart to take advantage of existing work! In this article we'll take a look at few common public indexers and how can we use them to discover targets.  </p>
+<p>First lets overview common pros and cons of this discovery strategy:</p>
+<p>Pros:</p>
+<ul>
+<li><strong>Easy</strong>: once understood taking advantage of public indexers is surprisingly easy.</li>
+<li><strong>Efficient</strong>: public indexes function similar to in-website search bars or often come in easy to parse data dumps that we don't even need connection to discover targets.</li>
+</ul>
+<p>Cons:</p>
+<ul>
+<li><strong>Insufficient coverage and stale data</strong>: because these are indexes gathered whenever and by whatever there's very little coverage and link quality. For this reason it is best to combine index based discovery with some other discovery techniques.</li>
+</ul>
+
+    <hr>
+    <div class="pure-u">
+      <div id="toc"><ul><li><a class="toc-href" href="#using-search-engines" title="Using Search Engines">Using Search Engines</a></li><li><a class="toc-href" href="#using-public-index-dumps" title="Using Public Index Dumps">Using Public Index Dumps</a></li><li><a class="toc-href" href="#using-internet-archive" title="Using Internet Archive">Using Internet Archive</a></li><li><a class="toc-href" href="#summary-and-further-reading" title="Summary and Further Reading">Summary and Further Reading</a></li></ul></div>
+    </div>
+    <hr>
+    <h2 id="using-search-engines">Using Search Engines</h2>
+<p>Most common and rich public indexes are search engines like google, bing or duckduckgo anything that lets humans search the web can be a useful tool for web scraping robots as well.  </p>
+<p>To see how we would use search engine in web-scraping discover lets take example of <a href="https://crunchbase.com">https://crunchbase.com</a>. Let's presume that we want to scrape their company data. First part of our scrapper is discovery loop that will find all company profile urls on the website. <br/>
+In this example we'll use <strong>bing.com</strong> to query for crunchbase.com urls. Bing is a great tool for web-scrapers as it's easy to scrape (unlike google which employs various anti-scraping strategies) and has relatively good index coverage.  </p>
+<p>If we take a look at an average Crunchbase company page like <a href="https://www.crunchbase.com/organization/linkedin">https://www.crunchbase.com/organization/linkedin</a> we can determine the url pattern that all company pages follow: <code>.../organization/&lt;name&gt;</code> </p>
+<p>Knowing this we can write domain specific queries in bing.com search box to find company pages:</p>
+<p><a href="/images/bing.com-crunchbase-search.png"><img class="bigc" src="/images/bing.com-crunchbase-search.png" title=""/></a><figcaption></figcaption></p>
+<p>Here we used query <code>/organization/ site:crunchbase.com</code> and bing.com is giving us over a million of results which is pretty close to what the crunchbase is saying they have!   </p>
+<p class="info">For advanced search keywords/options see <a href="https://help.bing.microsoft.com/#apex/bing/en-US/10001/-1">bing's advanced search options</a> and <a href="https://help.bing.microsoft.com/#apex/bing/en-US/10001/-1">bing's advanced search keywords</a></p>
+<p>Other search engines like google, duckduckgo and such also support similar search syntax. Search can be refined even further with more advanced search rules to find specific scraping targets.</p>
+<p>All that being said using search engines to query is not without it's faults. <br/>
+They are often built for humans rather than robots and have limited pagination (i.e. query will only have 10 pages of results even though it says millions are found) which requires splitting single query into many smaller ones, e.g. searching every letter of the alphabet or particular names. Despite all this discovery approach is surprisingly easy and can often work beautifully for small web scrapers!</p>
+<h2 id="using-public-index-dumps">Using Public Index Dumps</h2>
+<p>There are several public web indexes but probably the biggest and most well known one is <a href="https://commoncrawl.org/">https://commoncrawl.org/</a> which crawls the web and provides data dumps publicly for free. Unfortunately this being an open and free project the crawled htmls are somewhat stale, though as web scraper engineers we can instead use it as an index feed for our web scrapers.</p>
+<p>You can access common crawl's web index here: <a href="http://urlsearch.commoncrawl.org/">http://urlsearch.commoncrawl.org/</a>. The data is grouped by months and each month's dataset can be queried on the online playground:</p>
+<p><a href="/images/commoncrawl-crunchbase-search.png"><img class="bigc" src="/images/commoncrawl-crunchbase-search.png" title=""/></a><figcaption></figcaption></p>
+<p>Crawl coverage by commoncrawl highly depends on popularity of the source. Some smaller websites are harder to find while bigger targets can have good data coverage.<br/>
+Despite coverage issues commoncrawl url dataset is a useful tool to have in web-scraping toolbelt.</p>
+<p class="info">If you find Commoncrawl useful it's a non-profit organization <a href="https://commoncrawl.org/donate/">accepting public donations</a>!</p>
+<h2 id="using-internet-archive">Using Internet Archive</h2>
+<p>Another public indexer is archive.org project which aims to archive various internet articles for historic prosperity purposes.  </p>
+<blockquote>
+<p>Internet Archive is a non-profit library of millions of free books, movies, software, music, websites, and more.</p>
+</blockquote>
+<p>We can use archive.org website archive as our discovery engine. If we go to <a href="https://archive.org">https://archive.org</a> and type in our source:</p>
+<p><a href="/images/archive.org-crunchbase-search.png"><img class="bigc" src="/images/archive.org-crunchbase-search.png" title=""/></a><figcaption></figcaption></p>
+<p>We can see that archive.org has captured a lot of urls! Let's take a quick look how we could scrape it as a discovery source. If we open up web inspector and see requests made when we click search we'll find a backend API url that looks something like this (<a href="https://web.archive.org/web/timemap/?url=crunchbase.com/organization/%2F&amp;matchType=prefix&amp;collapse=urlkey&amp;output=json&amp;fl=original%2Cendtimestamp%2Cgroupcount%2Cuniqcount&amp;filter=!statuscode%3A[45]..&amp;limit=10000&amp;_=1632308317409">clickable</a>):</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span>
+<span class="normal">8</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="nv">https</span>:<span class="o">//</span><span class="nv">web</span>.<span class="nv">archive</span>.<span class="nv">org</span><span class="o">/</span><span class="nv">web</span><span class="o">/</span><span class="nv">timemap</span><span class="o">/</span>?
+<span class="nv">url</span><span class="o">=</span><span class="nv">crunchbase</span>.<span class="nv">com</span><span class="o">/</span><span class="nv">organization</span><span class="o">/%</span><span class="mi">2</span><span class="nv">F</span><span class="o">&amp;</span><span class="nv">matchType</span><span class="o">=</span><span class="nv">prefix</span><span class="o">&amp;</span>
+<span class="nv">collapse</span><span class="o">=</span><span class="nv">urlkey</span><span class="o">&amp;</span>
+<span class="nv">output</span><span class="o">=</span><span class="nv">json</span><span class="o">&amp;</span>
+<span class="nv">fl</span><span class="o">=</span><span class="nv">original</span><span class="o">%</span><span class="mi">2</span><span class="nv">Cendtimestamp</span><span class="o">%</span><span class="mi">2</span><span class="nv">Cgroupcount</span><span class="o">%</span><span class="mi">2</span><span class="nv">Cuniqcount</span><span class="o">&amp;</span>  # <span class="nv">rows</span> <span class="nv">to</span> <span class="k">return</span>, <span class="nv">we</span><span class="s1">'</span><span class="s">re mostly interested in "original"</span>
+<span class="nv">filter</span><span class="o">=!</span><span class="nv">statuscode</span><span class="o">%</span><span class="mi">3</span><span class="nv">A</span>[<span class="mi">45</span>]..<span class="o">&amp;</span>  
+<span class="nv">limit</span><span class="o">=</span><span class="mi">10000</span><span class="o">&amp;</span>  # <span class="nb">result</span> <span class="nv">limit</span>
+<span class="nv">_</span><span class="o">=</span><span class="mi">1632308317409</span>  # <span class="nv">current</span> <span class="nv">timestamp</span>
+</code></pre></div>
+</td></tr></table>
+<p>If we submit get request to this url we'll get the whole dataset of matching results:</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>[["original","endtimestamp","groupcount","uniqcount"],
+["http://crunchbase.com:80/organization/","20200218003314","379","100"],
+["https://www.crunchbase.com/organization.investors","20171204192453","2","2"],
+["https://www.crunchbase.com/organization.similarwebs","20171204192356","1","1"],
+["https://crunchbase.com/organization/%22/financial-organization/alsop-louie-partners%22","20190518071052","1","1"],
+["https://crunchbase.com/organization/%22/financial-organization/draper-associates-2%22","20190518091831","1","1"],
+["https://crunchbase.com/organization/%22/maps/city/San%2520Francisco%22","20190518044213","1","1"],
+["https://crunchbase.com/organization/%22/organization/andreessen-horowitz%22","20190517093614","1","1"],
+["https://crunchbase.com/organization/%22/organization/canaan-partners%22","20190517071111","1","1"],
+["https://crunchbase.com/organization/%22/organization/fog-creek-software%22","20190518102954","1","1"],
+...
+</code></pre></div>
+</td></tr></table>
+<p>This query generates thousands of unique urls with timestamps of last time they were scraped by internet archive which can be easily adapted as a target discovery source!</p>
+<p class="info">If you find Internet Archive useful it's a non-profit organization <a href="https://archive.org/donate/">accepting public donations</a>!</p>
+<h2 id="summary-and-further-reading">Summary and Further Reading</h2>
+<p>To summarize using public indexes can be a valid scrape target discovery technique however it comes with a certain level of target quality and coverage uncertainty. It's best used to supplement other discovery techniques or initial prototyping.</p>
+<p>Here's a list of several search engines that can be used by web-scrapers for target discovery:</p>
+<ul>
+<li><a href="https://bing.com">https://bing.com</a> - great western web coverage, weak anti web-scraping measures.</li>
+<li><a href="https://yahoo.com">https://yahoo.com</a> - uses bing.com database but different algorithms. </li>
+<li><a href="https://www.onesearch.com/">https://www.onesearch.com/</a> - yahoo's new privacy search engine that is also using bing.com databases but even newer algorithms. Only accessible by US ips.</li>
+<li><a href="https://duckduckgo.com">https://duckduckgo.com</a> - similar to bing.com but their own dataset.  </li>
+<li><a href="https://startpage.com">https://startpage.com</a> - uses google dataset but easier to access by web-scrapers; see <a href="https://github.com/Garee/sp">sp</a> project.</li>
+<li><a href="https://yandex.com">https://yandex.com</a> - great russian web coverage and decent western web coverage.</li>
+<li><a href="https://boardreader.com/">https://boardreader.com/</a> - brilliant forum/discussion board coverage.</li>
+</ul>
+<hr/>
+<p>For more web-scraping discovery techniques see <a href="/tag/discovery-methods.html">#discovery-methods</a> and <a href="/tag/discovery.html">#discovery</a> for more discovery related subjects.  </p>
+<p>If you're stuck with a web-scraping problem visit <a href="https://matrix.to/#/%23web-scraping:matrix.org">#web-scraping on matrix</a> or <a href="/hire.html">hire me</a> :)</p>
+  </div>
+</div>
+      </div>
+      <div class="comments">
+        <script src="https://utteranc.es/client.js" repo="Granitosaurus/granitosaurus.github.io"
+          issue-term="web-scraping-discovery-indexes" label="comments"
+          theme="github-light" crossorigin="anonymous" async>
+        </script>
+      </div>
+
+      <footer class="footer">
+        <div class="content">
+          <a href="/archives.html">Archives</a></li>
+          <a href="/tags.html">Tags</a></li>
+          <a href="/tags.html">Made with Pelican💙</a></li>
+          <a href="atom.xml">
+            <i class="fa fa-rss-square" aria-hidden="true"></i>
+          </a>
+
+        </div>
+      </footer>
+    </div>
+    <div class="column right-pane">
+<div class="sidebar-buttons">
+  <div class="applause" title="show your appreciation">
+    <applause-button style="width: 58px; height: 58px;" />
+  </div>
+  <div class="email">
+    <a href="https://716df175.sibforms.com/serve/MUIEALpKPp8WjHrVwQOX6keZXLkJRbnFEh2y6YhTmVmT4Z0Khgbi2MFvPO1OObOrjbMi_S0M7VXkXGkcbh36H-SqEwM3dHXxdrOOXwEPGcp9rTQKkQvMkC70Dq9RmCoikia87nLsRcx0VVGmCG2zyx5s8BwpqevRmh70vKSaLe7e95yZDCROMvm2HcN3UpLw7UsFxl_UbI6TjY_e" title="subscribe to mailist">
+      <i class="fa fa-email-bulk-o fa-2x pure-menu-link" aria-hidden="true"></i>
+    </a>
+  </div>
+</div>    </div>
+  </div>
+</body>
+
+</html>

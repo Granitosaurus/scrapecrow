@@ -1,0 +1,163 @@
+@import highlight
+// $font-family-sans: 'Open Sans', jaf-bernino-sans, 'Lucida Grande', 'Lucida Sans Unicode', 'Lucida Sans', Geneva, Verdana, sans-serif;
+// $font-family-serif: Merriweather, freight-text-pro, Georgia, Cambria, 'Times New Roman', Times, serif;
+// $font-family-mono: Consolas, 'Deja Vu Sans Mono', 'Ubuntu Mono', 'Bitstream Vera Sans Mono', Monaco, 'Courier New', monospace;
+
+// max width of text content in characters
+$content-width: 65ch
+$content-width-big: 100ch
+$content-width-bigger: 130ch
+$link: hsl(229, 53%, 53%)
+
+@import ../node_modules/bulma/bulma.sass
+
+.main
+  background-color: #fafafa
+
+.box
+  box-shadow: none
+  -webkit-box-shadow: none
+  border-radius: 0
+  border: solid 1px $grey-lighter
+
+nav.navbar
+  padding: 10px
+  margin-left: -0.75rem
+  margin-right: -0.75rem
+  border: solid 1px $grey-lighter
+  // border-bottom: solid 3px $link
+  // border-left: solid 1px $link
+  // border-right: solid 1px $link
+  .navbar-item
+    img
+      max-height: 50px
+
+.content
+  max-width: calc(min(#{$content-width}, 100vw))
+  margin: 50px 0px
+  
+  h2 a
+    color: black
+  
+  img
+    border: 2px solid $grey-lighter
+    
+
+  figcaption 
+    text-align: center
+    font-size: smaller
+    color: slategrey
+  
+  h1 
+    text-align: center
+    margin: 20px
+  
+  table 
+    // width: 100vw
+    margin-bottom: 0.5em;
+    table-layout: fixed
+    // margin-left: calc(min(calc((#{$content-width} - 100vw) / 2 + 20vw), 0px))
+    // max-width: calc(max(60vw, #{$content-width}))
+    margin-left: calc(min(calc((min(#{$content-width-big}, 100vw) - #{$content-width}) / 2 * -1), 0px))
+    max-width: $content-width-big
+    width: $content-width-big
+    td, th 
+      border: 2px solid $grey-lighter
+      padding: 0
+    
+    .linenos
+      width: 5ch
+      pre
+padding-left: 0
+
+.sidebar
+  max-width: 300px
+  margin: 40px 5px
+
+  .author
+    display: block
+    width: 200px
+    text-align: center
+    margin: 10px
+    a 
+      display: inline-block
+      color: rgba(0,0,0,0.3)
+    img 
+      width: 100%
+      border: 3px solid rgba(0,0,0,0.05)
+
+  h3
+    color: rgba(0,0,0,0.8)
+    border-bottom: 1px solid rgba(0,0,0,.0785)
+    font-weight: bold
+    padding: 10px 0 10px 0
+    margin-bottom: 10px
+    letter-spacing: .1em
+    text-transform: uppercase
+    font-size: 11px
+
+.info:before, .tip:before, .warning:before, .related:before 
+	display: inline-grid 
+	float: left 
+	margin: 0px 
+	width: 50px 
+	height: 50px 
+
+// Custom paragraphs
+
+.warning 
+	background-color: #fff6e6 
+	&:before 
+		content: "⚠" 
+.info 
+	&:before 
+		content: "ℹ️" 
+.related 
+	background-color: #F8F8F8 
+	&:before 
+		content: "📖" 
+.tip 
+	&:before 
+		content: "💡" 
+.tip, .info, .warning, .related 
+	font-size: smaller 
+	display: block 
+	padding: 20px 
+	text-wrap: normal 
+	color: lighten(black,50%) 
+.info, tip 
+	background: aliceblue 
+
+.sidebar-buttons
+  position: fixed
+  display: inline-block
+  top: 0vh
+  right: 10px
+  text-align: center
+  
+  +desktop
+    display: block
+    top: 50vh
+
+  
+  >*
+    margin-bottom: 20px
+
+// This is backend engineer doing css - sorry :|
+
+.fullc
+  margin-left: calc(min(calc((#{$content-width} - 100vw) / 2), 0px))
+  max-width: 100vw
+
+.bigc
+  margin-left: calc(min(calc((min(#{$content-width-big}, 100vw) - #{$content-width}) / 2 * -1), 0px))
+  max-width: calc(min(#{$content-width-big}, 100vw))
+
+.biggerc
+  margin-left: calc(min(calc((min(#{$content-width-bigger}, 100vw) - #{$content-width}) / 2 * -1), 0px))
+  max-width: calc(min(#{$content-width-bigger}, 100vw))
+
+  
+
+
+
