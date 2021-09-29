@@ -13155,6 +13155,7 @@ a.has-text-danger-dark:hover, a.has-text-danger-dark:focus {
 
 .main {
   background-color: #fafafa;
+  margin-left: 20px;
 }
 
 .box {
