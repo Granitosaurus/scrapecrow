@@ -13217,10 +13217,6 @@ nav.navbar .navbar-item img {
   width: 5ch;
 }
 
-.content table .linenos pre {
-  padding-left: 0;
-}
-
 .sidebar {
   max-width: 300px;
   margin: 40px 5px;
@@ -13261,6 +13257,15 @@ nav.navbar .navbar-item img {
   margin: 0px;
   width: 50px;
   height: 50px;
+}
+
+.footer {
+  padding: 0 0 50px 0;
+  text-align: center;
+}
+
+.footer .footer-item {
+  margin: 0 10px;
 }
 
 .warning {

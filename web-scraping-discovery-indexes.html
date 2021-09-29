@@ -27,7 +27,7 @@
 <meta property="og:locale" content="en_US"/>
 <meta property="og:url" content="https://scrapecrow.com/web-scraping-discovery-indexes.html"/>
 <meta property="og:type" content="article"/>
-<meta property="article:published_time" content="2021-09-19 00:00:00+02:00"/>
+<meta property="article:published_time" content="2021-09-28 00:00:00+02:00"/>
 <meta property="article:modified_time" content=""/>
 <meta property="article:author" content="https://scrapecrow.com/author/bernardas-alisauskas.html">
 <meta property="article:section" content="articles"/>
@@ -63,14 +63,13 @@
           </div>
         </div>
       </nav>
-      <div style="background-color: orange;">THIS IS A PREVIEW</div> <!-- -->
       <div class="columns">
 <div class="content column">
   <div class="post-meta">
 <div class="post-meta">
     <a href="https://scrapecrow.com/category/articles.html" class="category">articles</a>
     &mdash;
-    <span title="2021-09-19T00:00:00+02:00">Sun 19 September 2021</span></br>
+    <span title="2021-09-28T00:00:00+02:00">Tue 28 September 2021</span></br>
     <a href="https://scrapecrow.com/tag/discovery.html" class="tag">discovery</a>
     <a href="https://scrapecrow.com/tag/python.html" class="tag">python</a>
     <a href="https://scrapecrow.com/tag/index.html" class="tag">index</a>
@@ -79,10 +78,11 @@
   <h1>Web Scraping Target Discovery: Indexes</h1>
   <div class="post-content">
     <!--insert table of contents between text and first header-->
-    <p>Target discovery in web-scraping is how the scraper explores target website to find scraping targets. For example to scrape product data of an e-commerce website we would need to find urls to each individual product. This step is called "discovery".</p>
-<p>Discovering targets to scrape in web scraping is often a challenging and important  task. This series of blog posts covers common target discovery approaches, click this tag for more <a href="/tag/discovery-methods.html">#discovery-methods</a></p>
+    <p>Most web scrapers are made up of two core parts: finding products on the website and actually scraping them. The former is often referred to as "target discovery" step. For example to scrape product data of an e-commerce website we would need to find urls to each individual product and only then we can scrape their data.</p>
+<p>Discovering targets to scrape in web scraping is often a challenging and important task. This series of blog posts tagged with <a href="/tag/discovery-methods.html">#discovery-methods</a> (also see <a href="/web-scraping-discovery.html">main article</a>) covers common target discovery approaches.</p>
 <p>Using various public indexers is a often viable target discovery strategy. It is mostly used as a last resort or as a supplementary technique for difficult discovery-difficult targets.  </p>
-<p>Public indexers that crawl the web through more complex scraping rules might pickup hard to find targets and we can take advantage of that in our little web scraper. In other words as the spirit of web-scraping goes: it's smart to take advantage of existing work! In this article we'll take a look at few common public indexers and how can we use them to discover targets.  </p>
+<p>Public indexers that crawl the web through more complex scraping rules might pickup hard to find targets and we can take advantage of that in our web scraper. In other words as the spirit of web-scraping goes: it's smart to take advantage of existing work! <br/>
+In this article we'll take a look at few common public indexers and how can we use them to discover targets.  </p>
 <p>First lets overview common pros and cons of this discovery strategy:</p>
 <p>Pros:</p>
 <ul>
@@ -100,19 +100,24 @@
     </div>
     <hr>
     <h2 id="using-search-engines">Using Search Engines</h2>
-<p>Most common and rich public indexes are search engines like google, bing or duckduckgo anything that lets humans search the web can be a useful tool for web scraping robots as well.  </p>
-<p>To see how we would use search engine in web-scraping discover lets take example of <a href="https://crunchbase.com">https://crunchbase.com</a>. Let's presume that we want to scrape their company data. First part of our scrapper is discovery loop that will find all company profile urls on the website. <br/>
-In this example we'll use <strong>bing.com</strong> to query for crunchbase.com urls. Bing is a great tool for web-scrapers as it's easy to scrape (unlike google which employs various anti-scraping strategies) and has relatively good index coverage.  </p>
-<p>If we take a look at an average Crunchbase company page like <a href="https://www.crunchbase.com/organization/linkedin">https://www.crunchbase.com/organization/linkedin</a> we can determine the url pattern that all company pages follow: <code>.../organization/&lt;name&gt;</code> </p>
-<p>Knowing this we can write domain specific queries in bing.com search box to find company pages:</p>
+<p>Most common and rich public indexes are search engines like google, bing or duckduckgo - anything that lets humans search the web can be a useful tool for web scraping robots as well.  </p>
+<p>To see how we would use search engine in web-scraping discover lets take example of <a href="https://crunchbase.com">https://crunchbase.com</a>. Let's presume that we want to scrape their company overview data<br/>
+(e.g. <a href="https://www.crunchbase.com/organization/linkedin">https://www.crunchbase.com/organization/linkedin</a>).  </p>
+<p>In this example we'll use <strong>bing.com</strong> to query for crunchbase.com urls. Bing is a great tool for web-scrapers as it's easy to scrape (unlike google which employs various anti-scraping strategies) and has relatively good quality results and coverage.  </p>
+<p>If we take a look at an average Crunchbase company page like <a href="https://www.crunchbase.com/organization/linkedin">https://www.crunchbase.com/organization/linkedin</a> we can determine the url pattern that all company pages follow looks something like: <code>.../organization/&lt;name&gt;</code> </p>
+<p>Knowing this we can write domain specific queries in bing.com search box to find other company pages:</p>
 <p><a href="/images/bing.com-crunchbase-search.png"><img class="bigc" src="/images/bing.com-crunchbase-search.png" title=""/></a><figcaption></figcaption></p>
-<p>Here we used query <code>/organization/ site:crunchbase.com</code> and bing.com is giving us over a million of results which is pretty close to what the crunchbase is saying they have!   </p>
-<p class="info">For advanced search keywords/options see <a href="https://help.bing.microsoft.com/#apex/bing/en-US/10001/-1">bing's advanced search options</a> and <a href="https://help.bing.microsoft.com/#apex/bing/en-US/10001/-1">bing's advanced search keywords</a></p>
-<p>Other search engines like google, duckduckgo and such also support similar search syntax. Search can be refined even further with more advanced search rules to find specific scraping targets.</p>
-<p>All that being said using search engines to query is not without it's faults. <br/>
+<p>Here we used query <code>/organization/ site:crunchbase.com</code> and bing.com is giving us over a million of results which is pretty close to what the crunchbase is saying they have on their website!     </p>
+<p class="info">For advanced search keywords/options see <a href="https://help.bing.microsoft.com/#apex/bing/en-US/10002/-1">bing's advanced search options</a> and <a href="https://help.bing.microsoft.com/#apex/bing/en-US/10001/-1">bing's advanced search keywords</a></p>
+<p>Other search engines like google, duckduckgo etc. also support similar search syntax. Search can be refined even further with more advanced search rules to find specific scraping targets.</p>
+<p>All that being said using search engines to query is not without it's faults.<br/>
 They are often built for humans rather than robots and have limited pagination (i.e. query will only have 10 pages of results even though it says millions are found) which requires splitting single query into many smaller ones, e.g. searching every letter of the alphabet or particular names. Despite all this discovery approach is surprisingly easy and can often work beautifully for small web scrapers!</p>
 <h2 id="using-public-index-dumps">Using Public Index Dumps</h2>
-<p>There are several public web indexes but probably the biggest and most well known one is <a href="https://commoncrawl.org/">https://commoncrawl.org/</a> which crawls the web and provides data dumps publicly for free. Unfortunately this being an open and free project the crawled htmls are somewhat stale, though as web scraper engineers we can instead use it as an index feed for our web scrapers.</p>
+<p>There are several public web indexes but probably the biggest and most well known one is <a href="https://commoncrawl.org/">https://commoncrawl.org/</a> which crawls the web and provides data dumps publicly for free. </p>
+<blockquote>
+<p>Common Crawl is a nonprofit 501 organization that crawls the web and freely provides its archives and datasets to the public. Common Crawl's web archive consists of petabytes of data collected since 2011. It completes crawls generally every month.</p>
+</blockquote>
+<p>Unfortunately this being an open and free project the crawled htmls are somewhat stale, though as web scraper engineers we can instead use it as an index feed for our own web scrapers.</p>
 <p>You can access common crawl's web index here: <a href="http://urlsearch.commoncrawl.org/">http://urlsearch.commoncrawl.org/</a>. The data is grouped by months and each month's dataset can be queried on the online playground:</p>
 <p><a href="/images/commoncrawl-crunchbase-search.png"><img class="bigc" src="/images/commoncrawl-crunchbase-search.png" title=""/></a><figcaption></figcaption></p>
 <p>Crawl coverage by commoncrawl highly depends on popularity of the source. Some smaller websites are harder to find while bigger targets can have good data coverage.<br/>
@@ -192,13 +197,16 @@ Despite coverage issues commoncrawl url dataset is a useful tool to have in web-
 
       <footer class="footer">
         <div class="content">
-          <a href="/archives.html">Archives</a></li>
-          <a href="/tags.html">Tags</a></li>
-          <a href="/tags.html">Made with Pelican💙</a></li>
-          <a href="atom.xml">
-            <i class="fa fa-rss-square" aria-hidden="true"></i>
-          </a>
-
+          <span class="footer-item"><a href="/archives.html">Archives</a></span>
+          <span class="footer-item"><a href="/tags.html">Tags</a></span>
+          <span class="footer-item"><a href="https://blog.getpelican.com/">Made with Pelican</a></span>
+          <span class="footer-item"><a href="https://github.com/granitosaurus/scrapecrow/">Source on Github</a></span>
+          <span class="footer-item"><a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA</a></span>
+          <span class="footer-item">
+            <a href="atom.xml">
+              <i class="fa fa-rss-square" aria-hidden="true"></i>
+            </a>
+          </span>
         </div>
       </footer>
     </div>
@@ -214,6 +222,9 @@ Despite coverage issues commoncrawl url dataset is a useful tool to have in web-
   </div>
 </div>    </div>
   </div>
+        async src="//gc.zgo.at/count.js"></script>
+  <script data-goatcounter="https://scrapecrow.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
 </body>
 
 </html>

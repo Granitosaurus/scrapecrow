@@ -38,7 +38,7 @@ class HMScraper:
             except Exception as e:
                 return e
             return resp
-   
+
     async def save(self, url):
         print(url)
 
@@ -49,11 +49,10 @@ class HMScraper:
             for resp in asyncio.as_completed([self._request(url) for url in urls]):
                 resp = await resp
                 if isinstance(resp, Exception):
-                    print(f"--skipping failure: {resp}")
                     continue
                 if resp.status_code != 200:
                     continue
-                for url in self.find_links(resp.text):
+                for url in self.find_links(resp):
                     if self.save_urls.search(url):
                         await self.save(url)
                         if not self.follow_saved_urls:
@@ -66,14 +65,13 @@ class HMScraper:
             else:
                 return  # end of the crawl
 
-
     def find_links(self, resp, only_unique=True):
         """
         find all relative page links in html link nodes
         """
         # build a parsable tree from html body
         sel = Selector(resp.text)
-        current_url_parts = urlparse(resp.url)
+        current_url_parts = urlparse(str(resp.url))
         # find all <a> nodes and select their href attribute
         urls = sel.xpath("//a/@href").extract()
         for url in urls:
@@ -88,7 +86,6 @@ class HMScraper:
                 continue
             self.seen_urls.add(url)
             yield url
-
 
 
 async def run():

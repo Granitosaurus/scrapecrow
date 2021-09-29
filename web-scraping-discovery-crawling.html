@@ -27,7 +27,7 @@
 <meta property="og:locale" content="en_US"/>
 <meta property="og:url" content="https://scrapecrow.com/web-scraping-discovery-crawling.html"/>
 <meta property="og:type" content="article"/>
-<meta property="article:published_time" content="2021-09-19 00:00:00+02:00"/>
+<meta property="article:published_time" content="2021-09-28 00:00:00+02:00"/>
 <meta property="article:modified_time" content=""/>
 <meta property="article:author" content="https://scrapecrow.com/author/bernardas-alisauskas.html">
 <meta property="article:section" content="articles"/>
@@ -63,14 +63,13 @@
           </div>
         </div>
       </nav>
-      <div style="background-color: orange;">THIS IS A PREVIEW</div> <!-- -->
       <div class="columns">
 <div class="content column">
   <div class="post-meta">
 <div class="post-meta">
     <a href="https://scrapecrow.com/category/articles.html" class="category">articles</a>
     &mdash;
-    <span title="2021-09-19T00:00:00+02:00">Sun 19 September 2021</span></br>
+    <span title="2021-09-28T00:00:00+02:00">Tue 28 September 2021</span></br>
     <a href="https://scrapecrow.com/tag/discovery.html" class="tag">discovery</a>
     <a href="https://scrapecrow.com/tag/python.html" class="tag">python</a>
     <a href="https://scrapecrow.com/tag/crawling.html" class="tag">crawling</a>
@@ -79,8 +78,9 @@
   <h1>Web Scraping Target Discovery: Crawling</h1>
   <div class="post-content">
     <!--insert table of contents between text and first header-->
-    <p>Target discovery in web-scraping is how the scraper explores target website to find scraping targets. For example to scrape product data of an e-commerce website we would need to find urls to each individual product. This step is called "discovery".</p>
-<p>Discovering targets to scrape in web scraping is often a challenging and important  task. This series of blog posts covers common target discovery approaches, click this tag for more <a href="/tag/discovery-methods.html">#discovery-methods</a></p>
+    <p>Most web scrapers are made up of two core parts: finding products on the website and actually scraping them. The former is often referred to as "target discovery" step. For example to scrape product data of an e-commerce website we would need to find urls to each individual product and only then we can scrape their data.</p>
+<p>Discovering targets to scrape in web scraping is often a challenging and important task. This series of blog posts tagged with <a href="/tag/discovery-methods.html">#discovery-methods</a> (also see <a href="/web-scraping-discovery.html">main article</a>) covers common target discovery approaches.</p>
+<p>In this article we'll take a look at web crawling and how can we use it as a discovery strategy in web scraping.  </p>
 
     <hr>
     <div class="pure-u">
@@ -88,23 +88,24 @@
     </div>
     <hr>
     <h2 id="what-is-recursive-crawling-and-how-is-it-used-in-web-scraping">What is recursive crawling and how is it used in web-scraping?</h2>
-<p>One of the most common ways to discover web scraping targets is to recursively crawl the website. This technique is usually used by broad crawlers and indexers such as Google and other search engine bots.<br/>
-In short crawling is recursive scraping technique where given a start url and some crawling rules the scraper continues exploring the website by visiting <em>all'ish</em> of the links present on the website.</p>
+<p>One of the most common ways to discover web scraping targets is to recursively crawl the website. This technique is usually used by broad scrapers (scrapers that scrape many different websites) and index crawlers such as Google and other search engine bots.<br/>
+In short crawling is recursive scraping technique where given a start url and some crawling rules the scraper continues exploring the website by visiting <em>all'ish</em> of the links present on the website.  </p>
+<p>To wrap our heads around crawling concept easier lets refer to this small flow chart:</p>
 <p><a href="/images/crawl-flow.png"><img class="" src="/images/crawl-flow.png" width='title=""'/></a><figcaption></figcaption></p>
-<p>This flow chart illustrates the simplest domain-bound crawl spider flow: the crawler is given a starting point, it scrapes it and parses for urls present in the html body. Then applies matching rules to urls and determines whether to save to urls (for scraping later) or whether to follow them up to repeat the process.</p>
-<p>Before using crawling as a web scraping discovery strategy it's a good practice to reflect on common pros and cons of this technique and see whether that would fit a web-scraping project:</p>
+<p>This flow chart illustrates the simplest domain-bound crawl spider flow: the crawler is given a starting point, it scrapes and parses it for urls present in the html body. Then applies matching rules to urls and determines whether to save to urls (for scraping later) or whether to follow them up to repeat the whole process.</p>
+<p>Before using crawling as a web scraping discovery strategy it's a good practice to reflect on common pros and cons of this technique and see whether that would fit your web-scraping project:</p>
 <p>Pros:  </p>
 <ul>
 <li><strong>Generic Algorithm</strong>: can be applied to any website with few adjustments. In other words one web scraper can be adapted to any website quite easily.  </li>
 <li><strong>Good Coverage</strong>: some websites (like e-commerce) are well interlinked thus crawling will have great discovery coverage.  </li>
-<li><strong>Easy to develop</strong>: no reverse-engineering skills are required since we're just falling natural website structure.  </li>
+<li><strong>Easy to Develop</strong>: no reverse-engineering skills are required since we're just falling natural website structure.  </li>
 </ul>
 <p>Cons:  </p>
 <ul>
 <li><strong>Inefficient and Slow</strong>: since crawling is a very generic solution it comes with a lot of inefficiencies. Often extracted links might not contain any product links so lots of crawl branches end up in dead ends.  </li>
 <li><strong>Insufficient Coverage</strong>: some websites are not well interlinked (sometimes purposefully to prevent web scrapers). Crawlers can't discover items that are not referenced anywhere.  </li>
-<li><strong>IP ban/block risk</strong>: since scraped link bandwidth is much bigger than other discovery approaches the scrapers IPs are more likely to be throttled or blocked.  </li>
-<li><strong>Struggles with javascript heavy websites</strong>: since crawling is very generic and web scrapers don't execute javascript content (unless using browser emulation) some websites might be too complex for web scraper to follow.  </li>
+<li><strong>Risk</strong>: since scraped link bandwidth is much bigger than other discovery approaches the scrapers IPs are more likely to be throttled or blocked.  </li>
+<li><strong>Struggles With Javascript Heavy Websites</strong>: since crawling is very generic and web scrapers don't execute javascript content (unless using browser emulation) some websites might be too complex for web scraper to follow.  </li>
 </ul>
 <p>We can see that crawling is a smart generic way to discover scrape targets however it's not without it's faults: it's slower, less accurate and might be hard to accomplish with some javascript heavy websites.<br/>
 Lets take a look at example target discovery implementation that uses web crawling.</p>
@@ -471,10 +472,7 @@ For scrape loop all we need to do is request urls, find links in them, follow or
 <span class="normal"> 98</span>
 <span class="normal"> 99</span>
 <span class="normal">100</span>
-<span class="normal">101</span>
-<span class="normal">102</span>
-<span class="normal">103</span>
-<span class="normal">104</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">logging</span>
+<span class="normal">101</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">asyncio</span>
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">from</span> <span class="nn">urllib.parse</span> <span class="kn">import</span> <span class="n">urlparse</span>
@@ -525,11 +523,10 @@ For scrape loop all we need to do is request urls, find links in them, follow or
             <span class="k">for</span> <span class="n">resp</span> <span class="ow">in</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">as_completed</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_request</span><span class="p">(</span><span class="n">url</span><span class="p">)</span> <span class="k">for</span> <span class="n">url</span> <span class="ow">in</span> <span class="n">urls</span><span class="p">]):</span>
                 <span class="n">resp</span> <span class="o">=</span> <span class="k">await</span> <span class="n">resp</span>
                 <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">resp</span><span class="p">,</span> <span class="ne">Exception</span><span class="p">):</span>
-                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"--skipping failure: </span><span class="si">{</span><span class="n">resp</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
                     <span class="k">continue</span>
                 <span class="k">if</span> <span class="n">resp</span><span class="o">.</span><span class="n">status_code</span> <span class="o">!=</span> <span class="mi">200</span><span class="p">:</span>
                     <span class="k">continue</span>
-                <span class="k">for</span> <span class="n">url</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_links</span><span class="p">(</span><span class="n">resp</span><span class="o">.</span><span class="n">text</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">url</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_links</span><span class="p">(</span><span class="n">resp</span><span class="p">):</span>
                     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">save_urls</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
                         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
                         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">follow_saved_urls</span><span class="p">:</span>
@@ -542,14 +539,13 @@ For scrape loop all we need to do is request urls, find links in them, follow or
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">return</span>  <span class="c1"># end of the crawl</span>
 
-
     <span class="k">def</span> <span class="nf">find_links</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resp</span><span class="p">,</span> <span class="n">only_unique</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">"""</span>
 <span class="sd">        find all relative page links in html link nodes</span>
 <span class="sd">        """</span>
         <span class="c1"># build a parsable tree from html body</span>
         <span class="n">sel</span> <span class="o">=</span> <span class="n">Selector</span><span class="p">(</span><span class="n">resp</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
-        <span class="n">current_url_parts</span> <span class="o">=</span> <span class="n">urlparse</span><span class="p">(</span><span class="n">resp</span><span class="o">.</span><span class="n">url</span><span class="p">)</span>
+        <span class="n">current_url_parts</span> <span class="o">=</span> <span class="n">urlparse</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">resp</span><span class="o">.</span><span class="n">url</span><span class="p">))</span>
         <span class="c1"># find all &lt;a&gt; nodes and select their href attribute</span>
         <span class="n">urls</span> <span class="o">=</span> <span class="n">sel</span><span class="o">.</span><span class="n">xpath</span><span class="p">(</span><span class="s2">"//a/@href"</span><span class="p">)</span><span class="o">.</span><span class="n">extract</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">url</span> <span class="ow">in</span> <span class="n">urls</span><span class="p">:</span>
@@ -564,7 +560,6 @@ For scrape loop all we need to do is request urls, find links in them, follow or
                 <span class="k">continue</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">seen_urls</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
             <span class="k">yield</span> <span class="n">url</span>
-
 
 
 <span class="k">async</span> <span class="k">def</span> <span class="nf">run</span><span class="p">():</span>
@@ -598,13 +593,16 @@ For scrape loop all we need to do is request urls, find links in them, follow or
 
       <footer class="footer">
         <div class="content">
-          <a href="/archives.html">Archives</a></li>
-          <a href="/tags.html">Tags</a></li>
-          <a href="/tags.html">Made with Pelican💙</a></li>
-          <a href="atom.xml">
-            <i class="fa fa-rss-square" aria-hidden="true"></i>
-          </a>
-
+          <span class="footer-item"><a href="/archives.html">Archives</a></span>
+          <span class="footer-item"><a href="/tags.html">Tags</a></span>
+          <span class="footer-item"><a href="https://blog.getpelican.com/">Made with Pelican</a></span>
+          <span class="footer-item"><a href="https://github.com/granitosaurus/scrapecrow/">Source on Github</a></span>
+          <span class="footer-item"><a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA</a></span>
+          <span class="footer-item">
+            <a href="atom.xml">
+              <i class="fa fa-rss-square" aria-hidden="true"></i>
+            </a>
+          </span>
         </div>
       </footer>
     </div>
@@ -620,6 +618,9 @@ For scrape loop all we need to do is request urls, find links in them, follow or
   </div>
 </div>    </div>
   </div>
+        async src="//gc.zgo.at/count.js"></script>
+  <script data-goatcounter="https://scrapecrow.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
 </body>
 
 </html>
