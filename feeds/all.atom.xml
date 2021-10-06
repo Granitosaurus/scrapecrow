@@ -3,7 +3,7 @@
 &lt;p&gt;Discovering targets to scrape in web scraping is often a challenging and important task. This series of blog posts tagged with &lt;a href="/tag/discovery-methods.html"&gt;#discovery-methods&lt;/a&gt; (also see &lt;a href="/web-scraping-discovery.html"&gt;main article&lt;/a&gt;) covers common target discovery approaches.&lt;/p&gt;
 &lt;p&gt;In this blog series tagged &lt;a href="/tag/discovery-methods.html"&gt;#discovery-methods&lt;/a&gt; we'll take a look at common discovery methods used in web-scraping where each is different enough to have it's own risks, negatives and benefits. We'll target an example clothing store website &lt;a href="https://hm.com"&gt;https://hm.com&lt;/a&gt; for all of these discovery approaches:&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;a href="/web-scraping-discovery-sitemap.html"&gt;Sitemaps&lt;/a&gt; - using website sitemap indexes.&lt;/li&gt;
+&lt;li&gt;&lt;a href="/web-scraping-discovery-sitemaps.html"&gt;Sitemaps&lt;/a&gt; - using website sitemap indexes.&lt;/li&gt;
 &lt;li&gt;&lt;a href="/web-scraping-discovery-search.html"&gt;Search API&lt;/a&gt; - reverse engineering websites search api.&lt;/li&gt;
 &lt;li&gt;&lt;a href="/web-scraping-discovery-indexes.html"&gt;Indexes&lt;/a&gt; - taking advantage of existing indexes and search engines.&lt;/li&gt;
 &lt;li&gt;&lt;a href="/web-scraping-discovery-crawling.html"&gt;Crawling&lt;/a&gt; - recursively scrape whole website to find what we're looking for.&lt;/li&gt;
