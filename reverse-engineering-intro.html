@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title> Scrapecrow - Introduction To Reverse Engineering The Web</title>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="description" content="Educational blog about web-scraping, crawling and related data extraction subjects" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css"
+    integrity="sha256-XoaMnoYC5TH6/+ihMEnospgm0J1PM/nioxbOUdnM8HY=" crossorigin="anonymous">
+  <script src="https://scrapecrow.com/theme/main.js"></script>
+  <link rel="stylesheet" href="https://scrapecrow.com/theme/css/main.css" />
+  <link rel="stylesheet" href="https://scrapecrow.com/theme/css/applause-button.css" />
+  <script src="https://scrapecrow.com/theme/applause-button.js"></script>
+  <link href="Scrapecrow/feeds/all.atom.xml" type="application/atom+xml" rel="alternate"
+    title="Scrapecrow Full Atom Feed" />
+  <link href="Scrapecrow/atom.xml" type="application/atom+xml" rel="alternate"
+    title="Scrapecrow Atom Feed" />
+  <link href="Scrapecrow/rss.xml" type="application/rss+xml" rel="alternate"
+    title="Scrapecrow RSS Feed" />
+  <link href="Scrapecrow/feeds/{slug}.atom.xml" type="application/atom+xml"
+    rel="alternate" title="Scrapecrow Categories Atom Feed" />
+
+<meta name="author" content="Bernardas Ališauskas" />
+<meta name="description" content="To efficiently scrape a web resource, understanding how it works and functions is often a vital step. Reverse engineering a website behavior is often first step when developing a web-scraper - let&#39;s take a look how!" />
+  <meta property="og:site_name" content="Scrapecrow"/>
+  <meta property="og:title" content="Introduction To Reverse Engineering The Web"/>
+  <meta property="og:description" content="To efficiently scrape a web resource, understanding how it works and functions is often a vital step. Reverse engineering a website behavior is often first step when developing a web-scraper - let&#39;s take a look how!"/>
+  <meta property="og:locale" content="en_US"/>
+  <meta property="og:url" content="https://scrapecrow.com/reverse-engineering-intro.html"/>
+  <meta property="og:type" content="article"/>
+  <meta property="article:published_time" content="2021-10-08 00:00:00+02:00"/>
+  <meta property="article:modified_time" content="2021-10-08 00:00:00+02:00"/>
+  <meta property="article:author" content="Bernardas Ališauskas">
+  <meta property="article:section" content="articles"/>
+  <meta property="article:tag" content="reverse-engineering"/>
+  <meta property="article:tag" content="python"/>
+  <meta property="article:tag" content="web-scraping"/>
+  <meta property="article:tag" content="beginner"/>
+  <meta property="og:image" content="https://scrapecrow.com/images/logo.svg">
+</head>
+
+<body>
+  <div class="navigation">
+    <nav class="navbar" role="navigation" aria-label="main navigation">
+      <div class="navbar-brand">
+        <a class="navbar-item" href="https://scrapecrow.com">
+          <img src="/images/logo.svg" width="50"></img>
+        </a>
+        <a class="navbar-item" href="https://scrapecrow.com">Scrapecrow</a>
+        <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navMenu">
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+        </a>
+      </div>
+      <div class="navbar-menu" id="navMenu">
+        <div class="navbar-start">
+          <a class="navbar-item" href="/pages/about.html">about</a>
+          <a class="navbar-item" href="/pages/hire.html">hire</a>
+          <a class="navbar-item" href="/pages/coffee.html">☕</a>
+          <a class="navbar-item" href="https://matrix.to/#/#web-scraping:matrix.org">#web-scraping on matrix</a>
+        </div>
+      </div>
+    </nav>
+  </div>
+  <div class="main">
+<div class="content">
+  <div class="post-meta">
+<div class="post-meta">
+    <a href="https://scrapecrow.com/category/articles.html" class="category">articles</a>
+    &mdash;
+    <span title="2021-10-08T00:00:00+02:00">Fri 08 October 2021</span></br>
+    <a href="https://scrapecrow.com/tag/reverse-engineering.html" class="tag">reverse-engineering</a>
+    <a href="https://scrapecrow.com/tag/python.html" class="tag">python</a>
+    <a href="https://scrapecrow.com/tag/web-scraping.html" class="tag">web-scraping</a>
+    <a href="https://scrapecrow.com/tag/beginner.html" class="tag">beginner</a>
+    </br>
+</div>  </div>
+  <h1>Introduction To Reverse Engineering The Web</h1>
+  <div class="post-content">
+    <!--insert table of contents between text and first header-->
+    <p>Unfortunately for web-scrapers modern websites are much more than html files strung together and served over http protocol. Often websites are complex structures of multiple executions layers and file formats that are designed specifically for one of the most complex programs in the world - web browsers.  </p>
+<p>So how do we scrape complex websites without using web-browsers? We can reverse engineer websites behavior and replicate it in our code!</p>
+<p>In this article will cover a short introduction how to use web browser's developer tools to reverse engineer website's behavior. We'll be using <a href="https://food.com">https://food.com</a> as our example and cover some useful tips and tricks.  </p>
+<p class="info">In this article we'll be using <code>Chrome</code> web browser. That being said Chrome based browsers (like Brave, Electron, Qutebrowser etc.) use the same tools and should function the same. However Firefox and it's browser family use slightly different tools</p>
+
+    <hr>
+    <div class="pure-u">
+      <div id="toc"><ul><li><a class="toc-href" href="#browser-developer-tools" title="Browser Developer Tools">Browser Developer Tools</a></li><li><a class="toc-href" href="#network-inspector" title="Network Inspector">Network Inspector</a></li><li><a class="toc-href" href="#tip-replicating-requests-in-python" title="Tip: Replicating Requests in Python">Tip: Replicating Requests in Python</a></li><li><a class="toc-href" href="#common-case-dynamic-javascript-pagination" title="Common Case: Dynamic Javascript Pagination">Common Case: Dynamic Javascript Pagination</a><ul><li><a class="toc-href" href="#scraping-recipes-from-foodcom" title="Scraping Recipes from Food.com">Scraping Recipes from Food.com</a></li></ul></li><li><a class="toc-href" href="#summary-and-further-reading_1" title="Summary And Further Reading">Summary And Further Reading</a></li></ul></div>
+    </div>
+    <hr>
+    <h2 id="browser-developer-tools">Browser Developer Tools</h2>
+<p>Fortunately, modern web browsers come with great debugging tools referred to as "Developer Tools". For this article we'll take a look at Chrome web browser. If you fire up Chrome browser and click <code>F12</code> (or right click anywhere on the page and select <code>inspect</code>) developer tool window will open up:</p>
+<p><a href="/images/devtools.png"><img class="bigc" loading="lazy" src="/images/devtools.png" title=""/></a><figcaption></figcaption></p>
+<p>As you can see, there's a lot going on here. Let's quickly go through these tools and see what they can do to us when it comes to web-scraping. First, let's take a look at the <strong>available tool tabs</strong>:</p>
+<hr/>
+<p><code>Elements</code> - this tab allows to visually explore, search and investigate the html page structure. For
+    <a href="/images/devtools_tab_elements.png"><img class="bigc" loading="lazy" src="/images/devtools_tab_elements.png" title="this tab is really useful for visualizing how page is structured"/></a><figcaption>this tab is really useful for visualizing how page is structured</figcaption></p>
+<p><code>Console</code> - this tab functions like a real time shell or a repl. You can type javascript expressions here and they will be evaluated against the current page.<br/>
+<a href="/images/devtools_tab_console.png"><img class="bigc" loading="lazy" src="/images/devtools_tab_console.png" title="this tool is great for reverse engineering javascript functionality of the page - imagine it as a debugger shell for website's code"/></a><figcaption>this tool is great for reverse engineering javascript functionality of the page - imagine it as a debugger shell for website's code</figcaption></p>
+<p><code>Application</code> - contains various application data: from cookies to database entries. This is rarely used by websites but often used by various web-apps. For web-scraping this tab is not referred to commonly.
+    <a href="/images/devtools_tab_application.png"><img class="bigc" loading="lazy" src="/images/devtools_tab_application.png" title="most useful feature of this tab is often the clear all data button"/></a><figcaption>most useful feature of this tab is often the clear all data button</figcaption></p>
+<p><code>Network</code> - probably the most interesting tab: it shows all of network requests made by the browser. Most useful web-scraping tool of the bunch!<br/>
+<a href="/images/devtools_tab_network.png"><img class="bigc" loading="lazy" src="/images/devtools_tab_network.png" title="we'll be spending most of our time in this tab!"/></a><figcaption>we'll be spending most of our time in this tab!</figcaption></p>
+<hr/>
+<p>As you can see it's a huge suite of web tools! However the most interesting tool when it comes to reverse-engineering for web-scraping purposes has to be the Network tab. Let's take a look how we can configure it for optimal experience and some examples of how to use it.</p>
+<h2 id="network-inspector">Network Inspector</h2>
+<p>This browser tool shows us all the requests our browser is making when we're browsing the web.  </p>
+<p>First, let's take a look at the window itself. Specifically how to read it in the context of reverse-engineering for web-scraping:</p>
+<p><a href="/images/devtools_tab_network_details.png"><img class="bigc" loading="lazy" src="/images/devtools_tab_network_details.png" title="This might look a bit different on different browsers but functionality should be the same!"/></a><figcaption>This might look a bit different on different browsers but functionality should be the same!</figcaption></p>
+<p>There's a lot going here but don't get overwhelmed just yet. We only need to focus on these parts:</p>
+<ol>
+<li>Contains all requests your browser made to the website. You can click on each individual one to further inspect it (We'll dig into this more below).  </li>
+<li>Option flags that disable cache and stop data clearing on page load (These are very useful for reverse engineering)</li>
+<li>Contains powerful filtering system. For the most part we'll be spending most of our time in either<ul>
+<li><code>Doc</code> filter which shows all <code>html</code> document requests </li>
+<li><code>XHR</code> filter which shows all data requests such as <code>json</code>.</li>
+</ul>
+</li>
+<li>Clear button <code>⍉</code> which clears current requests for easier tracking of what's going on.  </li>
+</ol>
+<p>Further, we can take a look at individual request itself and which parts are most useful for reverse-enginering. If you click on one of the requests you should see something like:  </p>
+<p><a href="/images/devtools_tab_network_row_details.png"><img class="bigc" loading="lazy" src="/images/devtools_tab_network_row_details.png" title=""/></a><figcaption></figcaption></p>
+<p>In this window we see several important information fields:</p>
+<ol>
+<li>Basic request details<br/>
+    Most important details here are URL and request method.</li>
+<li>
+<p>Response headers<br/>
+    Rarely interesting but can contain important meta data about response browser received from the website, such as:</p>
+<ul>
+<li><code>Set-Cookie</code> header<br/>
+contains cookies website requests the browser to save</li>
+<li><code>Content-Type</code> header<br/>
+contains the type of response. Most common values are either <code>text/html</code> for html documents or <code>application/json</code> for json data.</li>
+<li><code>X-</code> prefixed headers<br/>
+these are non-standard headers that are often used for website functionality, tracking or anti-bot protection.</li>
+</ul>
+<p class="info">If you'd like to learn more about http headers see <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers">MDN's http header documentation</a></p>
+</li>
+<li>
+<p>Request headers<br/>
+    Headers browser sent with this request. Often we want to replicate most of these headers in our web-scraper <em>as closely as possible</em>. Most common and vital ones being:</p>
+<ul>
+<li><code>Content-Type</code> and <code>Accept-</code> prefixed headers<br/>
+these are instructions for what sort of content is expected. Often http client libraries (like <code>requests</code> for python) fill them in automatically, thus it's important to keep an eye on these as sometimes they might be generated differently from the our browser.  </li>
+<li><code>User-Agent</code><br/>
+identifies who is making the request. This is really important field for preventing basic bot blocking. Usually we want to set this to one of popular browsers on popular OS systems like Chrome on Windows.</li>
+</ul>
+</li>
+<li>
+<p>Request Payload<br/>
+    This mostly used when dealing with <code>POST</code> type requests. It shows what data browser sends to the website. Usually it's some sort of request parameters in json format. </p>
+</li>
+</ol>
+<p>As you can see, Network Inspector is a surprisingly powerful and extremely useful reverse engineering tool that shows us what connections our browser is performing in a very detailed manner!</p>
+<p>Now that we're somewhat familiar with it, let's take a look at common usage tips and several iconic web-scraping problems that can be solved by using this tool.</p>
+<h2 id="tip-replicating-requests-in-python">Tip: Replicating Requests in Python</h2>
+<p>There's an easy way to replicate requests seen in the Network Inspector in your python code. <br/>
+If you right-click on a request, you can see that the Network Inspector allows exporting it in several formats: </p>
+<p><a href="/images/devtools_tab_network_copy_curl.png"><img class="" loading="lazy" src="/images/devtools_tab_network_copy_curl.png" width='title=""'/></a><figcaption></figcaption></p>
+<p>While there's no "copy as python" button there is "copy to curl" button which produces a <code>curl</code> command line tool command with all of the request details attached. Something like:</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="nt">curl</span> <span class="s1">'https://api.food.com/external/v1/nlp/search'</span> <span class="err">\</span>
+  <span class="nt">-H</span> <span class="s1">'Connection: keep-alive'</span> <span class="err">\</span>
+  <span class="nt">-H</span> <span class="s1">'Pragma: no-cache'</span> <span class="err">\</span>
+  <span class="nt">-H</span> <span class="s1">'Cache-Control: no-cache'</span> <span class="err">\</span>
+  <span class="nt">-H</span> <span class="s1">'Accept: application/json, text/javascript, */*; q=0.01'</span> <span class="err">\</span>
+  <span class="nt">-H</span> <span class="s1">'User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) QtWebEngine/5.15.2 Chrome/87.0.4280.144 Safari/537.36'</span> <span class="err">\</span>
+  <span class="nt">-H</span> <span class="s1">'Content-Type: application/json'</span> <span class="err">\</span>
+  <span class="nt">-H</span> <span class="s1">'Accept-Language: en-US,en;q=0.9'</span> <span class="err">\</span>
+  <span class="nt">-H</span> <span class="s1">'DNT: 1'</span> <span class="err">\</span>
+  <span class="nt">-H</span> <span class="s1">'Origin: https://www.food.com'</span> <span class="err">\</span>
+  <span class="nt">-H</span> <span class="s1">'Sec-Fetch-Site: same-site'</span> <span class="err">\</span>
+  <span class="nt">-H</span> <span class="s1">'Sec-Fetch-Mode: cors'</span> <span class="err">\</span>
+  <span class="nt">-H</span> <span class="s1">'Sec-Fetch-Dest: empty'</span> <span class="err">\</span>
+  <span class="nt">-H</span> <span class="s1">'Referer: https://www.food.com/'</span> <span class="err">\</span>
+  <span class="nt">--data-raw</span> <span class="s1">'{"contexts":</span><span class="cp">[]</span><span class="s1">,"searchTerm":"","pn":4}'</span> <span class="err">\</span>
+  <span class="nt">--compressed</span>
+</code></pre></div>
+</td></tr></table>
+<p>There are several tools that can convert this string into code! </p>
+<ul>
+<li><a href="https://curl.trillworks.com/">https://curl.trillworks.com/</a> - can convert it to multiple languages, python <code>requests</code> being one of them.</li>
+<li><a href="https://github.com/spulec/uncurl">https://github.com/spulec/uncurl</a> - is a library that can convert it to python objects or full python <code>requests</code> code.</li>
+</ul>
+<p>Using either of these converter tools we can quickly prototype our web-scraper while reverse engineering our target.</p>
+<h2 id="common-case-dynamic-javascript-pagination">Common Case: Dynamic Javascript Pagination</h2>
+<p>One of the most common encountered web-scraping issues is dynamic content generation powered by javascript. 
+Modern websites often use javascript to generate web page content on the fly rather than redirecting users to a new page.</p>
+<p>Most commonly this is observed in item pagination - instead of sending the user to page 2 directly its data is requested in the background and inject it back to document's body using javascript.<br/>
+This is often referred to as <strong>never-ending or dynamic pagination</strong>.</p>
+<p>Common identifiers of dynamic pagination:</p>
+<ul>
+<li>Instead of pages users just need to scroll down and more results are loaded</li>
+<li>Clicking page doesn't reload the current page just the pagination part.</li>
+<li>Pagination doesn't work with javascript disabled.</li>
+</ul>
+<h3 id="scraping-recipes-from-foodcom">Scraping Recipes from Food.com</h3>
+<p>For example let's take a look at how <a href="https://food.com">https://food.com</a> does it in their recipe search:</p>
+<p><video autoplay="" class="bigc" loop="" muted="" title="you can see the little spinning wheel turning when you scroll the page"><source src="/videos/endless_pagination.mp4" type="video/mp4"/></video><figcaption>you can see the little spinning wheel turning when you scroll the page</figcaption></p>
+<p>As you can see, the content of this website loads dynamically every time the user scrolls the page.<br/>
+This technique is especially common in Single Page Applications (SPA) - where the whole idea is that the user never needs to switch locations and content is dynamically replaced </p>
+<p class="info">For more information on Single Page Applications see <a href="https://developer.mozilla.org/en-US/docs/Glossary/SPA">MDN's documentation on SPA</a></p>
+<p>Since our web-scraper is not a browser (unless we use browser emulation) it doesn't execute javascript. Meaning to access this dynamic content we must reverse engineer the behavior so we can replicate it in our code.  </p>
+<p>Let's fire up devtools' Network Inspector and see what food.com does when we scroll down:</p>
+<p><video autoplay="" class="bigc" loop="" muted="" title="XHR filter tab only shows data requests"><source src="/videos/endless_pagination_dev.mp4" type="video/mp4"/></video><figcaption>XHR filter tab only shows data requests</figcaption></p>
+<p>We can see that when we continue scrolling <code>search</code> requests are being made. That's actually data for the whole page of recipes which when received is being injected into the html page by javascript.<br/>
+Let's take a look at these requests and how we can replicate them in our web-scraper:</p>
+<p><a href="/images/foodcom_pagination.png"><img class="bigc" loading="lazy" src="/images/foodcom_pagination.png" title=""/></a><figcaption></figcaption></p>
+<p>Here we can see that the request being made is a <code>POST</code> type request to <a href="https://api.food.com/external/v1/nlp/search">https://api.food.com/external/v1/nlp/search</a> and it's sending some JSON data. In return it received json document with 10 recipes and loads of meta information - like how many pages are there in total. That's exactly what we're looking for!</p>
+<p>Let's take a look at the document we need to send to receive this information.<br/>
+Under "Request Payload" we see json document:</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span>
+<span class="normal">6</span>
+<span class="normal">7</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="p">{</span>
+  <span class="nt">"contexts"</span><span class="p">:</span> <span class="p">[</span>
+    <span class="s2">"{\"name\":\"toast\",\"paths\":[\"/~asset/bread\"],\"type\":\"PRIMARY\",\"searchType\":\"NORMAL\",\"degreesSeparation\":0,\"cleanedName\":\"toast\",\"popularityFactor\":0,\"taggedContentCount\":2054,\"userToken\":true,\"searchGuess\":false,\"essenceContext\":false,\"matchingCandidate\":false}"</span>
+  <span class="p">],</span>
+  <span class="nt">"searchTerm"</span><span class="p">:</span> <span class="s2">"toast"</span><span class="p">,</span>
+  <span class="nt">"pn"</span><span class="p">:</span> <span class="mi">14</span>
+<span class="p">}</span>
+</code></pre></div>
+</td></tr></table>
+<p>Some context data seems to be sent, search term <code>"toast"</code> and <code>pn</code> integer argument which seems to be short for <code>page number</code>. Great, that means we can request any page for any search term! <br/>
+Let's replicate this request in Python:</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">requests</span>
+
+<span class="n">headers</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="c1"># when web scraping we always want to appear as </span>
+    <span class="c1"># a web browser to prevent being blocked</span>
+    <span class="s2">"User-Agent"</span><span class="p">:</span> <span class="s2">"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.94 Safari/537.36"</span>
+<span class="p">}</span>
+<span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="c1"># our recipe search term</span>
+    <span class="s2">"searchTerm"</span><span class="p">:</span> <span class="s2">"Toast"</span><span class="p">,</span>
+    <span class="c1"># page number</span>
+    <span class="s2">"pn"</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="n">url</span> <span class="o">=</span> <span class="s2">"https://api.food.com/external/v1/nlp/search"</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">"response"</span><span class="p">][</span><span class="s2">"results"</span><span class="p">]</span>
+<span class="n">total_results_count</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">"response"</span><span class="p">][</span><span class="s2">"totalResultsCount"</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">results</span><span class="p">)</span><span class="si">}</span><span class="s2"> results from </span><span class="si">{</span><span class="n">total_results_count</span><span class="si">}</span><span class="s2"> total"</span><span class="p">)</span>
+<span class="c1"># this will print: "found 10 results from 2246 total"</span>
+</code></pre></div>
+</td></tr></table>
+<p>It works! We've successfully reverse engineering food.com's backend API for it's paging function and replicated it in this Python scraper script! </p>
+<p>If you noticed, we skipped the <code>contexts</code> object in our POST body entirely. The great part about reverse engineering something is that we can adjust its functions and have clean, efficient, beautiful programs. This is great for us as our scraper programs use less resources and are easier to follow and maintain, and it's also better for our target - food.com - as we consume fewer of their resources by only the scraping specific data targets rather than loading the whole page and all the extras such as images, videos etc.</p>
+<h2 id="summary-and-further-reading_1">Summary And Further Reading</h2>
+<p>In this short introduction article we covered what are browser developer tools and how can we use them to understand basic workings of javascript driven websites. We've covered example case of how <a href="https://food.com">https://food.com</a> is using javascript for never-ending-pagination and how can we replicate it in Python using <code>requests</code> package. </p>
+<p>Reverse engineering story doesn't end here - web is becoming more complex by the day and browser's devtools only scratch the surface of what we can learn about websites. In the future we'll cover advanced reverse engineering topics such as using man-in-the-middle monitoring programs such as <a href="https://mitmproxy.org/">mitmproxy</a>, <a href="https://docs.telerik.com/fiddler-everywhere/introduction">fiddler</a> and <a href="https://www.wireshark.org/">wireshark</a> that allow even more detailed inspection and various quality of life tools such as request interception and scripting. These tools not only allow to reverse engineer websites but desktop and mobile applications!</p>
+<hr/>
+<p>So stick around for more articles and if you have any questions, come join us on <a href="https://matrix.to/#/%23web-scraping:matrix.org">#web-scraping on matrix</a>, check out <a href="https://stackoverflow.com/questions/tagged/web-scraping">#web-scraping on stackoverflow</a> or leave a comment below!  </p>
+<p>As always, you can hire me for web-scraping consultation over at <a href="/pages/hire.html">hire</a> page and happy scraping!  </p>
+  </div>
+</div>
+<hr>
+<div class="article-buttons">
+  <div class="float-side applause" title="show your appreciation">
+    <applause-button style="width: 58px; height: 58px;" />
+  </div>
+  <div class="article-button applause" title="show your appreciation">
+    <applause-button style="width: 58px; height: 58px;" />
+  </div>
+  <div class="article-button twitter" title="share on twitter">
+    <a href="http://twitter.com/share?text=&url=https://scrapecrow.com/reverse-engineering-intro.html&hashtags=">
+      <i class="fa fa-twitter fa-3x pure-menu-link" aria-hidden="true"></i>
+    </a>
+  </div>
+  <div class="article-button email">
+    <a href="https://716df175.sibforms.com/serve/MUIEALpKPp8WjHrVwQOX6keZXLkJRbnFEh2y6YhTmVmT4Z0Khgbi2MFvPO1OObOrjbMi_S0M7VXkXGkcbh36H-SqEwM3dHXxdrOOXwEPGcp9rTQKkQvMkC70Dq9RmCoikia87nLsRcx0VVGmCG2zyx5s8BwpqevRmh70vKSaLe7e95yZDCROMvm2HcN3UpLw7UsFxl_UbI6TjY_e" title="subscribe to mailist">
+      <i class="fa fa-email-bulk-o fa-3x pure-menu-link" aria-hidden="true"></i>
+    </a>
+  </div>
+</div>
+<hr>
+<div class="comments">
+  <script src="https://utteranc.es/client.js" repo="granitosaurus/scrapecrow"
+    issue-term="reverse-engineering-intro" label="comments"
+    theme="github-light" crossorigin="anonymous" async>
+  </script>
+</div>
+  </div>
+  <footer class="footer">
+    <div class="content">
+      <span class="footer-item"><a href="/archives.html">Archives</a></span>
+      <span class="footer-item"><a href="/tags.html">Tags</a></span>
+      <span class="footer-item"><a href="https://blog.getpelican.com/">Made with Pelican</a></span>
+      <span class="footer-item"><a href="https://github.com/granitosaurus/scrapecrow/">Source on Github</a></span>
+      <span class="footer-item"><a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA</a></span>
+      <span class="footer-item">
+        <a href="atom.xml">
+          <i class="fa fa-rss-square" aria-hidden="true"></i>
+        </a>
+      </span>
+    </div>
+  </footer>
+<script data-goatcounter="https://scrapecrow.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+
+</html>

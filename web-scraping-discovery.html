@@ -4,6 +4,8 @@
 <head>
   <title> Scrapecrow - Web Scraping Target Discovery</title>
   <meta charset="utf-8">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="description" content="Educational blog about web-scraping, crawling and related data extraction subjects" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css"
     integrity="sha256-XoaMnoYC5TH6/+ihMEnospgm0J1PM/nioxbOUdnM8HY=" crossorigin="anonymous">
@@ -22,50 +24,48 @@
 
 <meta name="author" content="Bernardas Ališauskas" />
 <meta name="description" content="Target discovery in web-scraping is how the scraper explores target website to find scraping targets. For example to scrape product data of an e-commerce website we would need to find urls to each individual product. This step is called &#34;discovery&#34;. What types of discovery methods are there?" />
-<meta property="og:site_name" content="Scrapecrow"/>
-<meta property="og:title" content="Web Scraping Target Discovery"/>
-<meta property="og:description" content="Target discovery in web-scraping is how the scraper explores target website to find scraping targets. For example to scrape product data of an e-commerce website we would need to find urls to each individual product. This step is called &#34;discovery&#34;. What types of discovery methods are there?"/>
-<meta property="og:locale" content="en_US"/>
-<meta property="og:url" content="https://scrapecrow.com/web-scraping-discovery.html"/>
-<meta property="og:type" content="article"/>
-<meta property="article:published_time" content="2021-09-29 00:00:00+02:00"/>
-<meta property="article:modified_time" content=""/>
-<meta property="article:author" content="https://scrapecrow.com/author/bernardas-alisauskas.html">
-<meta property="article:section" content="articles"/>
-<meta property="article:tag" content="discovery"/>
-<meta property="article:tag" content="python"/>
-<meta property="article:tag" content="crawling"/>
-<meta property="og:image" content="/images/logo.svg">
+  <meta property="og:site_name" content="Scrapecrow"/>
+  <meta property="og:title" content="Web Scraping Target Discovery"/>
+  <meta property="og:description" content="Target discovery in web-scraping is how the scraper explores target website to find scraping targets. For example to scrape product data of an e-commerce website we would need to find urls to each individual product. This step is called &#34;discovery&#34;. What types of discovery methods are there?"/>
+  <meta property="og:locale" content="en_US"/>
+  <meta property="og:url" content="https://scrapecrow.com/web-scraping-discovery.html"/>
+  <meta property="og:type" content="article"/>
+  <meta property="article:published_time" content="2021-09-29 00:00:00+02:00"/>
+  <meta property="article:modified_time" content="2021-09-29 00:00:00+02:00"/>
+  <meta property="article:author" content="Bernardas Ališauskas">
+  <meta property="article:section" content="articles"/>
+  <meta property="article:tag" content="discovery"/>
+  <meta property="article:tag" content="python"/>
+  <meta property="article:tag" content="crawling"/>
+  <meta property="og:image" content="https://scrapecrow.com/images/logo.svg">
 </head>
 
 <body>
-  <div class="columns main">
-    <div class="column left-pane">
-    </div>
-    <div class="center-pane is-full">
-      <nav class="navbar" role="navigation" aria-label="main navigation">
-        <div class="navbar-brand">
-          <a class="navbar-item" href="https://scrapecrow.com">
-            <img src="/images/logo.svg" width="50"></img>
-          </a>
-          <a class="navbar-item" href="https://scrapecrow.com">Scrapecrow</a>
-          <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navMenu">
-            <span aria-hidden="true"></span>
-            <span aria-hidden="true"></span>
-            <span aria-hidden="true"></span>
-          </a>
+  <div class="navigation">
+    <nav class="navbar" role="navigation" aria-label="main navigation">
+      <div class="navbar-brand">
+        <a class="navbar-item" href="https://scrapecrow.com">
+          <img src="/images/logo.svg" width="50"></img>
+        </a>
+        <a class="navbar-item" href="https://scrapecrow.com">Scrapecrow</a>
+        <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navMenu">
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+        </a>
+      </div>
+      <div class="navbar-menu" id="navMenu">
+        <div class="navbar-start">
+          <a class="navbar-item" href="/pages/about.html">about</a>
+          <a class="navbar-item" href="/pages/hire.html">hire</a>
+          <a class="navbar-item" href="/pages/coffee.html">☕</a>
+          <a class="navbar-item" href="https://matrix.to/#/#web-scraping:matrix.org">#web-scraping on matrix</a>
         </div>
-        <div class="navbar-menu" id="navMenu">
-          <div class="navbar-start">
-            <a class="navbar-item" href="/pages/about.html">about</a>
-            <a class="navbar-item" href="/pages/hire.html">hire</a>
-            <a class="navbar-item" href="/pages/coffee.html">☕</a>
-            <a class="navbar-item" href="https://matrix.to/#/#web-scraping:matrix.org">#web-scraping on matrix</a>
-          </div>
-        </div>
-      </nav>
-      <div class="columns center-pane-box">
-<div class="content column">
+      </div>
+    </nav>
+  </div>
+  <div class="main">
+<div class="content">
   <div class="post-meta">
 <div class="post-meta">
     <a href="https://scrapecrow.com/category/articles.html" class="category">articles</a>
@@ -99,45 +99,52 @@ To quickly summarize our 4 main articles the discovery strategies vary quite a b
 <p>So which one to use? It really depends on your target and resources. <br/>
 Hopefully this extensive blog series can help you determine the right way to find your data targets!</p>
 <hr/>
-<p>For more web-scraping discovery techniques see <a href="/tag/discovery-methods.html">#discovery-methods</a> and <a href="/tag/discovery.html">#discovery</a> for more discovery related subjects.  </p>
-<p>If you're stuck with a web-scraping problem visit <a href="https://matrix.to/#/%23web-scraping:matrix.org">#web-scraping on matrix</a> or <a href="/hire.html">hire me</a> :)</p>
+<p>For more web-scraping discovery techniques, see <a href="/tag/discovery-methods.html">#discovery-methods</a> and <a href="/tag/discovery.html">#discovery</a> for more discovery related subjects.  </p>
+<p>If you have any questions, come join us on <a href="https://matrix.to/#/%23web-scraping:matrix.org">#web-scraping on matrix</a>, check out [#web-scraping on stackoverflow] or leave a comment below!  </p>
+<p>As always, you can hire me for web-scraping consultation over at <a href="/hire.html">hire</a> page and happy scraping!  </p>
   </div>
 </div>
-      </div>
-      <div class="comments">
-        <script src="https://utteranc.es/client.js" repo="granitosaurus/scrapecrow"
-          issue-term="web-scraping-discovery" label="comments"
-          theme="github-light" crossorigin="anonymous" async>
-        </script>
-      </div>
-
-      <footer class="footer">
-        <div class="content">
-          <span class="footer-item"><a href="/archives.html">Archives</a></span>
-          <span class="footer-item"><a href="/tags.html">Tags</a></span>
-          <span class="footer-item"><a href="https://blog.getpelican.com/">Made with Pelican</a></span>
-          <span class="footer-item"><a href="https://github.com/granitosaurus/scrapecrow/">Source on Github</a></span>
-          <span class="footer-item"><a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA</a></span>
-          <span class="footer-item">
-            <a href="atom.xml">
-              <i class="fa fa-rss-square" aria-hidden="true"></i>
-            </a>
-          </span>
-        </div>
-      </footer>
-    </div>
-    <div class="column right-pane">
-<div class="sidebar-buttons">
-  <div class="applause" title="show your appreciation">
+<hr>
+<div class="article-buttons">
+  <div class="float-side applause" title="show your appreciation">
     <applause-button style="width: 58px; height: 58px;" />
   </div>
-  <div class="email">
-    <a href="https://716df175.sibforms.com/serve/MUIEALpKPp8WjHrVwQOX6keZXLkJRbnFEh2y6YhTmVmT4Z0Khgbi2MFvPO1OObOrjbMi_S0M7VXkXGkcbh36H-SqEwM3dHXxdrOOXwEPGcp9rTQKkQvMkC70Dq9RmCoikia87nLsRcx0VVGmCG2zyx5s8BwpqevRmh70vKSaLe7e95yZDCROMvm2HcN3UpLw7UsFxl_UbI6TjY_e" title="subscribe to mailist">
-      <i class="fa fa-email-bulk-o fa-2x pure-menu-link" aria-hidden="true"></i>
+  <div class="article-button applause" title="show your appreciation">
+    <applause-button style="width: 58px; height: 58px;" />
+  </div>
+  <div class="article-button twitter" title="share on twitter">
+    <a href="http://twitter.com/share?text=&url=https://scrapecrow.com/web-scraping-discovery.html&hashtags=">
+      <i class="fa fa-twitter fa-3x pure-menu-link" aria-hidden="true"></i>
     </a>
   </div>
-</div>    </div>
+  <div class="article-button email">
+    <a href="https://716df175.sibforms.com/serve/MUIEALpKPp8WjHrVwQOX6keZXLkJRbnFEh2y6YhTmVmT4Z0Khgbi2MFvPO1OObOrjbMi_S0M7VXkXGkcbh36H-SqEwM3dHXxdrOOXwEPGcp9rTQKkQvMkC70Dq9RmCoikia87nLsRcx0VVGmCG2zyx5s8BwpqevRmh70vKSaLe7e95yZDCROMvm2HcN3UpLw7UsFxl_UbI6TjY_e" title="subscribe to mailist">
+      <i class="fa fa-email-bulk-o fa-3x pure-menu-link" aria-hidden="true"></i>
+    </a>
   </div>
+</div>
+<hr>
+<div class="comments">
+  <script src="https://utteranc.es/client.js" repo="granitosaurus/scrapecrow"
+    issue-term="web-scraping-discovery" label="comments"
+    theme="github-light" crossorigin="anonymous" async>
+  </script>
+</div>
+  </div>
+  <footer class="footer">
+    <div class="content">
+      <span class="footer-item"><a href="/archives.html">Archives</a></span>
+      <span class="footer-item"><a href="/tags.html">Tags</a></span>
+      <span class="footer-item"><a href="https://blog.getpelican.com/">Made with Pelican</a></span>
+      <span class="footer-item"><a href="https://github.com/granitosaurus/scrapecrow/">Source on Github</a></span>
+      <span class="footer-item"><a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA</a></span>
+      <span class="footer-item">
+        <a href="atom.xml">
+          <i class="fa fa-rss-square" aria-hidden="true"></i>
+        </a>
+      </span>
+    </div>
+  </footer>
 <script data-goatcounter="https://scrapecrow.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </body>
 

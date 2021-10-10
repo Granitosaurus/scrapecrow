@@ -4,6 +4,8 @@
 <head>
   <title> Scrapecrow - Web Scraping Target Discovery: Indexes</title>
   <meta charset="utf-8">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="description" content="Educational blog about web-scraping, crawling and related data extraction subjects" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css"
     integrity="sha256-XoaMnoYC5TH6/+ihMEnospgm0J1PM/nioxbOUdnM8HY=" crossorigin="anonymous">
@@ -21,51 +23,50 @@
     rel="alternate" title="Scrapecrow Categories Atom Feed" />
 
 <meta name="author" content="Bernardas Ališauskas" />
-<meta name="description" content="The most common web scraping target discovery technique: recursive crawling. How does it work? What are the pros and cons and the most optimal execution paterns?" />
-<meta property="og:site_name" content="Scrapecrow"/>
-<meta property="og:title" content="Web Scraping Target Discovery: Indexes"/>
-<meta property="og:description" content="The most common web scraping target discovery technique: recursive crawling. How does it work? What are the pros and cons and the most optimal execution paterns?"/>
-<meta property="og:locale" content="en_US"/>
-<meta property="og:url" content="https://scrapecrow.com/web-scraping-discovery-indexes.html"/>
-<meta property="og:type" content="article"/>
-<meta property="article:published_time" content="2021-09-28 00:00:00+02:00"/>
-<meta property="article:modified_time" content=""/>
-<meta property="article:author" content="https://scrapecrow.com/author/bernardas-alisauskas.html">
-<meta property="article:section" content="articles"/>
-<meta property="article:tag" content="discovery"/>
-<meta property="article:tag" content="python"/>
-<meta property="article:tag" content="index"/>
-<meta property="og:image" content="/images/logo.svg">
+<meta name="description" content="The most common web scraping target discovery technique: recursive crawling. How does it work? What are the pros and cons and the most optimal execution patterns?" />
+  <meta property="og:site_name" content="Scrapecrow"/>
+  <meta property="og:title" content="Web Scraping Target Discovery: Indexes"/>
+  <meta property="og:description" content="The most common web scraping target discovery technique: recursive crawling. How does it work? What are the pros and cons and the most optimal execution patterns?"/>
+  <meta property="og:locale" content="en_US"/>
+  <meta property="og:url" content="https://scrapecrow.com/web-scraping-discovery-indexes.html"/>
+  <meta property="og:type" content="article"/>
+  <meta property="article:published_time" content="2021-09-28 00:00:00+02:00"/>
+  <meta property="article:modified_time" content="2021-09-28 00:00:00+02:00"/>
+  <meta property="article:author" content="Bernardas Ališauskas">
+  <meta property="article:section" content="articles"/>
+  <meta property="article:tag" content="discovery"/>
+  <meta property="article:tag" content="python"/>
+  <meta property="article:tag" content="index"/>
+  <meta property="article:tag" content="intermediate"/>
+  <meta property="og:image" content="https://scrapecrow.com/images/logo.svg">
 </head>
 
 <body>
-  <div class="columns main">
-    <div class="column left-pane">
-    </div>
-    <div class="center-pane is-full">
-      <nav class="navbar" role="navigation" aria-label="main navigation">
-        <div class="navbar-brand">
-          <a class="navbar-item" href="https://scrapecrow.com">
-            <img src="/images/logo.svg" width="50"></img>
-          </a>
-          <a class="navbar-item" href="https://scrapecrow.com">Scrapecrow</a>
-          <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navMenu">
-            <span aria-hidden="true"></span>
-            <span aria-hidden="true"></span>
-            <span aria-hidden="true"></span>
-          </a>
+  <div class="navigation">
+    <nav class="navbar" role="navigation" aria-label="main navigation">
+      <div class="navbar-brand">
+        <a class="navbar-item" href="https://scrapecrow.com">
+          <img src="/images/logo.svg" width="50"></img>
+        </a>
+        <a class="navbar-item" href="https://scrapecrow.com">Scrapecrow</a>
+        <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navMenu">
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+        </a>
+      </div>
+      <div class="navbar-menu" id="navMenu">
+        <div class="navbar-start">
+          <a class="navbar-item" href="/pages/about.html">about</a>
+          <a class="navbar-item" href="/pages/hire.html">hire</a>
+          <a class="navbar-item" href="/pages/coffee.html">☕</a>
+          <a class="navbar-item" href="https://matrix.to/#/#web-scraping:matrix.org">#web-scraping on matrix</a>
         </div>
-        <div class="navbar-menu" id="navMenu">
-          <div class="navbar-start">
-            <a class="navbar-item" href="/pages/about.html">about</a>
-            <a class="navbar-item" href="/pages/hire.html">hire</a>
-            <a class="navbar-item" href="/pages/coffee.html">☕</a>
-            <a class="navbar-item" href="https://matrix.to/#/#web-scraping:matrix.org">#web-scraping on matrix</a>
-          </div>
-        </div>
-      </nav>
-      <div class="columns center-pane-box">
-<div class="content column">
+      </div>
+    </nav>
+  </div>
+  <div class="main">
+<div class="content">
   <div class="post-meta">
 <div class="post-meta">
     <a href="https://scrapecrow.com/category/articles.html" class="category">articles</a>
@@ -74,6 +75,7 @@
     <a href="https://scrapecrow.com/tag/discovery.html" class="tag">discovery</a>
     <a href="https://scrapecrow.com/tag/python.html" class="tag">python</a>
     <a href="https://scrapecrow.com/tag/index.html" class="tag">index</a>
+    <a href="https://scrapecrow.com/tag/intermediate.html" class="tag">intermediate</a>
     </br>
 </div>  </div>
   <h1>Web Scraping Target Discovery: Indexes</h1>
@@ -107,7 +109,7 @@ In this article we'll take a look at few common public indexers and how can we u
 <p>In this example we'll use <strong>bing.com</strong> to query for crunchbase.com urls. Bing is a great tool for web-scrapers as it's easy to scrape (unlike google which employs various anti-scraping strategies) and has relatively good quality results and coverage.  </p>
 <p>If we take a look at an average Crunchbase company page like <a href="https://www.crunchbase.com/organization/linkedin">https://www.crunchbase.com/organization/linkedin</a> we can determine the url pattern that all company pages follow looks something like: <code>.../organization/&lt;name&gt;</code> </p>
 <p>Knowing this we can write domain specific queries in bing.com search box to find other company pages:</p>
-<p><a href="/images/bing.com-crunchbase-search.png"><img class="bigc" src="/images/bing.com-crunchbase-search.png" title=""/></a><figcaption></figcaption></p>
+<p><a href="/images/bing.com-crunchbase-search.png"><img class="bigc" loading="lazy" src="/images/bing.com-crunchbase-search.png" title=""/></a><figcaption></figcaption></p>
 <p>Here we used query <code>/organization/ site:crunchbase.com</code> and bing.com is giving us over a million of results which is pretty close to what the crunchbase is saying they have on their website!     </p>
 <p class="info">For advanced search keywords/options see <a href="https://help.bing.microsoft.com/#apex/bing/en-US/10002/-1">bing's advanced search options</a> and <a href="https://help.bing.microsoft.com/#apex/bing/en-US/10001/-1">bing's advanced search keywords</a></p>
 <p>Other search engines like google, duckduckgo etc. also support similar search syntax. Search can be refined even further with more advanced search rules to find specific scraping targets.</p>
@@ -120,7 +122,7 @@ They are often built for humans rather than robots and have limited pagination (
 </blockquote>
 <p>Unfortunately this being an open and free project the crawled htmls are somewhat stale, though as web scraper engineers we can instead use it as an index feed for our own web scrapers.</p>
 <p>You can access common crawl's web index here: <a href="http://urlsearch.commoncrawl.org/">http://urlsearch.commoncrawl.org/</a>. The data is grouped by months and each month's dataset can be queried on the online playground:</p>
-<p><a href="/images/commoncrawl-crunchbase-search.png"><img class="bigc" src="/images/commoncrawl-crunchbase-search.png" title=""/></a><figcaption></figcaption></p>
+<p><a href="/images/commoncrawl-crunchbase-search.png"><img class="bigc" loading="lazy" src="/images/commoncrawl-crunchbase-search.png" title=""/></a><figcaption></figcaption></p>
 <p>Crawl coverage by commoncrawl highly depends on popularity of the source. Some smaller websites are harder to find while bigger targets can have good data coverage.<br/>
 Despite coverage issues commoncrawl url dataset is a useful tool to have in web-scraping toolbelt.</p>
 <p class="info">If you find Commoncrawl useful it's a non-profit organization <a href="https://commoncrawl.org/donate/">accepting public donations</a>!</p>
@@ -130,7 +132,7 @@ Despite coverage issues commoncrawl url dataset is a useful tool to have in web-
 <p>Internet Archive is a non-profit library of millions of free books, movies, software, music, websites, and more.</p>
 </blockquote>
 <p>We can use archive.org website archive as our discovery engine. If we go to <a href="https://archive.org">https://archive.org</a> and type in our source:</p>
-<p><a href="/images/archive.org-crunchbase-search.png"><img class="bigc" src="/images/archive.org-crunchbase-search.png" title=""/></a><figcaption></figcaption></p>
+<p><a href="/images/archive.org-crunchbase-search.png"><img class="bigc" loading="lazy" src="/images/archive.org-crunchbase-search.png" title=""/></a><figcaption></figcaption></p>
 <p>We can see that archive.org has captured a lot of urls! Let's take a quick look how we could scrape it as a discovery source. If we open up web inspector and see requests made when we click search we'll find a backend API url that looks something like this (<a href="https://web.archive.org/web/timemap/?url=crunchbase.com/organization/%2F&amp;matchType=prefix&amp;collapse=urlkey&amp;output=json&amp;fl=original%2Cendtimestamp%2Cgroupcount%2Cuniqcount&amp;filter=!statuscode%3A[45]..&amp;limit=10000&amp;_=1632308317409">clickable</a>):</p>
 <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
 <span class="normal">2</span>
@@ -188,45 +190,52 @@ Despite coverage issues commoncrawl url dataset is a useful tool to have in web-
 <li><a href="https://boardreader.com/">https://boardreader.com/</a> - brilliant forum/discussion board coverage.</li>
 </ul>
 <hr/>
-<p>For more web-scraping discovery techniques see <a href="/tag/discovery-methods.html">#discovery-methods</a> and <a href="/tag/discovery.html">#discovery</a> for more discovery related subjects.  </p>
-<p>If you're stuck with a web-scraping problem visit <a href="https://matrix.to/#/%23web-scraping:matrix.org">#web-scraping on matrix</a> or <a href="/hire.html">hire me</a> :)</p>
+<p>For more web-scraping discovery techniques, see <a href="/tag/discovery-methods.html">#discovery-methods</a> and <a href="/tag/discovery.html">#discovery</a> for more discovery related subjects.  </p>
+<p>If you have any questions, come join us on <a href="https://matrix.to/#/%23web-scraping:matrix.org">#web-scraping on matrix</a>, check out [#web-scraping on stackoverflow] or leave a comment below!  </p>
+<p>As always, you can hire me for web-scraping consultation over at <a href="/hire.html">hire</a> page and happy scraping!  </p>
   </div>
 </div>
-      </div>
-      <div class="comments">
-        <script src="https://utteranc.es/client.js" repo="granitosaurus/scrapecrow"
-          issue-term="web-scraping-discovery-indexes" label="comments"
-          theme="github-light" crossorigin="anonymous" async>
-        </script>
-      </div>
-
-      <footer class="footer">
-        <div class="content">
-          <span class="footer-item"><a href="/archives.html">Archives</a></span>
-          <span class="footer-item"><a href="/tags.html">Tags</a></span>
-          <span class="footer-item"><a href="https://blog.getpelican.com/">Made with Pelican</a></span>
-          <span class="footer-item"><a href="https://github.com/granitosaurus/scrapecrow/">Source on Github</a></span>
-          <span class="footer-item"><a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA</a></span>
-          <span class="footer-item">
-            <a href="atom.xml">
-              <i class="fa fa-rss-square" aria-hidden="true"></i>
-            </a>
-          </span>
-        </div>
-      </footer>
-    </div>
-    <div class="column right-pane">
-<div class="sidebar-buttons">
-  <div class="applause" title="show your appreciation">
+<hr>
+<div class="article-buttons">
+  <div class="float-side applause" title="show your appreciation">
     <applause-button style="width: 58px; height: 58px;" />
   </div>
-  <div class="email">
-    <a href="https://716df175.sibforms.com/serve/MUIEALpKPp8WjHrVwQOX6keZXLkJRbnFEh2y6YhTmVmT4Z0Khgbi2MFvPO1OObOrjbMi_S0M7VXkXGkcbh36H-SqEwM3dHXxdrOOXwEPGcp9rTQKkQvMkC70Dq9RmCoikia87nLsRcx0VVGmCG2zyx5s8BwpqevRmh70vKSaLe7e95yZDCROMvm2HcN3UpLw7UsFxl_UbI6TjY_e" title="subscribe to mailist">
-      <i class="fa fa-email-bulk-o fa-2x pure-menu-link" aria-hidden="true"></i>
+  <div class="article-button applause" title="show your appreciation">
+    <applause-button style="width: 58px; height: 58px;" />
+  </div>
+  <div class="article-button twitter" title="share on twitter">
+    <a href="http://twitter.com/share?text=&url=https://scrapecrow.com/web-scraping-discovery-indexes.html&hashtags=">
+      <i class="fa fa-twitter fa-3x pure-menu-link" aria-hidden="true"></i>
     </a>
   </div>
-</div>    </div>
+  <div class="article-button email">
+    <a href="https://716df175.sibforms.com/serve/MUIEALpKPp8WjHrVwQOX6keZXLkJRbnFEh2y6YhTmVmT4Z0Khgbi2MFvPO1OObOrjbMi_S0M7VXkXGkcbh36H-SqEwM3dHXxdrOOXwEPGcp9rTQKkQvMkC70Dq9RmCoikia87nLsRcx0VVGmCG2zyx5s8BwpqevRmh70vKSaLe7e95yZDCROMvm2HcN3UpLw7UsFxl_UbI6TjY_e" title="subscribe to mailist">
+      <i class="fa fa-email-bulk-o fa-3x pure-menu-link" aria-hidden="true"></i>
+    </a>
   </div>
+</div>
+<hr>
+<div class="comments">
+  <script src="https://utteranc.es/client.js" repo="granitosaurus/scrapecrow"
+    issue-term="web-scraping-discovery-indexes" label="comments"
+    theme="github-light" crossorigin="anonymous" async>
+  </script>
+</div>
+  </div>
+  <footer class="footer">
+    <div class="content">
+      <span class="footer-item"><a href="/archives.html">Archives</a></span>
+      <span class="footer-item"><a href="/tags.html">Tags</a></span>
+      <span class="footer-item"><a href="https://blog.getpelican.com/">Made with Pelican</a></span>
+      <span class="footer-item"><a href="https://github.com/granitosaurus/scrapecrow/">Source on Github</a></span>
+      <span class="footer-item"><a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA</a></span>
+      <span class="footer-item">
+        <a href="atom.xml">
+          <i class="fa fa-rss-square" aria-hidden="true"></i>
+        </a>
+      </span>
+    </div>
+  </footer>
 <script data-goatcounter="https://scrapecrow.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </body>
 

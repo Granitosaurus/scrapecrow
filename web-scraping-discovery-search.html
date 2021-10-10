@@ -4,6 +4,8 @@
 <head>
   <title> Scrapecrow - Web Scraping Target Discovery: Search API</title>
   <meta charset="utf-8">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="description" content="Educational blog about web-scraping, crawling and related data extraction subjects" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css"
     integrity="sha256-XoaMnoYC5TH6/+ihMEnospgm0J1PM/nioxbOUdnM8HY=" crossorigin="anonymous">
@@ -22,51 +24,50 @@
 
 <meta name="author" content="Bernardas Ališauskas" />
 <meta name="description" content="Fundamental web-scraping reverse-engineering technique is figuring out how website&#39;s search works. Replicating web search in web scraping is a great target discovery technique. Why, when and how should it be used effectively?" />
-<meta property="og:site_name" content="Scrapecrow"/>
-<meta property="og:title" content="Web Scraping Target Discovery: Search API"/>
-<meta property="og:description" content="Fundamental web-scraping reverse-engineering technique is figuring out how website&#39;s search works. Replicating web search in web scraping is a great target discovery technique. Why, when and how should it be used effectively?"/>
-<meta property="og:locale" content="en_US"/>
-<meta property="og:url" content="https://scrapecrow.com/web-scraping-discovery-search.html"/>
-<meta property="og:type" content="article"/>
-<meta property="article:published_time" content="2021-09-28 00:00:00+02:00"/>
-<meta property="article:modified_time" content=""/>
-<meta property="article:author" content="https://scrapecrow.com/author/bernardas-alisauskas.html">
-<meta property="article:section" content="articles"/>
-<meta property="article:tag" content="discovery"/>
-<meta property="article:tag" content="discovery-methods"/>
-<meta property="article:tag" content="python"/>
-<meta property="article:tag" content="reverse-engineering"/>
-<meta property="og:image" content="/images/logo.svg">
+  <meta property="og:site_name" content="Scrapecrow"/>
+  <meta property="og:title" content="Web Scraping Target Discovery: Search API"/>
+  <meta property="og:description" content="Fundamental web-scraping reverse-engineering technique is figuring out how website&#39;s search works. Replicating web search in web scraping is a great target discovery technique. Why, when and how should it be used effectively?"/>
+  <meta property="og:locale" content="en_US"/>
+  <meta property="og:url" content="https://scrapecrow.com/web-scraping-discovery-search.html"/>
+  <meta property="og:type" content="article"/>
+  <meta property="article:published_time" content="2021-09-28 00:00:00+02:00"/>
+  <meta property="article:modified_time" content="2021-09-28 00:00:00+02:00"/>
+  <meta property="article:author" content="Bernardas Ališauskas">
+  <meta property="article:section" content="articles"/>
+  <meta property="article:tag" content="discovery"/>
+  <meta property="article:tag" content="discovery-methods"/>
+  <meta property="article:tag" content="python"/>
+  <meta property="article:tag" content="reverse-engineering"/>
+  <meta property="article:tag" content="intermediate"/>
+  <meta property="og:image" content="https://scrapecrow.com/images/logo.svg">
 </head>
 
 <body>
-  <div class="columns main">
-    <div class="column left-pane">
-    </div>
-    <div class="center-pane is-full">
-      <nav class="navbar" role="navigation" aria-label="main navigation">
-        <div class="navbar-brand">
-          <a class="navbar-item" href="https://scrapecrow.com">
-            <img src="/images/logo.svg" width="50"></img>
-          </a>
-          <a class="navbar-item" href="https://scrapecrow.com">Scrapecrow</a>
-          <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navMenu">
-            <span aria-hidden="true"></span>
-            <span aria-hidden="true"></span>
-            <span aria-hidden="true"></span>
-          </a>
+  <div class="navigation">
+    <nav class="navbar" role="navigation" aria-label="main navigation">
+      <div class="navbar-brand">
+        <a class="navbar-item" href="https://scrapecrow.com">
+          <img src="/images/logo.svg" width="50"></img>
+        </a>
+        <a class="navbar-item" href="https://scrapecrow.com">Scrapecrow</a>
+        <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navMenu">
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+        </a>
+      </div>
+      <div class="navbar-menu" id="navMenu">
+        <div class="navbar-start">
+          <a class="navbar-item" href="/pages/about.html">about</a>
+          <a class="navbar-item" href="/pages/hire.html">hire</a>
+          <a class="navbar-item" href="/pages/coffee.html">☕</a>
+          <a class="navbar-item" href="https://matrix.to/#/#web-scraping:matrix.org">#web-scraping on matrix</a>
         </div>
-        <div class="navbar-menu" id="navMenu">
-          <div class="navbar-start">
-            <a class="navbar-item" href="/pages/about.html">about</a>
-            <a class="navbar-item" href="/pages/hire.html">hire</a>
-            <a class="navbar-item" href="/pages/coffee.html">☕</a>
-            <a class="navbar-item" href="https://matrix.to/#/#web-scraping:matrix.org">#web-scraping on matrix</a>
-          </div>
-        </div>
-      </nav>
-      <div class="columns center-pane-box">
-<div class="content column">
+      </div>
+    </nav>
+  </div>
+  <div class="main">
+<div class="content">
   <div class="post-meta">
 <div class="post-meta">
     <a href="https://scrapecrow.com/category/articles.html" class="category">articles</a>
@@ -76,6 +77,7 @@
     <a href="https://scrapecrow.com/tag/discovery-methods.html" class="tag">discovery-methods</a>
     <a href="https://scrapecrow.com/tag/python.html" class="tag">python</a>
     <a href="https://scrapecrow.com/tag/reverse-engineering.html" class="tag">reverse-engineering</a>
+    <a href="https://scrapecrow.com/tag/intermediate.html" class="tag">intermediate</a>
     </br>
 </div>  </div>
   <h1>Web Scraping Target Discovery: Search API</h1>
@@ -83,7 +85,7 @@
     <!--insert table of contents between text and first header-->
     <p>Most web scrapers are made up of two core parts: finding products on the website and actually scraping them. The former is often referred to as "target discovery" step. For example to scrape product data of an e-commerce website we would need to find urls to each individual product and only then we can scrape their data.</p>
 <p>Discovering targets to scrape in web scraping is often a challenging and important task. This series of blog posts tagged with <a href="/tag/discovery-methods.html">#discovery-methods</a> (also see <a href="/web-scraping-discovery.html">main article</a>) covers common target discovery approaches.</p>
-<p>Reverse engineering website's backend API is a common web-scraping technique - why scrape htmls when backend data can be scraped directly? In this article we'll briefly cover the most common web scraping reverse-engineering subject: the search API.</p>
+<p>Reverse engineering website's backend API is a common web-scraping technique - why scrape htmls when backend data can be scraped directly? In this article, we'll briefly cover the most common web scraping reverse-engineering subject: the search API.</p>
 
     <hr>
     <div class="pure-u">
@@ -91,35 +93,35 @@
     </div>
     <hr>
     <h2 id="using-search-api-for-web-scraping">Using search API for web-scraping</h2>
-<p>One way to discovery targets in web scraping is to reverse-engineer the search bar for websites search API. It's often one of the best ways to discover targets - let's overview common pros and cons of this approach:</p>
+<p>One way to discovery targets in web scraping is to reverse-engineer the search bar for website's search API. It's often one of the best ways to discover targets - let's overview common pros and cons of this approach:</p>
 <p>Pros:</p>
 <ul>
-<li><strong>Fresh Targets</strong>: search API rarely yields links to outdated targets as it's exactly what website users see.  </li>
-<li><strong>Good Coverage</strong>: search API can lead to all of the results site has to offer - if it's not searchable it's probably not there.</li>
+<li><strong>Fresh Targets</strong>: search API rarely yields links to outdated targets, as it's exactly what website users see.  </li>
+<li><strong>Good Coverage</strong>: search API can lead to all the results a website has to offer - if it's not searchable, it's probably not there!  </li>
 <li><strong>Efficient</strong>: search API result pagination can yield 10-50 results per page and often can be scraped asynchronously. </li>
 </ul>
 <p>Cons:</p>
 <ul>
-<li><strong>Domain bound</strong>: since every website has their own search structure the code can rarely be applied to many targets however.</li>
+<li><strong>Domain bound</strong>: since every website has their own search structure, the code can rarely be applied to many targets.</li>
 <li><strong>Limited Coverage</strong>: some search return limited amount of pages (e.g. there are 900 results but after 10 pages the API does not provide any results) meaning the scraper has to figure out how to get around this limit which can be difficult to implement.</li>
-<li><strong>Slow</strong>: Rarely but some search result pagination cannot be iterated asynchronously. Pages need to be requested one after another which slows down scraping process.</li>
+<li><strong>Slow</strong>: Rarely, but some search result pagination cannot be iterated asynchronously. Pages need to be requested one after another, which slows down the scraping process.</li>
 </ul>
-<p>As you can see pros and cons are very mixed and even contradicting - it really depends on websites search implementation. Lets cover few examples and see what search API discovery is all about.</p>
+<p>As you can see, pros and cons are very mixed and even contradicting - it really depends on website's search implementation. Let's cover a few examples and see what search API discovery is all about.</p>
 <h2 id="example-hmcom">Example: hm.com</h2>
-<p>To understand basic search bar reverse-engineering lets see how a popular clothing website <a href="https://hm.com">https://hm.com</a> handles it's search. </p>
+<p>To understand basic search bar reverse-engineering, lets see how a popular clothing website <a href="https://hm.com">https://hm.com</a> handles its search. </p>
 <h3 id="reversing-search-bar">Reversing Search Bar</h3>
-<p>If we go the website, open up our web inspector tools and search something we can see the search requests being made by the browser:</p>
-<p><a href="/images/hm.com-initial-req.png"><img class="bigc" src="/images/hm.com-initial-req.png" title=""/></a><figcaption></figcaption></p>
-<p>However this returns us filtered results when we want to discover <em>all</em> products on the website. <br/>
-For this we can trick the search API to search empty queries by either searching for empty string or a space character. In this case no results are returned for an empty string <code>""</code> but we can force this search by using url encoded (also called "percent encoded") character for space in the url bar: <code>%20</code></p>
+<p>If we go to the website, open up our web inspector tools and search something, we can see the search requests being made by the browser:</p>
+<p><a href="/images/hm.com-initial-req.png"><img class="bigc" loading="lazy" src="/images/hm.com-initial-req.png" title=""/></a><figcaption></figcaption></p>
+<p>However, this returns us filtered results when we want to discover <em>all</em> products on the website. <br/>
+For this, we can trick the search API to search empty queries by either searching for an empty string or a space character. In this case no results are returned for an empty string <code>""</code> but we can force this search by using an url encoded (also called "percent encoded") character for space in the url bar: <code>%20</code></p>
 <p class="info">For more on percent encoding see <a href="https://developer.mozilla.org/en-US/docs/Glossary/percent-encoding">MDN's documentation</a>.</p>
-<p><a href="/images/hm.com-space-search.png"><img class="bigc" src="/images/hm.com-space-search.png" title=""/></a><figcaption></figcaption></p>
+<p><a href="/images/hm.com-space-search.png"><img class="bigc" loading="lazy" src="/images/hm.com-space-search.png" title=""/></a><figcaption></figcaption></p>
 <p>Success! We got 13780 product results! <br/>
-Now lets figure out how the search works. If you look at the inspector no data requests are made, because first page data is embedded into HTML as a javascript variable - this is a common website optimization that we can ignore.</p>
-<p>We could scrape HTMLs but we often we don't have to. Modern websites tend to communicate with backend API in JSON, so lets try to find that. <br/>
-If we scroll to the bottom of the page and click next page we can see actual JSON data request being made for the second page:</p>
-<p><a href="/images/hm.com-xhr-req.png"><img class="bigc" src="/images/hm.com-xhr-req.png" title=""/></a><figcaption></figcaption></p>
-<p>We see a request is being made to backend's search API and it returns us a json set of data with product metadata and location. Let's take a look at the request url so we can replicate it in our scrapper:</p>
+Now, let's figure out how the search works. If you look at the inspector, no data requests are made, because first page data is embedded into HTML as a javascript variable - this is a common website optimization that we can ignore.</p>
+<p>We could scrape HTMLs but we often we don't have to. Modern websites tend to communicate with the backend API in JSON, so let's try to find that. <br/>
+If we scroll to the bottom of the page and click next page, we can see the actual JSON data request being made for the second page:</p>
+<p><a href="/images/hm.com-xhr-req.png"><img class="bigc" loading="lazy" src="/images/hm.com-xhr-req.png" title=""/></a><figcaption></figcaption></p>
+<p>We see a request is being made to backend's search API and it returns us a JSON set of data with product metadata and location. Let's take a look at the request url, so we can replicate it in our scrapper:</p>
 <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
 <span class="normal">2</span>
 <span class="normal">3</span>
@@ -131,29 +133,29 @@ page-size=40&amp;   # pagination limit
 sort=ascPrice  # sort type
 </code></pre></div>
 </td></tr></table>
-<p class="info">Many modern web APIs are very flexible with parameters - we don't have to use all of the junk we see in our web inspector. You can always experiment and see which are necessary and how the content changes when parameters do.<br/>
-In this example we stripped off a lot of uninteresting parameters and just kept query,offset/limit and sort</p>
-<p>This seems like a common offset/limit pagination technique. Which is great for web-scrapers as we can get multiple pages asynchronously - in other words we can requests slices 0:100, 100:200, ... concurrently.</p>
+<p class="info">Many modern web APIs are very flexible with parameters - we don't have to use all the junk we see in our web inspector. You can always experiment and see which are necessary and how the content changes when parameters do.<br/>
+In this example we stripped off a lot of uninteresting parameters and just kept query, offset/limit and sort</p>
+<p>This seems like a common offset/limit pagination technique. Which is great for web-scrapers as we can get multiple pages asynchronously - in other words we can request slices 0:100, 100:200, ... concurrently.</p>
 <h3 id="confirming-pagination">Confirming Pagination</h3>
-<p>Before we can commit to using this API endpoint we should test it for common coverage pitfalls, for example for page limits. Often search APIs limit amount of rows/pages query can request. If we just click the link in the browser:</p>
+<p>Before we can commit to using this API endpoint we should test it for common coverage pitfalls, for example for page limits. Often, search APIs limit the amount of rows/pages a query can request. If we just click the link in the browser:</p>
 <p><a href="https://www2.hm.com/en_us/search-results/_jcr_content/search.display.json?q=%20&amp;offset=0&amp;page-size=40&amp;sort=ascPrice">https://www2.hm.com/en_us/search-results/_jcr_content/search.display.json?q=%20&amp;offset=0&amp;page-size=40&amp;sort=ascPrice</a></p>
-<p>We can see json response and total of results count of <code>13_730</code>.<br/>
-Let's see if we can get last page which at the time of this article would be: <code>offset=13690&amp;page-size=40</code>:</p>
+<p>We can see JSON response and total of results count of <code>13_730</code>.<br/>
+Let's see if we can get last page, which at the time of this article would be: <code>offset=13690&amp;page-size=40</code>:</p>
 <p><a href="https://www2.hm.com/en_us/search-results/_jcr_content/search.display.json?q=%20&amp;offset=13690&amp;page-size=40&amp;sort=ascPrice">https://www2.hm.com/en_us/search-results/_jcr_content/search.display.json?q=%20&amp;offset=13690&amp;page-size=40&amp;sort=ascPrice</a></p>
 <p>Unfortunately while requests is successful it contains no product data, indicated as empty array: <code>"products": []</code> </p>
 <p>It's what we feared and this pagination has a page limit. By messing around with the parameter we can find where the pagination ends exactly and thats at <code>10_000</code> results, which is not an uncommon round number.    </p>
-<p>Lets see of few common ways we could get around this pagination limit:</p>
+<p>Let's see a few common ways we could get around this pagination limit:</p>
 <ol>
-<li>Use multiple search queries - common brute force technique is searching many different queries like: <code>a</code>, <code>b</code>, <code>c</code>... and hope all of the products are found.</li>
+<li>Use multiple search queries - common brute force technique is searching many different queries like: <code>a</code>, <code>b</code>, <code>c</code>... and hope all the products are found.</li>
 <li>Apply more filters - this query allows optional filter such as categories. We can collect all categories, e.g. <code>shoes</code>, <code>dresses</code> etc. and have query for every one of them.  </li>
 <li>We can reverse sorting - if one query can give us 10_000 results, by reversing sorting we can have 2 queries with 10_000 results each! That's an easy way to double our reach.  </li>
 </ol>
 <p>For this specific case seems like approach #3 Reversing Sorting is the best approach! As the website only has a bit over 13_000 results and our reach would be 20_000 - this would be a perfect solution. <br/>
 We can sort our query by price and reach for results from both ends of the query:</p>
-<p><a href="/images/hm.com-double-end-query.png"><img class="bigc" src="/images/hm.com-double-end-query.png" title=""/></a><figcaption></figcaption></p>
-<p>So our first query would get us first 10_000 cheapest items and second query would pick up first 3_700 most expensive items. With these two queries we can fully discover all available products.</p>
+<p><a href="/images/hm.com-double-end-query.png"><img class="bigc" loading="lazy" src="/images/hm.com-double-end-query.png" title=""/></a><figcaption></figcaption></p>
+<p>So our first query would get us the first 10_000 cheapest items and the second query would pick up first 3_700 most expensive items. With these two queries, we can fully discover all available products.</p>
 <h3 id="implementation">Implementation</h3>
-<p>Having reverse engineering how search API of hm.com works we can develop our scraping algorithm:</p>
+<p>Having reverse engineering how search API of hm.com works, we can develop our scraping algorithm:</p>
 <ol>
 <li>Get first page to get total result count.</li>
 <li>Schedule request for first <code>10_000</code> results sorted by <code>ascPrice</code>.</li>
@@ -296,47 +298,54 @@ We can sort our query by price and reach for results from both ends of the query
 </td></tr></table>
 <p>Here we used asynchronous python and <code>httpx</code> as our http client library to scrape all 13790 products with very few requests just in few minutes!</p>
 <h2 id="summary-and-further-reading_1">Summary and Further Reading</h2>
-<p>To summarize reverse engineering website's search API is a brilliant scrape target discovery technique however it's more difficult to develop as it requires reverse-engineer effort and all of the code becomes very domain specific.  </p>
+<p>To summarize, reverse engineering website's search API is a brilliant scrape target discovery technique, however it's more difficult to develop as it requires reverse-engineer effort and all of the code becomes very domain specific. </p>
 <hr/>
-<p>For more web-scraping discovery techniques see <a href="/tag/discovery-methods.html">#discovery-methods</a> and <a href="/tag/discovery.html">#discovery</a> for more discovery related subjects.  </p>
-<p>If you're stuck with a web-scraping problem visit <a href="https://matrix.to/#/%23web-scraping:matrix.org">#web-scraping on matrix</a> or <a href="/hire.html">hire me</a> :)</p>
+<p>For more web-scraping discovery techniques, see <a href="/tag/discovery-methods.html">#discovery-methods</a> and <a href="/tag/discovery.html">#discovery</a> for more discovery related subjects.  </p>
+<p>If you have any questions, come join us on <a href="https://matrix.to/#/%23web-scraping:matrix.org">#web-scraping on matrix</a>, check out [#web-scraping on stackoverflow] or leave a comment below!  </p>
+<p>As always, you can hire me for web-scraping consultation over at <a href="/hire.html">hire</a> page and happy scraping!  </p>
   </div>
 </div>
-      </div>
-      <div class="comments">
-        <script src="https://utteranc.es/client.js" repo="granitosaurus/scrapecrow"
-          issue-term="web-scraping-discovery-search" label="comments"
-          theme="github-light" crossorigin="anonymous" async>
-        </script>
-      </div>
-
-      <footer class="footer">
-        <div class="content">
-          <span class="footer-item"><a href="/archives.html">Archives</a></span>
-          <span class="footer-item"><a href="/tags.html">Tags</a></span>
-          <span class="footer-item"><a href="https://blog.getpelican.com/">Made with Pelican</a></span>
-          <span class="footer-item"><a href="https://github.com/granitosaurus/scrapecrow/">Source on Github</a></span>
-          <span class="footer-item"><a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA</a></span>
-          <span class="footer-item">
-            <a href="atom.xml">
-              <i class="fa fa-rss-square" aria-hidden="true"></i>
-            </a>
-          </span>
-        </div>
-      </footer>
-    </div>
-    <div class="column right-pane">
-<div class="sidebar-buttons">
-  <div class="applause" title="show your appreciation">
+<hr>
+<div class="article-buttons">
+  <div class="float-side applause" title="show your appreciation">
     <applause-button style="width: 58px; height: 58px;" />
   </div>
-  <div class="email">
-    <a href="https://716df175.sibforms.com/serve/MUIEALpKPp8WjHrVwQOX6keZXLkJRbnFEh2y6YhTmVmT4Z0Khgbi2MFvPO1OObOrjbMi_S0M7VXkXGkcbh36H-SqEwM3dHXxdrOOXwEPGcp9rTQKkQvMkC70Dq9RmCoikia87nLsRcx0VVGmCG2zyx5s8BwpqevRmh70vKSaLe7e95yZDCROMvm2HcN3UpLw7UsFxl_UbI6TjY_e" title="subscribe to mailist">
-      <i class="fa fa-email-bulk-o fa-2x pure-menu-link" aria-hidden="true"></i>
+  <div class="article-button applause" title="show your appreciation">
+    <applause-button style="width: 58px; height: 58px;" />
+  </div>
+  <div class="article-button twitter" title="share on twitter">
+    <a href="http://twitter.com/share?text=&url=https://scrapecrow.com/web-scraping-discovery-search.html&hashtags=">
+      <i class="fa fa-twitter fa-3x pure-menu-link" aria-hidden="true"></i>
     </a>
   </div>
-</div>    </div>
+  <div class="article-button email">
+    <a href="https://716df175.sibforms.com/serve/MUIEALpKPp8WjHrVwQOX6keZXLkJRbnFEh2y6YhTmVmT4Z0Khgbi2MFvPO1OObOrjbMi_S0M7VXkXGkcbh36H-SqEwM3dHXxdrOOXwEPGcp9rTQKkQvMkC70Dq9RmCoikia87nLsRcx0VVGmCG2zyx5s8BwpqevRmh70vKSaLe7e95yZDCROMvm2HcN3UpLw7UsFxl_UbI6TjY_e" title="subscribe to mailist">
+      <i class="fa fa-email-bulk-o fa-3x pure-menu-link" aria-hidden="true"></i>
+    </a>
   </div>
+</div>
+<hr>
+<div class="comments">
+  <script src="https://utteranc.es/client.js" repo="granitosaurus/scrapecrow"
+    issue-term="web-scraping-discovery-search" label="comments"
+    theme="github-light" crossorigin="anonymous" async>
+  </script>
+</div>
+  </div>
+  <footer class="footer">
+    <div class="content">
+      <span class="footer-item"><a href="/archives.html">Archives</a></span>
+      <span class="footer-item"><a href="/tags.html">Tags</a></span>
+      <span class="footer-item"><a href="https://blog.getpelican.com/">Made with Pelican</a></span>
+      <span class="footer-item"><a href="https://github.com/granitosaurus/scrapecrow/">Source on Github</a></span>
+      <span class="footer-item"><a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA</a></span>
+      <span class="footer-item">
+        <a href="atom.xml">
+          <i class="fa fa-rss-square" aria-hidden="true"></i>
+        </a>
+      </span>
+    </div>
+  </footer>
 <script data-goatcounter="https://scrapecrow.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </body>
 
