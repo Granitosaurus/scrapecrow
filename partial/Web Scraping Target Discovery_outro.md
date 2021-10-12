@@ -9,4 +9,5 @@ As always, you can hire me for web-scraping consultation over at [hire] page and
 [#discovery-methods]: /tag/discovery-methods.html
 [#discovery]: /tag/discovery.html
 [#web-scraping on matrix]: https://matrix.to/#/%23web-scraping:matrix.org
+[#web-scraping on stackoverflow]: https://stackoverflow.com/questions/tagged/web-scraping
 [hire]: /hire.html
