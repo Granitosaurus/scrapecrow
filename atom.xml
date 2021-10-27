@@ -1,5 +1,288 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Scrapecrow</title><link href="https://scrapecrow.com/" rel="alternate"></link><link href="Scrapecrow/atom.xml" rel="self"></link><id>https://scrapecrow.com/</id><updated>2021-10-08T00:00:00+02:00</updated><subtitle></subtitle><entry><title>Introduction To Reverse Engineering The Web</title><link href="https://scrapecrow.com/reverse-engineering-intro.html" rel="alternate"></link><published>2021-10-08T00:00:00+02:00</published><updated>2021-10-08T00:00:00+02:00</updated><author><name>Bernardas Ališauskas</name></author><id>tag:scrapecrow.com,2021-10-08:/reverse-engineering-intro.html</id><summary type="html">&lt;p&gt;To efficiently scrape a web resource, understanding how it works and functions is often a vital step. Reverse engineering a website behavior is often first step when developing a web-scraper - let's take a look how!&lt;/p&gt;</summary><content type="html">&lt;p&gt;Unfortunately for web-scrapers modern websites are much more than html files strung together and served over http protocol. Often websites are complex structures of multiple executions layers and file formats that are designed specifically for one of the most complex programs in the world - web browsers.  &lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Scrapecrow</title><link href="https://scrapecrow.com/" rel="alternate"></link><link href="Scrapecrow/atom.xml" rel="self"></link><id>https://scrapecrow.com/</id><updated>2021-10-27T00:00:00+02:00</updated><subtitle></subtitle><entry><title>Asynchronous Web Scraping: Scaling For The Moon!</title><link href="https://scrapecrow.com/asynchronous-web-scraping.html" rel="alternate"></link><published>2021-10-27T00:00:00+02:00</published><updated>2021-10-27T00:00:00+02:00</updated><author><name>Bernardas Ališauskas</name></author><id>tag:scrapecrow.com,2021-10-27:/asynchronous-web-scraping.html</id><summary type="html">&lt;p&gt;Asynchronous programming can speed up web scrapers astronomically and is by far the most important scaling step when dealing with big projects. What exactly is it, how does it work, and what are the best ways to take advantage of it?&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;a href="/images/moon.png"&gt;&lt;img class="fullc" loading="lazy" src="/images/moon.png" title=""/&gt;&lt;/a&gt;&lt;figcaption&gt;&lt;/figcaption&gt;&lt;/p&gt;
+&lt;p&gt;Scaling is one of the biggest challenges in web-scraping niche and there are a lot of ways to make web-scrapers scale better in efficiency, speed and reliability. However, there's one thing can be done to web-scraper code that is by far the biggest bang-per-buck improvement: using asynchronous code.&lt;/p&gt;
+&lt;p&gt;In this short article, we'll take a look at asynchronous python and how we can take advantage of it to make our scrapers over 100 times faster!&lt;/p&gt;
+&lt;h2 id="what-is-asynchronous-programming"&gt;What is Asynchronous Programming?&lt;/h2&gt;
+&lt;p&gt;Python supports many async code paradigms, however the current de facto standard is async/await via &lt;code&gt;asyncio&lt;/code&gt; (or it's alternatives like &lt;a href="https://trio.readthedocs.io/en/stable/"&gt;trio&lt;/a&gt;). In this article we'll keep focus on asyncio as it's currently the most approachable async paradigm in Python.&lt;/p&gt;
+&lt;p&gt;So what is asynchronous programming?&lt;br/&gt;
+At it's core it's essentially just pausable functions (called coroutines) which can pause when inactive and give way to active ones. This often has huge benefits in IO (input/output) bound programs that rely on waiting for some sort of external input or output. &lt;/p&gt;
+&lt;p&gt;What is an IO block?&lt;br/&gt;
+When programs interact with &lt;em&gt;external&lt;/em&gt; service they often need to wait for the service to respond: this waiting is called IO block. Some examples of IO blocks:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;In online apps IO block would be waiting for server to respond to requests.&lt;/li&gt;
+&lt;li&gt;In GUI apps this would be waiting for app user to click buttons, enter text or interact with other GUI widgets.  &lt;/li&gt;
+&lt;li&gt;In video games this would be waiting for the player to perform some actions.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;IO blocking is a big deal in web-scraping, since the majority of actual work the program does is communication with the web server.&lt;br/&gt;
+For example, in synchronous python when we send a request to a server our code stops - does absolutely nothing - while waiting for the server to respond. In web-scraping this can be up to several seconds, and they add up really quickly!&lt;/p&gt;
+&lt;p&gt;Presumably, we have 100 urls to scrape that wait 1 second each - that's over a minute and a half of waiting! Could we make them wait together concurrently?&lt;/p&gt;
+&lt;h2 id="how-does-async-web-scraping-work"&gt;How Does Async Web Scraping Work?&lt;/h2&gt;
+&lt;p class="info"&gt;In these examples we'll be using &lt;a href="https://www.python-httpx.org/"&gt;httpx&lt;/a&gt; http client package which supports both synchronous and asynchronous client APIs&lt;/p&gt;
+&lt;p&gt;Let's take a look at a quick example. We have 100 urls that we want to scrape, and we have this really simple synchronous scraper code:&lt;/p&gt;
+&lt;table class="highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt; 1&lt;/span&gt;
+&lt;span class="normal"&gt; 2&lt;/span&gt;
+&lt;span class="normal"&gt; 3&lt;/span&gt;
+&lt;span class="normal"&gt; 4&lt;/span&gt;
+&lt;span class="normal"&gt; 5&lt;/span&gt;
+&lt;span class="normal"&gt; 6&lt;/span&gt;
+&lt;span class="normal"&gt; 7&lt;/span&gt;
+&lt;span class="normal"&gt; 8&lt;/span&gt;
+&lt;span class="normal"&gt; 9&lt;/span&gt;
+&lt;span class="normal"&gt;10&lt;/span&gt;
+&lt;span class="normal"&gt;11&lt;/span&gt;
+&lt;span class="normal"&gt;12&lt;/span&gt;
+&lt;span class="normal"&gt;13&lt;/span&gt;
+&lt;span class="normal"&gt;14&lt;/span&gt;
+&lt;span class="normal"&gt;15&lt;/span&gt;
+&lt;span class="normal"&gt;16&lt;/span&gt;
+&lt;span class="normal"&gt;17&lt;/span&gt;
+&lt;span class="normal"&gt;18&lt;/span&gt;
+&lt;span class="normal"&gt;19&lt;/span&gt;
+&lt;span class="normal"&gt;20&lt;/span&gt;
+&lt;span class="normal"&gt;21&lt;/span&gt;
+&lt;span class="normal"&gt;22&lt;/span&gt;
+&lt;span class="normal"&gt;23&lt;/span&gt;
+&lt;span class="normal"&gt;24&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;httpx&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;Client&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;time&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;time&lt;/span&gt;
+
+
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;scrape&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;session&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;session&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;run&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+    &lt;span class="n"&gt;_start&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;time&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+    &lt;span class="n"&gt;results&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[]&lt;/span&gt;
+    &lt;span class="k"&gt;with&lt;/span&gt; &lt;span class="n"&gt;Client&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="k"&gt;as&lt;/span&gt; &lt;span class="n"&gt;session&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="nb"&gt;range&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;100&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+            &lt;span class="c1"&gt;# this url will always take 1 second&lt;/span&gt;
+            &lt;span class="n"&gt;url&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;"http://httpbin.org/delay/1"&lt;/span&gt;
+            &lt;span class="n"&gt;results&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;append&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;scrape&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;session&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;session&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+    &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="sa"&gt;f&lt;/span&gt;&lt;span class="s2"&gt;"finished scraping in: &lt;/span&gt;&lt;span class="si"&gt;{&lt;/span&gt;&lt;span class="n"&gt;time&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="n"&gt;_start&lt;/span&gt;&lt;span class="si"&gt;:&lt;/span&gt;&lt;span class="s2"&gt;.1f&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt; seconds"&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+&lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="vm"&gt;__name__&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="s2"&gt;"__main__"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="n"&gt;run&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+&lt;span class="c1"&gt;# results in:&lt;/span&gt;
+&lt;span class="c1"&gt;# finished scraping in: 135.8 seconds&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;p class="info"&gt;Here we're taking advantage of &lt;a href="https://httpbin.org"&gt;https://httpbin.org&lt;/a&gt; delayed response endpoint &lt;code&gt;/delay/&amp;lt;n&amp;gt;&lt;/code&gt; which will simulates slow server which takes N seconds to respond. This tool is great for testing web scraping scaling!&lt;/p&gt;
+&lt;p&gt;In this example, we schedule 100 different requests synchronously that each should take at least 1 second to execute each: 1 second delay by the server + all connection overhead our machine does = 100+ seconds.&lt;/p&gt;
+&lt;p&gt;Now let's try to run those 100 request at the same time, asynchronously by using &lt;code&gt;asyncio&lt;/code&gt; async loop and &lt;code&gt;asyncio.gather()&lt;/code&gt; function:&lt;/p&gt;
+&lt;table class="highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt; 1&lt;/span&gt;
+&lt;span class="normal"&gt; 2&lt;/span&gt;
+&lt;span class="normal"&gt; 3&lt;/span&gt;
+&lt;span class="normal"&gt; 4&lt;/span&gt;
+&lt;span class="normal"&gt; 5&lt;/span&gt;
+&lt;span class="normal"&gt; 6&lt;/span&gt;
+&lt;span class="normal"&gt; 7&lt;/span&gt;
+&lt;span class="normal"&gt; 8&lt;/span&gt;
+&lt;span class="normal"&gt; 9&lt;/span&gt;
+&lt;span class="normal"&gt;10&lt;/span&gt;
+&lt;span class="normal"&gt;11&lt;/span&gt;
+&lt;span class="normal"&gt;12&lt;/span&gt;
+&lt;span class="normal"&gt;13&lt;/span&gt;
+&lt;span class="normal"&gt;14&lt;/span&gt;
+&lt;span class="normal"&gt;15&lt;/span&gt;
+&lt;span class="normal"&gt;16&lt;/span&gt;
+&lt;span class="normal"&gt;17&lt;/span&gt;
+&lt;span class="normal"&gt;18&lt;/span&gt;
+&lt;span class="normal"&gt;19&lt;/span&gt;
+&lt;span class="normal"&gt;20&lt;/span&gt;
+&lt;span class="normal"&gt;21&lt;/span&gt;
+&lt;span class="normal"&gt;22&lt;/span&gt;
+&lt;span class="normal"&gt;23&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;asyncio&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;time&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;time&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;httpx&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;AsyncClient&lt;/span&gt;
+
+
+&lt;span class="k"&gt;async&lt;/span&gt; &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;scrape&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;session&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="k"&gt;await&lt;/span&gt; &lt;span class="n"&gt;session&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+&lt;span class="k"&gt;async&lt;/span&gt; &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;run&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+    &lt;span class="n"&gt;_start&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;time&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+    &lt;span class="k"&gt;async&lt;/span&gt; &lt;span class="k"&gt;with&lt;/span&gt; &lt;span class="n"&gt;AsyncClient&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="k"&gt;as&lt;/span&gt; &lt;span class="n"&gt;session&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="n"&gt;tasks&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[]&lt;/span&gt;
+        &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="nb"&gt;range&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;100&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+            &lt;span class="c1"&gt;# this url will always take 1 second&lt;/span&gt;
+            &lt;span class="n"&gt;url&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;"http://httpbin.org/delay/1"&lt;/span&gt;
+            &lt;span class="n"&gt;tasks&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;append&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;scrape&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;session&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;session&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+        &lt;span class="n"&gt;results&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;await&lt;/span&gt; &lt;span class="n"&gt;asyncio&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;gather&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;tasks&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="sa"&gt;f&lt;/span&gt;&lt;span class="s2"&gt;"finished scraping in: &lt;/span&gt;&lt;span class="si"&gt;{&lt;/span&gt;&lt;span class="n"&gt;time&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="n"&gt;_start&lt;/span&gt;&lt;span class="si"&gt;:&lt;/span&gt;&lt;span class="s2"&gt;.1f&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt; seconds"&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+&lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="vm"&gt;__name__&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="s2"&gt;"__main__"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="n"&gt;asyncio&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;run&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;run&lt;/span&gt;&lt;span class="p"&gt;())&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;p&gt;If we run this minor async modification, we'll see a colossal speed boost:  &lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;finished scraping in: 2.4 seconds&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;We sped up our scraper &lt;strong&gt;over 50 times&lt;/strong&gt; just by converting few lines of code into asynchronous python! Let's take a look at small illustration of the performance of these two programs:&lt;/p&gt;
+&lt;p&gt;&lt;a href="/images/async-vs-sync.png"&gt;&lt;img class="" loading="lazy" src="/images/async-vs-sync.png" width='title=""'/&gt;&lt;/a&gt;&lt;figcaption&gt;&lt;/figcaption&gt;&lt;/p&gt;
+&lt;p&gt;Here, we can easily visualize the difference between synchronous and asynchronous scraper programs: the IO waiting on the left is &lt;em&gt;part&lt;/em&gt; of the program, while on the right it doesn't have to be!&lt;/p&gt;
+&lt;p&gt;Async programs essentially prevent IO waiting from blocking our programs. For waiting intensive tasks such as http connections, async essentially means concurrency and can speed up programs from dozens to thousands times over!&lt;/p&gt;
+&lt;p&gt;However, as the illustration shows, there are some negatives to async programming:  &lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Ensuring execution order can be difficult. &lt;br/&gt;
+    Often, request order can be very important in session or cookie bound web scraping. Keeping track of sessions and cookies is much more complicated in async environment.&lt;/li&gt;
+&lt;li&gt;Async programs are much harder to design and debug since they are inherently more complex.&lt;/li&gt;
+&lt;li&gt;Async speed can be major pain when dealing with scraper bans which require programming of throttling logic.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Whether this overhead of complexity worth it for your web scraper entirely depends on your program. For small scripts, it might not be worth tangling up with the whole async ecosystem, which is still quite young in Python. However, for big data scrapers, async provided speed boosts of 100-1000x are vital for any reasonable data collection speeds!&lt;/p&gt;
+&lt;h2 id="were-going-too-fast-throttling"&gt;We're Going Too Fast: Throttling&lt;/h2&gt;
+&lt;p&gt;Using async python we can make a lot of http requests very quickly, which can become problematic. Web servers often try to protect themselves from high traffic as it's resource expensive and will often block scrapes that connect too quickly.&lt;/p&gt;
+&lt;p&gt;To avoid bans and blocks, we must either use multiple proxies or preferably throttle our connections. Let's take a look at few common ways to throttle web-scrapers.&lt;/p&gt;
+&lt;h3 id="asyncios-semaphore"&gt;Asyncio's Semaphore&lt;/h3&gt;
+&lt;p&gt;This is built in way to throttle coroutine concurrency in python's asyncio. Semaphore is essentially a lock object with limited amount of working slots, i.e. it allows us to specify that no more than N coroutines should be executed concurrently:&lt;/p&gt;
+&lt;table class="highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt; 1&lt;/span&gt;
+&lt;span class="normal"&gt; 2&lt;/span&gt;
+&lt;span class="normal"&gt; 3&lt;/span&gt;
+&lt;span class="normal"&gt; 4&lt;/span&gt;
+&lt;span class="normal"&gt; 5&lt;/span&gt;
+&lt;span class="normal"&gt; 6&lt;/span&gt;
+&lt;span class="normal"&gt; 7&lt;/span&gt;
+&lt;span class="normal"&gt; 8&lt;/span&gt;
+&lt;span class="normal"&gt; 9&lt;/span&gt;
+&lt;span class="normal"&gt;10&lt;/span&gt;
+&lt;span class="normal"&gt;11&lt;/span&gt;
+&lt;span class="normal"&gt;12&lt;/span&gt;
+&lt;span class="normal"&gt;13&lt;/span&gt;
+&lt;span class="normal"&gt;14&lt;/span&gt;
+&lt;span class="normal"&gt;15&lt;/span&gt;
+&lt;span class="normal"&gt;16&lt;/span&gt;
+&lt;span class="normal"&gt;17&lt;/span&gt;
+&lt;span class="normal"&gt;18&lt;/span&gt;
+&lt;span class="normal"&gt;19&lt;/span&gt;
+&lt;span class="normal"&gt;20&lt;/span&gt;
+&lt;span class="normal"&gt;21&lt;/span&gt;
+&lt;span class="normal"&gt;22&lt;/span&gt;
+&lt;span class="normal"&gt;23&lt;/span&gt;
+&lt;span class="normal"&gt;24&lt;/span&gt;
+&lt;span class="normal"&gt;25&lt;/span&gt;
+&lt;span class="normal"&gt;26&lt;/span&gt;
+&lt;span class="normal"&gt;27&lt;/span&gt;
+&lt;span class="normal"&gt;28&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;asyncio&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;time&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;time&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;httpx&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;AsyncClient&lt;/span&gt;
+
+
+&lt;span class="k"&gt;async&lt;/span&gt; &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;scrape&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;session&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;throttler&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="k"&gt;async&lt;/span&gt; &lt;span class="k"&gt;with&lt;/span&gt; &lt;span class="n"&gt;throttler&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="k"&gt;await&lt;/span&gt; &lt;span class="n"&gt;session&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+&lt;span class="k"&gt;async&lt;/span&gt; &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;run&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+    &lt;span class="n"&gt;_start&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;time&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+    &lt;span class="n"&gt;throttler&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;asyncio&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Semaphore&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;async&lt;/span&gt; &lt;span class="k"&gt;with&lt;/span&gt; &lt;span class="n"&gt;AsyncClient&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="k"&gt;as&lt;/span&gt; &lt;span class="n"&gt;session&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="n"&gt;tasks&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[]&lt;/span&gt;
+        &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="nb"&gt;range&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;100&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+            &lt;span class="c1"&gt;# this url will always take 1 second&lt;/span&gt;
+            &lt;span class="n"&gt;url&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;"http://httpbin.org/delay/1"&lt;/span&gt;
+            &lt;span class="n"&gt;tasks&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;append&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;scrape&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;session&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;session&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;throttler&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;throttler&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+        &lt;span class="n"&gt;results&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;await&lt;/span&gt; &lt;span class="n"&gt;asyncio&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;gather&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;tasks&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="sa"&gt;f&lt;/span&gt;&lt;span class="s2"&gt;"finished scraping in: &lt;/span&gt;&lt;span class="si"&gt;{&lt;/span&gt;&lt;span class="n"&gt;time&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="n"&gt;_start&lt;/span&gt;&lt;span class="si"&gt;:&lt;/span&gt;&lt;span class="s2"&gt;.1f&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt; seconds"&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+&lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="vm"&gt;__name__&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="s2"&gt;"__main__"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="n"&gt;asyncio&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;run&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;run&lt;/span&gt;&lt;span class="p"&gt;())&lt;/span&gt;
+
+&lt;span class="c1"&gt;# results in:&lt;/span&gt;
+&lt;span class="c1"&gt;# finished scraping in: 14.8 seconds&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;p&gt;Here we modified our async scraper code with one key addition of &lt;code&gt;asyncio.Semaphore(10)&lt;/code&gt; object, which limits concurrent execution to 10 concurrent coroutines. Our original unlimited code took 2.4 to complete now we managed to slow it down 6 times with few extra lines of code!  &lt;/p&gt;
+&lt;p&gt;Some important things to notice about &lt;code&gt;asyncio.Semaphore&lt;/code&gt;:&lt;/p&gt;
+&lt;p&gt;All throttled coroutines should be use same Semaphore object. This means one throttled needs to be passed around to each individual coroutine introducing slight complexity overhead.&lt;/p&gt;
+&lt;p&gt;Semaphore is only aware of concurrency, not time. Often when web-scraping we want to limit request count to specific time frame like max 60 requests / minute. In other words, our &lt;code&gt;Semaphore(10)&lt;/code&gt; when scraping fast servers could yield 10 requests / second however on slower ones it might be only 2 requests / second.&lt;/p&gt;
+&lt;p&gt;While Semaphore gives us an easy way to throttle ourselves, we can see it's not an ideal approach as it doesn't allow us to be as precise as some web-servers might require us to. Often web servers have strict limits like 60 requests/second - for most efficient web scraper we would like to stay around that range - let's take a look how can we accomplish this.&lt;/p&gt;
+&lt;h3 id="leaky-bucket"&gt;Leaky Bucket&lt;/h3&gt;
+&lt;p&gt;Leaky Bucket is a common throttling algorithm that uses time tracking for throttling rather than just concurrency. Using the Leaky Bucket approach, we can specify how many tasks can be executed in a specific time frame, i.e. we can throttle our scraper to 10 requests/second!&lt;/p&gt;
+&lt;p&gt;A popular implementation for python's asyncio is available in &lt;a href="https://github.com/mjpieters/aiolimiter"&gt;aiolimiter&lt;/a&gt; package. Let's take a quick look, how can we use it in our web-scraper:&lt;/p&gt;
+&lt;table class="highlighttable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;&lt;span class="normal"&gt; 1&lt;/span&gt;
+&lt;span class="normal"&gt; 2&lt;/span&gt;
+&lt;span class="normal"&gt; 3&lt;/span&gt;
+&lt;span class="normal"&gt; 4&lt;/span&gt;
+&lt;span class="normal"&gt; 5&lt;/span&gt;
+&lt;span class="normal"&gt; 6&lt;/span&gt;
+&lt;span class="normal"&gt; 7&lt;/span&gt;
+&lt;span class="normal"&gt; 8&lt;/span&gt;
+&lt;span class="normal"&gt; 9&lt;/span&gt;
+&lt;span class="normal"&gt;10&lt;/span&gt;
+&lt;span class="normal"&gt;11&lt;/span&gt;
+&lt;span class="normal"&gt;12&lt;/span&gt;
+&lt;span class="normal"&gt;13&lt;/span&gt;
+&lt;span class="normal"&gt;14&lt;/span&gt;
+&lt;span class="normal"&gt;15&lt;/span&gt;
+&lt;span class="normal"&gt;16&lt;/span&gt;
+&lt;span class="normal"&gt;17&lt;/span&gt;
+&lt;span class="normal"&gt;18&lt;/span&gt;
+&lt;span class="normal"&gt;19&lt;/span&gt;
+&lt;span class="normal"&gt;20&lt;/span&gt;
+&lt;span class="normal"&gt;21&lt;/span&gt;
+&lt;span class="normal"&gt;22&lt;/span&gt;
+&lt;span class="normal"&gt;23&lt;/span&gt;
+&lt;span class="normal"&gt;24&lt;/span&gt;
+&lt;span class="normal"&gt;25&lt;/span&gt;
+&lt;span class="normal"&gt;26&lt;/span&gt;
+&lt;span class="normal"&gt;27&lt;/span&gt;
+&lt;span class="normal"&gt;28&lt;/span&gt;
+&lt;span class="normal"&gt;29&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;asyncio&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;aiolimiter&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;AsyncLimiter&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;time&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;time&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;httpx&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;AsyncClient&lt;/span&gt;
+
+
+&lt;span class="k"&gt;async&lt;/span&gt; &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;scrape&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;session&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;throttler&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="k"&gt;async&lt;/span&gt; &lt;span class="k"&gt;with&lt;/span&gt; &lt;span class="n"&gt;throttler&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="k"&gt;await&lt;/span&gt; &lt;span class="n"&gt;session&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+&lt;span class="k"&gt;async&lt;/span&gt; &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;run&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+    &lt;span class="n"&gt;_start&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;time&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+    &lt;span class="n"&gt;throttler&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;AsyncLimiter&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;max_rate&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;time_period&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;   &lt;span class="c1"&gt;# 10 tasks/second&lt;/span&gt;
+    &lt;span class="k"&gt;async&lt;/span&gt; &lt;span class="k"&gt;with&lt;/span&gt; &lt;span class="n"&gt;AsyncClient&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="k"&gt;as&lt;/span&gt; &lt;span class="n"&gt;session&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="n"&gt;tasks&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[]&lt;/span&gt;
+        &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="nb"&gt;range&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;100&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+            &lt;span class="c1"&gt;# this url will always take 1 second&lt;/span&gt;
+            &lt;span class="n"&gt;url&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;"http://httpbin.org/delay/1"&lt;/span&gt;
+            &lt;span class="n"&gt;tasks&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;append&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;scrape&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;session&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;session&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;throttler&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;throttler&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+        &lt;span class="n"&gt;results&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;await&lt;/span&gt; &lt;span class="n"&gt;asyncio&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;gather&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;tasks&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="sa"&gt;f&lt;/span&gt;&lt;span class="s2"&gt;"finished scraping in: &lt;/span&gt;&lt;span class="si"&gt;{&lt;/span&gt;&lt;span class="n"&gt;time&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="n"&gt;_start&lt;/span&gt;&lt;span class="si"&gt;:&lt;/span&gt;&lt;span class="s2"&gt;.1f&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt; seconds"&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+&lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="vm"&gt;__name__&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="s2"&gt;"__main__"&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="n"&gt;asyncio&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;run&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;run&lt;/span&gt;&lt;span class="p"&gt;())&lt;/span&gt;
+
+&lt;span class="c1"&gt;# results in:&lt;/span&gt;
+&lt;span class="c1"&gt;# finished scraping in: 10.4 seconds&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;p&gt;Here we merely replaced our &lt;code&gt;Semaphore&lt;/code&gt; from previous code with &lt;code&gt;aiolimiter.AsyncLimiter&lt;/code&gt; which allows us to be much more precise: we completed our 100 scrape tasks in 10.4 seconds which matches our limit of 10req/second almost exactly!&lt;/p&gt;
+&lt;p&gt;Leaky bucket is a great throttling approach as it allows us to scrape in predictable and controlled speeds. That being said predictability is not a great web scraper feature when it comes to blocking and banning - scraper can be identified quite easily if it shows a consistent pattern of connections.&lt;br/&gt;
+So which throttling pattern to use entirely depends on scraped targets, but Leaky Bucket is often the best approach!&lt;/p&gt;
+&lt;h3 id="how-much-to-throttle"&gt;How Much To Throttle?&lt;/h3&gt;
+&lt;p&gt;Finally with throttling figured out, we need to decide on the number? Unfortunately, there are no standard accepted practices other than it's respectful to keep connection number lower to not cause issues to web servers.  &lt;/p&gt;
+&lt;p&gt;Keeping in the &lt;strong&gt;10-30 requests/second&lt;/strong&gt; range (depending on page and website size) is widely considered to be a respectful scraping rate - so that's a good starting point. Other than that it's a good idea to grab some proxies and experiment!&lt;/p&gt;
+&lt;h2 id="summary-alternatives-and-further-reading_1"&gt;Summary, Alternatives and Further Reading&lt;/h2&gt;
+&lt;p&gt;In this introductory article, we've taken a look how we can use asynchronous python to speed up our web-scrapers to the point where we had to figure out how to throttle ourselves! For throttling, we've discovered Semaphore and Leaky Bucket approaches and how can we apply them in web-scraping. &lt;/p&gt;
+&lt;p&gt;Asynchronous programming can often be difficult, complex and even ugly. However, when it comes to such IO heavy tasks like web connections in web-scraping it is often unavoidable, so better get comfortable with it! &lt;/p&gt;
+&lt;hr/&gt;
+&lt;p&gt;As for further reading and alternatives?&lt;/p&gt;
+&lt;p&gt;Asynchronous programming is not a new concept by any means, but it's still evolving in many different directions. In this article we focused on Python's async/await approach, however there are other paradigms that are also used in web-scraping.&lt;/p&gt;
+&lt;p&gt;One of the biggest web-scraping frameworks &lt;a href="https://scrapy.org"&gt;Scrapy&lt;/a&gt; is using &lt;a href="https://duckduckgo.com/?q=twisted+python&amp;amp;ia=web"&gt;Twisted&lt;/a&gt; callback based async engine which allows running functions in the background and call result function once they complete. Callbacks and Futures are also often used in Javascript and can be used in Python's asyncio as well! &lt;/p&gt;
+&lt;p&gt;Other than that, &lt;a href="https://github.com/celery/celery"&gt;Celery&lt;/a&gt; task engine is also often used to execute scraping tasks concurrently. &lt;br/&gt;
+&lt;a href="http://www.gevent.org/"&gt;Gevent&lt;/a&gt; is yet another popular asynchronous library that integrates well with web-scraping ecosystem. &lt;/p&gt;
+&lt;p&gt;In the future of this blog we'll cover more examples of these alternative approaches, however do not underestimate python's &lt;code&gt;asyncio&lt;/code&gt; - as we've seen in this article it's extremely fast, surprisingly accessible and once understood can be an absolute pleasure to work with!&lt;/p&gt;
+&lt;hr/&gt;
+&lt;p&gt;So stick around for more articles and if you have any questions, come join us on &lt;a href="https://matrix.to/#/%23web-scraping:matrix.org"&gt;#web-scraping on matrix&lt;/a&gt;, check out &lt;a href="https://stackoverflow.com/questions/tagged/web-scraping"&gt;#web-scraping on stackoverflow&lt;/a&gt; or leave a comment below!  &lt;/p&gt;
+&lt;p&gt;As always, you can hire me for web-scraping consultation over at &lt;a href="/pages/hire.html"&gt;hire&lt;/a&gt; page and happy scraping!  &lt;/p&gt;</content><category term="articles"></category><category term="async"></category><category term="python"></category><category term="beginner"></category><category term="scaling"></category></entry><entry><title>Introduction To Reverse Engineering The Web</title><link href="https://scrapecrow.com/reverse-engineering-intro.html" rel="alternate"></link><published>2021-10-08T00:00:00+02:00</published><updated>2021-10-08T00:00:00+02:00</updated><author><name>Bernardas Ališauskas</name></author><id>tag:scrapecrow.com,2021-10-08:/reverse-engineering-intro.html</id><summary type="html">&lt;p&gt;To efficiently scrape a web resource, understanding how it works and functions is often a vital step. Reverse engineering a website behavior is often first step when developing a web-scraper - let's take a look how!&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;a href="/images/banner-machines.png"&gt;&lt;img class="fullc" loading="lazy" src="/images/banner-machines.png" title=""/&gt;&lt;/a&gt;&lt;figcaption&gt;&lt;/figcaption&gt;&lt;/p&gt;
+&lt;p&gt;Unfortunately for web-scrapers modern websites are much more than html files strung together and served over http protocol. Often websites are complex structures of multiple executions layers and file formats that are designed specifically for one of the most complex programs in the world - web browsers.  &lt;/p&gt;
 &lt;p&gt;So how do we scrape complex websites without using web-browsers? We can reverse engineer websites behavior and replicate it in our code!&lt;/p&gt;
 &lt;p&gt;In this article will cover a short introduction how to use web browser's developer tools to reverse engineer website's behavior. We'll be using &lt;a href="https://food.com"&gt;https://food.com&lt;/a&gt; as our example and cover some useful tips and tricks.  &lt;/p&gt;
 &lt;p class="info"&gt;In this article we'll be using &lt;code&gt;Chrome&lt;/code&gt; web browser. That being said Chrome based browsers (like Brave, Electron, Qutebrowser etc.) use the same tools and should function the same. However Firefox and it's browser family use slightly different tools&lt;/p&gt;
@@ -208,7 +491,10 @@ Let's replicate this request in Python:&lt;/p&gt;
 &lt;p&gt;Reverse engineering story doesn't end here - web is becoming more complex by the day and browser's devtools only scratch the surface of what we can learn about websites. In the future we'll cover advanced reverse engineering topics such as using man-in-the-middle monitoring programs such as &lt;a href="https://mitmproxy.org/"&gt;mitmproxy&lt;/a&gt;, &lt;a href="https://docs.telerik.com/fiddler-everywhere/introduction"&gt;fiddler&lt;/a&gt; and &lt;a href="https://www.wireshark.org/"&gt;wireshark&lt;/a&gt; that allow even more detailed inspection and various quality of life tools such as request interception and scripting. These tools not only allow to reverse engineer websites but desktop and mobile applications!&lt;/p&gt;
 &lt;hr/&gt;
 &lt;p&gt;So stick around for more articles and if you have any questions, come join us on &lt;a href="https://matrix.to/#/%23web-scraping:matrix.org"&gt;#web-scraping on matrix&lt;/a&gt;, check out &lt;a href="https://stackoverflow.com/questions/tagged/web-scraping"&gt;#web-scraping on stackoverflow&lt;/a&gt; or leave a comment below!  &lt;/p&gt;
-&lt;p&gt;As always, you can hire me for web-scraping consultation over at &lt;a href="/pages/hire.html"&gt;hire&lt;/a&gt; page and happy scraping!  &lt;/p&gt;</content><category term="articles"></category><category term="reverse-engineering"></category><category term="python"></category><category term="beginner"></category></entry><entry><title>Web Scraping Target Discovery</title><link href="https://scrapecrow.com/web-scraping-discovery.html" rel="alternate"></link><published>2021-09-29T00:00:00+02:00</published><updated>2021-09-29T00:00:00+02:00</updated><author><name>Bernardas Ališauskas</name></author><id>tag:scrapecrow.com,2021-09-29:/web-scraping-discovery.html</id><summary type="html">&lt;p&gt;Target discovery in web-scraping is how the scraper explores target website to find scraping targets. For example to scrape product data of an e-commerce website we would need to find urls to each individual product. This step is called "discovery". What types of discovery methods are there?&lt;/p&gt;</summary><content type="html">&lt;p&gt;Most web scrapers are made up of two core parts: finding products on the website and actually scraping them. The former is often referred to as "target discovery" step. For example to scrape product data of an e-commerce website we would need to find urls to each individual product and only then we can scrape their data.&lt;/p&gt;
+&lt;p&gt;As always, you can hire me for web-scraping consultation over at &lt;a href="/pages/hire.html"&gt;hire&lt;/a&gt; page and happy scraping!  &lt;/p&gt;
+&lt;hr/&gt;
+&lt;figcaption&gt;Banner image by: "ENIGMA cipher machine collection" by brewbooks is licensed under CC BY-SA 2.0&lt;/figcaption&gt;</content><category term="articles"></category><category term="reverse-engineering"></category><category term="python"></category><category term="beginner"></category></entry><entry><title>Web Scraping Target Discovery</title><link href="https://scrapecrow.com/web-scraping-discovery.html" rel="alternate"></link><published>2021-09-29T00:00:00+02:00</published><updated>2021-09-29T00:00:00+02:00</updated><author><name>Bernardas Ališauskas</name></author><id>tag:scrapecrow.com,2021-09-29:/web-scraping-discovery.html</id><summary type="html">&lt;p&gt;Target discovery in web-scraping is how the scraper explores target website to find scraping targets. For example to scrape product data of an e-commerce website we would need to find urls to each individual product. This step is called "discovery". What types of discovery methods are there?&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;a href="/images/banner-telescopes.png"&gt;&lt;img class="fullc" loading="lazy" src="/images/banner-telescopes.png" title=""/&gt;&lt;/a&gt;&lt;figcaption&gt;&lt;/figcaption&gt;&lt;/p&gt;
+&lt;p&gt;Most web scrapers are made up of two core parts: finding products on the website and actually scraping them. The former is often referred to as "target discovery" step. For example to scrape product data of an e-commerce website we would need to find urls to each individual product and only then we can scrape their data.&lt;/p&gt;
 &lt;p&gt;Discovering targets to scrape in web scraping is often a challenging and important task. This series of blog posts tagged with &lt;a href="/tag/discovery-methods.html"&gt;#discovery-methods&lt;/a&gt; (also see &lt;a href="/web-scraping-discovery.html"&gt;main article&lt;/a&gt;) covers common target discovery approaches.&lt;/p&gt;
 &lt;p&gt;In this blog series tagged &lt;a href="/tag/discovery-methods.html"&gt;#discovery-methods&lt;/a&gt; we'll take a look at common discovery methods used in web-scraping where each is different enough to have it's own risks, negatives and benefits. We'll target an example clothing store website &lt;a href="https://hm.com"&gt;https://hm.com&lt;/a&gt; for all of these discovery approaches:&lt;/p&gt;
 &lt;ul&gt;
@@ -230,7 +516,10 @@ Hopefully this extensive blog series can help you determine the right way to fin
 &lt;hr/&gt;
 &lt;p&gt;For more web-scraping discovery techniques, see &lt;a href="/tag/discovery-methods.html"&gt;#discovery-methods&lt;/a&gt; and &lt;a href="/tag/discovery.html"&gt;#discovery&lt;/a&gt; for more discovery related subjects.  &lt;/p&gt;
 &lt;p&gt;If you have any questions, come join us on &lt;a href="https://matrix.to/#/%23web-scraping:matrix.org"&gt;#web-scraping on matrix&lt;/a&gt;, check out &lt;a href="https://stackoverflow.com/questions/tagged/web-scraping"&gt;#web-scraping on stackoverflow&lt;/a&gt; or leave a comment below!  &lt;/p&gt;
-&lt;p&gt;As always, you can hire me for web-scraping consultation over at &lt;a href="/pages/hire.html"&gt;hire&lt;/a&gt; page and happy scraping!  &lt;/p&gt;</content><category term="articles"></category><category term="discovery"></category><category term="python"></category><category term="crawling"></category></entry><entry><title>Web Scraping Target Discovery: Crawling</title><link href="https://scrapecrow.com/web-scraping-discovery-crawling.html" rel="alternate"></link><published>2021-09-28T00:00:00+02:00</published><updated>2021-09-28T00:00:00+02:00</updated><author><name>Bernardas Ališauskas</name></author><id>tag:scrapecrow.com,2021-09-28:/web-scraping-discovery-crawling.html</id><summary type="html">&lt;p&gt;The most common web scraping target discovery technique: recursive crawling. How does it work? What are the pros and cons and the most optimal execution patterns?&lt;/p&gt;</summary><content type="html">&lt;p&gt;Most web scrapers are made up of two core parts: finding products on the website and actually scraping them. The former is often referred to as "target discovery" step. For example to scrape product data of an e-commerce website we would need to find urls to each individual product and only then we can scrape their data.&lt;/p&gt;
+&lt;p&gt;As always, you can hire me for web-scraping consultation over at &lt;a href="/pages/hire.html"&gt;hire&lt;/a&gt; page and happy scraping!  &lt;/p&gt;
+&lt;hr/&gt;
+&lt;figcaption&gt;image credits: "Telescopes, Mauna Kea, Hawaii" by Gregory Williams is licensed under CC BY-NC-ND 2.0&lt;/figcaption&gt;</content><category term="articles"></category><category term="discovery"></category><category term="python"></category><category term="crawling"></category></entry><entry><title>Web Scraping Target Discovery: Crawling</title><link href="https://scrapecrow.com/web-scraping-discovery-crawling.html" rel="alternate"></link><published>2021-09-28T00:00:00+02:00</published><updated>2021-09-28T00:00:00+02:00</updated><author><name>Bernardas Ališauskas</name></author><id>tag:scrapecrow.com,2021-09-28:/web-scraping-discovery-crawling.html</id><summary type="html">&lt;p&gt;The most common web scraping target discovery technique: recursive crawling. How does it work? What are the pros and cons and the most optimal execution patterns?&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;a href="/images/banner-web.jpg"&gt;&lt;img class="fullc" loading="lazy" src="/images/banner-web.jpg" title=""/&gt;&lt;/a&gt;&lt;figcaption&gt;&lt;/figcaption&gt;&lt;/p&gt;
+&lt;p&gt;Most web scrapers are made up of two core parts: finding products on the website and actually scraping them. The former is often referred to as "target discovery" step. For example to scrape product data of an e-commerce website we would need to find urls to each individual product and only then we can scrape their data.&lt;/p&gt;
 &lt;p&gt;Discovering targets to scrape in web scraping is often a challenging and important task. This series of blog posts tagged with &lt;a href="/tag/discovery-methods.html"&gt;#discovery-methods&lt;/a&gt; (also see &lt;a href="/web-scraping-discovery.html"&gt;main article&lt;/a&gt;) covers common target discovery approaches.&lt;/p&gt;
 &lt;p&gt;In this article we'll take a look at web crawling and how can we use it as a discovery strategy in web scraping.  &lt;/p&gt;
 &lt;h2 id="what-is-recursive-crawling-and-how-is-it-used-in-web-scraping"&gt;What is recursive crawling and how is it used in web-scraping?&lt;/h2&gt;
@@ -731,7 +1020,8 @@ For scrape loop all we need to do is request urls, find links in them, follow or
 &lt;p&gt;For more web-scraping discovery techniques, see &lt;a href="/tag/discovery-methods.html"&gt;#discovery-methods&lt;/a&gt; and &lt;a href="/tag/discovery.html"&gt;#discovery&lt;/a&gt; for more discovery related subjects.  &lt;/p&gt;
 &lt;p&gt;If you have any questions, come join us on &lt;a href="https://matrix.to/#/%23web-scraping:matrix.org"&gt;#web-scraping on matrix&lt;/a&gt;, check out &lt;a href="https://stackoverflow.com/questions/tagged/web-scraping"&gt;#web-scraping on stackoverflow&lt;/a&gt; or leave a comment below!  &lt;/p&gt;
 &lt;p&gt;As always, you can hire me for web-scraping consultation over at &lt;a href="/pages/hire.html"&gt;hire&lt;/a&gt; page and happy scraping!  &lt;/p&gt;
-&lt;p class="info"&gt;The code used in this article can be found on &lt;a href="https://github.com/Granitosaurus/scrapecrow/tree/main/examples"&gt;github&lt;/a&gt;.&lt;br/&gt;&lt;/p&gt;</content><category term="articles"></category><category term="discovery"></category><category term="crawling"></category><category term="intermediate"></category></entry><entry><title>Web Scraping Target Discovery: Indexes</title><link href="https://scrapecrow.com/web-scraping-discovery-indexes.html" rel="alternate"></link><published>2021-09-28T00:00:00+02:00</published><updated>2021-09-28T00:00:00+02:00</updated><author><name>Bernardas Ališauskas</name></author><id>tag:scrapecrow.com,2021-09-28:/web-scraping-discovery-indexes.html</id><summary type="html">&lt;p&gt;The most common web scraping target discovery technique: recursive crawling. How does it work? What are the pros and cons and the most optimal execution patterns?&lt;/p&gt;</summary><content type="html">&lt;p&gt;Most web scrapers are made up of two core parts: finding products on the website and actually scraping them. The former is often referred to as "target discovery" step. For example to scrape product data of an e-commerce website we would need to find urls to each individual product and only then we can scrape their data.&lt;/p&gt;
+&lt;p class="info"&gt;The code used in this article can be found on &lt;a href="https://github.com/Granitosaurus/scrapecrow/tree/main/examples"&gt;github&lt;/a&gt;.&lt;br/&gt;&lt;/p&gt;</content><category term="articles"></category><category term="discovery"></category><category term="crawling"></category><category term="intermediate"></category><category term="discovery-methods"></category></entry><entry><title>Web Scraping Target Discovery: Indexes</title><link href="https://scrapecrow.com/web-scraping-discovery-indexes.html" rel="alternate"></link><published>2021-09-28T00:00:00+02:00</published><updated>2021-09-28T00:00:00+02:00</updated><author><name>Bernardas Ališauskas</name></author><id>tag:scrapecrow.com,2021-09-28:/web-scraping-discovery-indexes.html</id><summary type="html">&lt;p&gt;The most common web scraping target discovery technique: recursive crawling. How does it work? What are the pros and cons and the most optimal execution patterns?&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;a href="/images/banner-books.jpg"&gt;&lt;img class="fullc" loading="lazy" src="/images/banner-books.jpg" title=""/&gt;&lt;/a&gt;&lt;figcaption&gt;&lt;/figcaption&gt;&lt;/p&gt;
+&lt;p&gt;Most web scrapers are made up of two core parts: finding products on the website and actually scraping them. The former is often referred to as "target discovery" step. For example to scrape product data of an e-commerce website we would need to find urls to each individual product and only then we can scrape their data.&lt;/p&gt;
 &lt;p&gt;Discovering targets to scrape in web scraping is often a challenging and important task. This series of blog posts tagged with &lt;a href="/tag/discovery-methods.html"&gt;#discovery-methods&lt;/a&gt; (also see &lt;a href="/web-scraping-discovery.html"&gt;main article&lt;/a&gt;) covers common target discovery approaches.&lt;/p&gt;
 &lt;p&gt;Using various public indexers is a often viable target discovery strategy. It is mostly used as a last resort or as a supplementary technique for difficult discovery-difficult targets.  &lt;/p&gt;
 &lt;p&gt;Public indexers that crawl the web through more complex scraping rules might pickup hard to find targets and we can take advantage of that in our web scraper. In other words as the spirit of web-scraping goes: it's smart to take advantage of existing work! &lt;br/&gt;
@@ -836,7 +1126,8 @@ Despite coverage issues commoncrawl url dataset is a useful tool to have in web-
 &lt;hr/&gt;
 &lt;p&gt;For more web-scraping discovery techniques, see &lt;a href="/tag/discovery-methods.html"&gt;#discovery-methods&lt;/a&gt; and &lt;a href="/tag/discovery.html"&gt;#discovery&lt;/a&gt; for more discovery related subjects.  &lt;/p&gt;
 &lt;p&gt;If you have any questions, come join us on &lt;a href="https://matrix.to/#/%23web-scraping:matrix.org"&gt;#web-scraping on matrix&lt;/a&gt;, check out &lt;a href="https://stackoverflow.com/questions/tagged/web-scraping"&gt;#web-scraping on stackoverflow&lt;/a&gt; or leave a comment below!  &lt;/p&gt;
-&lt;p&gt;As always, you can hire me for web-scraping consultation over at &lt;a href="/pages/hire.html"&gt;hire&lt;/a&gt; page and happy scraping!  &lt;/p&gt;</content><category term="articles"></category><category term="discovery"></category><category term="indexes"></category><category term="intermediate"></category></entry><entry><title>Web Scraping Target Discovery: Search API</title><link href="https://scrapecrow.com/web-scraping-discovery-search.html" rel="alternate"></link><published>2021-09-28T00:00:00+02:00</published><updated>2021-09-28T00:00:00+02:00</updated><author><name>Bernardas Ališauskas</name></author><id>tag:scrapecrow.com,2021-09-28:/web-scraping-discovery-search.html</id><summary type="html">&lt;p&gt;Fundamental web-scraping reverse-engineering technique is figuring out how website's search works. Replicating web search in web scraping is a great target discovery technique. Why, when and how should it be used effectively?&lt;/p&gt;</summary><content type="html">&lt;p&gt;Most web scrapers are made up of two core parts: finding products on the website and actually scraping them. The former is often referred to as "target discovery" step. For example to scrape product data of an e-commerce website we would need to find urls to each individual product and only then we can scrape their data.&lt;/p&gt;
+&lt;p&gt;As always, you can hire me for web-scraping consultation over at &lt;a href="/pages/hire.html"&gt;hire&lt;/a&gt; page and happy scraping!  &lt;/p&gt;</content><category term="articles"></category><category term="discovery"></category><category term="indexes"></category><category term="intermediate"></category></entry><entry><title>Web Scraping Target Discovery: Search API</title><link href="https://scrapecrow.com/web-scraping-discovery-search.html" rel="alternate"></link><published>2021-09-28T00:00:00+02:00</published><updated>2021-09-28T00:00:00+02:00</updated><author><name>Bernardas Ališauskas</name></author><id>tag:scrapecrow.com,2021-09-28:/web-scraping-discovery-search.html</id><summary type="html">&lt;p&gt;Fundamental web-scraping reverse-engineering technique is figuring out how website's search works. Replicating web search in web scraping is a great target discovery technique. Why, when and how should it be used effectively?&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;a href="/images/banner-gears.jpg"&gt;&lt;img class="fullc" loading="lazy" src="/images/banner-gears.jpg" title=""/&gt;&lt;/a&gt;&lt;figcaption&gt;&lt;/figcaption&gt;&lt;/p&gt;
+&lt;p&gt;Most web scrapers are made up of two core parts: finding products on the website and actually scraping them. The former is often referred to as "target discovery" step. For example to scrape product data of an e-commerce website we would need to find urls to each individual product and only then we can scrape their data.&lt;/p&gt;
 &lt;p&gt;Discovering targets to scrape in web scraping is often a challenging and important task. This series of blog posts tagged with &lt;a href="/tag/discovery-methods.html"&gt;#discovery-methods&lt;/a&gt; (also see &lt;a href="/web-scraping-discovery.html"&gt;main article&lt;/a&gt;) covers common target discovery approaches.&lt;/p&gt;
 &lt;p&gt;Reverse engineering website's backend API is a common web-scraping technique - why scrape htmls when backend data can be scraped directly? In this article, we'll briefly cover the most common web scraping reverse-engineering subject: the search API.&lt;/p&gt;
 &lt;p class="related"&gt;For reverse-engineering introduction, see related article &lt;a href="/reverse-engineering-intro.html"&gt;Introduction To Reverse Engineering The Web&lt;/a&gt;&lt;/p&gt;
@@ -1050,7 +1341,10 @@ We can sort our query by price and reach for results from both ends of the query
 &lt;hr/&gt;
 &lt;p&gt;For more web-scraping discovery techniques, see &lt;a href="/tag/discovery-methods.html"&gt;#discovery-methods&lt;/a&gt; and &lt;a href="/tag/discovery.html"&gt;#discovery&lt;/a&gt; for more discovery related subjects.  &lt;/p&gt;
 &lt;p&gt;If you have any questions, come join us on &lt;a href="https://matrix.to/#/%23web-scraping:matrix.org"&gt;#web-scraping on matrix&lt;/a&gt;, check out &lt;a href="https://stackoverflow.com/questions/tagged/web-scraping"&gt;#web-scraping on stackoverflow&lt;/a&gt; or leave a comment below!  &lt;/p&gt;
-&lt;p&gt;As always, you can hire me for web-scraping consultation over at &lt;a href="/pages/hire.html"&gt;hire&lt;/a&gt; page and happy scraping!  &lt;/p&gt;</content><category term="articles"></category><category term="discovery"></category><category term="discovery-methods"></category><category term="reverse-engineering"></category><category term="intermediate"></category></entry><entry><title>Web Scraping Target Discovery: Sitemaps</title><link href="https://scrapecrow.com/web-scraping-discovery-sitemaps.html" rel="alternate"></link><published>2021-09-28T00:00:00+02:00</published><updated>2021-09-28T00:00:00+02:00</updated><author><name>Bernardas Ališauskas</name></author><id>tag:scrapecrow.com,2021-09-28:/web-scraping-discovery-sitemaps.html</id><summary type="html">&lt;p&gt;There are many techniques when it comes to discovery web-scraping targets. One of the most common ones is to use website sitemap indexes. What are they and to take advantage of them in web-scraping?&lt;/p&gt;</summary><content type="html">&lt;p&gt;Most web scrapers are made up of two core parts: finding products on the website and actually scraping them. The former is often referred to as "target discovery" step. For example to scrape product data of an e-commerce website we would need to find urls to each individual product and only then we can scrape their data.&lt;/p&gt;
+&lt;p&gt;As always, you can hire me for web-scraping consultation over at &lt;a href="/pages/hire.html"&gt;hire&lt;/a&gt; page and happy scraping!  &lt;/p&gt;
+&lt;hr/&gt;
+&lt;figcaption&gt;image credits: "Gears" by Kamal H. is licensed under CC BY-ND 2.0&lt;/figcaption&gt;</content><category term="articles"></category><category term="discovery"></category><category term="discovery-methods"></category><category term="reverse-engineering"></category><category term="intermediate"></category></entry><entry><title>Web Scraping Target Discovery: Sitemaps</title><link href="https://scrapecrow.com/web-scraping-discovery-sitemaps.html" rel="alternate"></link><published>2021-09-28T00:00:00+02:00</published><updated>2021-09-28T00:00:00+02:00</updated><author><name>Bernardas Ališauskas</name></author><id>tag:scrapecrow.com,2021-09-28:/web-scraping-discovery-sitemaps.html</id><summary type="html">&lt;p&gt;There are many techniques when it comes to discovery web-scraping targets. One of the most common ones is to use website sitemap indexes. What are they and to take advantage of them in web-scraping?&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;a href="/images/banner-map.jpg"&gt;&lt;img class="fullc" loading="lazy" src="/images/banner-map.jpg" title=""/&gt;&lt;/a&gt;&lt;figcaption&gt;&lt;/figcaption&gt;&lt;/p&gt;
+&lt;p&gt;Most web scrapers are made up of two core parts: finding products on the website and actually scraping them. The former is often referred to as "target discovery" step. For example to scrape product data of an e-commerce website we would need to find urls to each individual product and only then we can scrape their data.&lt;/p&gt;
 &lt;p&gt;Discovering targets to scrape in web scraping is often a challenging and important task. This series of blog posts tagged with &lt;a href="/tag/discovery-methods.html"&gt;#discovery-methods&lt;/a&gt; (also see &lt;a href="/web-scraping-discovery.html"&gt;main article&lt;/a&gt;) covers common target discovery approaches.&lt;/p&gt;
 &lt;p&gt;In this article will cover one particular discovery method of using website sitemaps to find our scrape targets.&lt;/p&gt;
 &lt;h2 id="what-are-sitemaps-and-how-are-they-used-in-web-scraping"&gt;What are sitemaps and how are they used in web-scraping?&lt;/h2&gt;
@@ -1282,4 +1576,6 @@ To add there's some important metadata as well: when indexes were last updated: 
 &lt;hr/&gt;
 &lt;p&gt;For more web-scraping discovery techniques, see &lt;a href="/tag/discovery-methods.html"&gt;#discovery-methods&lt;/a&gt; and &lt;a href="/tag/discovery.html"&gt;#discovery&lt;/a&gt; for more discovery related subjects.  &lt;/p&gt;
 &lt;p&gt;If you have any questions, come join us on &lt;a href="https://matrix.to/#/%23web-scraping:matrix.org"&gt;#web-scraping on matrix&lt;/a&gt;, check out &lt;a href="https://stackoverflow.com/questions/tagged/web-scraping"&gt;#web-scraping on stackoverflow&lt;/a&gt; or leave a comment below!  &lt;/p&gt;
-&lt;p&gt;As always, you can hire me for web-scraping consultation over at &lt;a href="/pages/hire.html"&gt;hire&lt;/a&gt; page and happy scraping!  &lt;/p&gt;</content><category term="articles"></category><category term="discovery"></category><category term="discovery-methods"></category><category term="sitemap"></category><category term="intermediate"></category></entry></feed>
+&lt;p&gt;As always, you can hire me for web-scraping consultation over at &lt;a href="/pages/hire.html"&gt;hire&lt;/a&gt; page and happy scraping!  &lt;/p&gt;
+&lt;hr/&gt;
+&lt;figcaption&gt;image credits: "Map of North America" by NASA Johnson is licensed under CC BY-NC 2.0&lt;/figcaption&gt;</content><category term="articles"></category><category term="discovery"></category><category term="discovery-methods"></category><category term="sitemap"></category><category term="intermediate"></category></entry></feed>

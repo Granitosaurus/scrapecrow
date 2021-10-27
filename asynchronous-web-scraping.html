@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title> Scrapecrow - Asynchronous Web Scraping: Scaling For The Moon!</title>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="description" content="Educational blog about web-scraping, crawling and related data extraction subjects" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css"
+    integrity="sha256-XoaMnoYC5TH6/+ihMEnospgm0J1PM/nioxbOUdnM8HY=" crossorigin="anonymous">
+  <script src="https://scrapecrow.com/theme/main.js"></script>
+  <link rel="stylesheet" href="https://scrapecrow.com/theme/css/main.css" />
+  <link rel="stylesheet" href="https://scrapecrow.com/theme/css/applause-button.css" />
+  <script src="https://scrapecrow.com/theme/applause-button.js"></script>
+  <link href="Scrapecrow/feeds/all.atom.xml" type="application/atom+xml" rel="alternate"
+    title="Scrapecrow Full Atom Feed" />
+  <link href="Scrapecrow/atom.xml" type="application/atom+xml" rel="alternate"
+    title="Scrapecrow Atom Feed" />
+  <link href="Scrapecrow/rss.xml" type="application/rss+xml" rel="alternate"
+    title="Scrapecrow RSS Feed" />
+  <link href="Scrapecrow/feeds/{slug}.atom.xml" type="application/atom+xml"
+    rel="alternate" title="Scrapecrow Categories Atom Feed" />
+
+<meta name="author" content="Bernardas Ališauskas" />
+<meta name="description" content="Asynchronous programming can speed up web scrapers astronomically and is by far the most important scaling step when dealing with big projects. What exactly is it, how does it work, and what are the best ways to take advantage of it?" />
+  <meta property="og:site_name" content="Scrapecrow"/>
+  <meta property="og:title" content="Asynchronous Web Scraping: Scaling For The Moon!"/>
+  <meta property="og:description" content="Asynchronous programming can speed up web scrapers astronomically and is by far the most important scaling step when dealing with big projects. What exactly is it, how does it work, and what are the best ways to take advantage of it?"/>
+  <meta property="og:locale" content="en_US"/>
+  <meta property="og:url" content="https://scrapecrow.com/asynchronous-web-scraping.html"/>
+  <meta property="og:type" content="article"/>
+  <meta property="article:published_time" content="2021-10-27 00:00:00+02:00"/>
+  <meta property="article:modified_time" content="2021-10-27 00:00:00+02:00"/>
+  <meta property="article:author" content="Bernardas Ališauskas">
+  <meta property="article:section" content="articles"/>
+  <meta property="article:tag" content="async"/>
+  <meta property="article:tag" content="python"/>
+  <meta property="article:tag" content="beginner"/>
+  <meta property="article:tag" content="scaling"/>
+  <meta property="og:image" content="https://scrapecrow.com/images/logo-og.png">
+</head>
+
+<body>
+  <div class="navigation">
+    <nav class="navbar" role="navigation" aria-label="main navigation">
+      <div class="navbar-brand">
+        <a class="navbar-item" href="https://scrapecrow.com">
+          <img src="/images/logo.svg" width="50"></img>
+        </a>
+        <a class="navbar-item" href="https://scrapecrow.com">Scrapecrow</a>
+        <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navMenu">
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+        </a>
+      </div>
+      <div class="navbar-menu" id="navMenu">
+        <div class="navbar-start">
+          <a class="navbar-item" href="/pages/about.html">about</a>
+          <a class="navbar-item" href="/pages/hire.html">hire</a>
+          <a class="navbar-item" href="/pages/coffee.html">☕</a>
+          <a class="navbar-item" href="https://matrix.to/#/#web-scraping:matrix.org">#web-scraping on matrix</a>
+        </div>
+      </div>
+    </nav>
+  </div>
+  <div class="main">
+<div class="content">
+  <div class="post-meta">
+<div class="post-meta">
+    <a href="https://scrapecrow.com/category/articles.html" class="category">articles</a>
+    &mdash;
+    <span title="2021-10-27T00:00:00+02:00">Wed 27 October 2021</span></br>
+    <a href="https://scrapecrow.com/tag/async.html" class="tag">async</a>
+    <a href="https://scrapecrow.com/tag/python.html" class="tag">python</a>
+    <a href="https://scrapecrow.com/tag/beginner.html" class="tag">beginner</a>
+    <a href="https://scrapecrow.com/tag/scaling.html" class="tag">scaling</a>
+    </br>
+</div>  </div>
+  <h1>Asynchronous Web Scraping: Scaling For The Moon!</h1>
+  <div class="post-content">
+    <!--insert table of contents between text and first header-->
+    <p><a href="/images/moon.png"><img class="fullc" loading="lazy" src="/images/moon.png" title=""/></a><figcaption></figcaption></p>
+<p>Scaling is one of the biggest challenges in web-scraping niche and there are a lot of ways to make web-scrapers scale better in efficiency, speed and reliability. However, there's one thing can be done to web-scraper code that is by far the biggest bang-per-buck improvement: using asynchronous code.</p>
+<p>In this short article, we'll take a look at asynchronous python and how we can take advantage of it to make our scrapers over 100 times faster!</p>
+
+    <hr>
+    <div class="pure-u">
+      <div id="toc"><ul><li><a class="toc-href" href="#what-is-asynchronous-programming" title="What is Asynchronous Programming?">What is Asynchronous Programming?</a></li><li><a class="toc-href" href="#how-does-async-web-scraping-work" title="How Does Async Web Scraping Work?">How Does Async Web Scraping Work?</a></li><li><a class="toc-href" fast:="" going="" href="#were-going-too-fast-throttling" re="" throttling'="" title="We" too="">We're Going Too Fast: Throttling</a><ul><li><a class="toc-href" href="#asyncios-semaphore" s="" semaphore'="" title="Asyncio">Asyncio's Semaphore</a></li><li><a class="toc-href" href="#leaky-bucket" title="Leaky Bucket">Leaky Bucket</a></li><li><a class="toc-href" href="#how-much-to-throttle" title="How Much To Throttle?">How Much To Throttle?</a></li></ul></li><li><a class="toc-href" href="#summary-alternatives-and-further-reading_1" title="Summary, Alternatives and Further Reading">Summary, Alternatives and Further Reading</a></li></ul></div>
+    </div>
+    <hr>
+    <h2 id="what-is-asynchronous-programming">What is Asynchronous Programming?</h2>
+<p>Python supports many async code paradigms, however the current de facto standard is async/await via <code>asyncio</code> (or it's alternatives like <a href="https://trio.readthedocs.io/en/stable/">trio</a>). In this article we'll keep focus on asyncio as it's currently the most approachable async paradigm in Python.</p>
+<p>So what is asynchronous programming?<br/>
+At it's core it's essentially just pausable functions (called coroutines) which can pause when inactive and give way to active ones. This often has huge benefits in IO (input/output) bound programs that rely on waiting for some sort of external input or output. </p>
+<p>What is an IO block?<br/>
+When programs interact with <em>external</em> service they often need to wait for the service to respond: this waiting is called IO block. Some examples of IO blocks:</p>
+<ul>
+<li>In online apps IO block would be waiting for server to respond to requests.</li>
+<li>In GUI apps this would be waiting for app user to click buttons, enter text or interact with other GUI widgets.  </li>
+<li>In video games this would be waiting for the player to perform some actions.</li>
+</ul>
+<p>IO blocking is a big deal in web-scraping, since the majority of actual work the program does is communication with the web server.<br/>
+For example, in synchronous python when we send a request to a server our code stops - does absolutely nothing - while waiting for the server to respond. In web-scraping this can be up to several seconds, and they add up really quickly!</p>
+<p>Presumably, we have 100 urls to scrape that wait 1 second each - that's over a minute and a half of waiting! Could we make them wait together concurrently?</p>
+<h2 id="how-does-async-web-scraping-work">How Does Async Web Scraping Work?</h2>
+<p class="info">In these examples we'll be using <a href="https://www.python-httpx.org/">httpx</a> http client package which supports both synchronous and asynchronous client APIs</p>
+<p>Let's take a look at a quick example. We have 100 urls that we want to scrape, and we have this really simple synchronous scraper code:</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">httpx</span> <span class="kn">import</span> <span class="n">Client</span>
+<span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">time</span>
+
+
+<span class="k">def</span> <span class="nf">scrape</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">session</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">run</span><span class="p">():</span>
+    <span class="n">_start</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">with</span> <span class="n">Client</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
+            <span class="c1"># this url will always take 1 second</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="s2">"http://httpbin.org/delay/1"</span>
+            <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">scrape</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">session</span><span class="o">=</span><span class="n">session</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"finished scraping in: </span><span class="si">{</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">_start</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> seconds"</span><span class="p">)</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
+    <span class="n">run</span><span class="p">()</span>
+
+<span class="c1"># results in:</span>
+<span class="c1"># finished scraping in: 135.8 seconds</span>
+</code></pre></div>
+</td></tr></table>
+<p class="info">Here we're taking advantage of <a href="https://httpbin.org">https://httpbin.org</a> delayed response endpoint <code>/delay/&lt;n&gt;</code> which will simulates slow server which takes N seconds to respond. This tool is great for testing web scraping scaling!</p>
+<p>In this example, we schedule 100 different requests synchronously that each should take at least 1 second to execute each: 1 second delay by the server + all connection overhead our machine does = 100+ seconds.</p>
+<p>Now let's try to run those 100 request at the same time, asynchronously by using <code>asyncio</code> async loop and <code>asyncio.gather()</code> function:</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">asyncio</span>
+<span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">time</span>
+<span class="kn">from</span> <span class="nn">httpx</span> <span class="kn">import</span> <span class="n">AsyncClient</span>
+
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">scrape</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">session</span><span class="p">):</span>
+    <span class="k">return</span> <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">run</span><span class="p">():</span>
+    <span class="n">_start</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+    <span class="k">async</span> <span class="k">with</span> <span class="n">AsyncClient</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
+        <span class="n">tasks</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
+            <span class="c1"># this url will always take 1 second</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="s2">"http://httpbin.org/delay/1"</span>
+            <span class="n">tasks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">scrape</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">session</span><span class="o">=</span><span class="n">session</span><span class="p">))</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span><span class="o">*</span><span class="n">tasks</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"finished scraping in: </span><span class="si">{</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">_start</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> seconds"</span><span class="p">)</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
+    <span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">run</span><span class="p">())</span>
+</code></pre></div>
+</td></tr></table>
+<p>If we run this minor async modification, we'll see a colossal speed boost:  </p>
+<blockquote>
+<p>finished scraping in: 2.4 seconds</p>
+</blockquote>
+<p>We sped up our scraper <strong>over 50 times</strong> just by converting few lines of code into asynchronous python! Let's take a look at small illustration of the performance of these two programs:</p>
+<p><a href="/images/async-vs-sync.png"><img class="" loading="lazy" src="/images/async-vs-sync.png" width='title=""'/></a><figcaption></figcaption></p>
+<p>Here, we can easily visualize the difference between synchronous and asynchronous scraper programs: the IO waiting on the left is <em>part</em> of the program, while on the right it doesn't have to be!</p>
+<p>Async programs essentially prevent IO waiting from blocking our programs. For waiting intensive tasks such as http connections, async essentially means concurrency and can speed up programs from dozens to thousands times over!</p>
+<p>However, as the illustration shows, there are some negatives to async programming:  </p>
+<ul>
+<li>Ensuring execution order can be difficult. <br/>
+    Often, request order can be very important in session or cookie bound web scraping. Keeping track of sessions and cookies is much more complicated in async environment.</li>
+<li>Async programs are much harder to design and debug since they are inherently more complex.</li>
+<li>Async speed can be major pain when dealing with scraper bans which require programming of throttling logic.</li>
+</ul>
+<p>Whether this overhead of complexity worth it for your web scraper entirely depends on your program. For small scripts, it might not be worth tangling up with the whole async ecosystem, which is still quite young in Python. However, for big data scrapers, async provided speed boosts of 100-1000x are vital for any reasonable data collection speeds!</p>
+<h2 id="were-going-too-fast-throttling">We're Going Too Fast: Throttling</h2>
+<p>Using async python we can make a lot of http requests very quickly, which can become problematic. Web servers often try to protect themselves from high traffic as it's resource expensive and will often block scrapes that connect too quickly.</p>
+<p>To avoid bans and blocks, we must either use multiple proxies or preferably throttle our connections. Let's take a look at few common ways to throttle web-scrapers.</p>
+<h3 id="asyncios-semaphore">Asyncio's Semaphore</h3>
+<p>This is built in way to throttle coroutine concurrency in python's asyncio. Semaphore is essentially a lock object with limited amount of working slots, i.e. it allows us to specify that no more than N coroutines should be executed concurrently:</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">asyncio</span>
+<span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">time</span>
+<span class="kn">from</span> <span class="nn">httpx</span> <span class="kn">import</span> <span class="n">AsyncClient</span>
+
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">scrape</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="n">throttler</span><span class="p">):</span>
+    <span class="k">async</span> <span class="k">with</span> <span class="n">throttler</span><span class="p">:</span>
+        <span class="k">return</span> <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">run</span><span class="p">():</span>
+    <span class="n">_start</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+    <span class="n">throttler</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">Semaphore</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+    <span class="k">async</span> <span class="k">with</span> <span class="n">AsyncClient</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
+        <span class="n">tasks</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
+            <span class="c1"># this url will always take 1 second</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="s2">"http://httpbin.org/delay/1"</span>
+            <span class="n">tasks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">scrape</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">session</span><span class="o">=</span><span class="n">session</span><span class="p">,</span> <span class="n">throttler</span><span class="o">=</span><span class="n">throttler</span><span class="p">))</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span><span class="o">*</span><span class="n">tasks</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"finished scraping in: </span><span class="si">{</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">_start</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> seconds"</span><span class="p">)</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
+    <span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">run</span><span class="p">())</span>
+
+<span class="c1"># results in:</span>
+<span class="c1"># finished scraping in: 14.8 seconds</span>
+</code></pre></div>
+</td></tr></table>
+<p>Here we modified our async scraper code with one key addition of <code>asyncio.Semaphore(10)</code> object, which limits concurrent execution to 10 concurrent coroutines. Our original unlimited code took 2.4 to complete now we managed to slow it down 6 times with few extra lines of code!  </p>
+<p>Some important things to notice about <code>asyncio.Semaphore</code>:</p>
+<p>All throttled coroutines should be use same Semaphore object. This means one throttled needs to be passed around to each individual coroutine introducing slight complexity overhead.</p>
+<p>Semaphore is only aware of concurrency, not time. Often when web-scraping we want to limit request count to specific time frame like max 60 requests / minute. In other words, our <code>Semaphore(10)</code> when scraping fast servers could yield 10 requests / second however on slower ones it might be only 2 requests / second.</p>
+<p>While Semaphore gives us an easy way to throttle ourselves, we can see it's not an ideal approach as it doesn't allow us to be as precise as some web-servers might require us to. Often web servers have strict limits like 60 requests/second - for most efficient web scraper we would like to stay around that range - let's take a look how can we accomplish this.</p>
+<h3 id="leaky-bucket">Leaky Bucket</h3>
+<p>Leaky Bucket is a common throttling algorithm that uses time tracking for throttling rather than just concurrency. Using the Leaky Bucket approach, we can specify how many tasks can be executed in a specific time frame, i.e. we can throttle our scraper to 10 requests/second!</p>
+<p>A popular implementation for python's asyncio is available in <a href="https://github.com/mjpieters/aiolimiter">aiolimiter</a> package. Let's take a quick look, how can we use it in our web-scraper:</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">asyncio</span>
+<span class="kn">from</span> <span class="nn">aiolimiter</span> <span class="kn">import</span> <span class="n">AsyncLimiter</span>
+<span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">time</span>
+<span class="kn">from</span> <span class="nn">httpx</span> <span class="kn">import</span> <span class="n">AsyncClient</span>
+
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">scrape</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="n">throttler</span><span class="p">):</span>
+    <span class="k">async</span> <span class="k">with</span> <span class="n">throttler</span><span class="p">:</span>
+        <span class="k">return</span> <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">run</span><span class="p">():</span>
+    <span class="n">_start</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+    <span class="n">throttler</span> <span class="o">=</span> <span class="n">AsyncLimiter</span><span class="p">(</span><span class="n">max_rate</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">time_period</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>   <span class="c1"># 10 tasks/second</span>
+    <span class="k">async</span> <span class="k">with</span> <span class="n">AsyncClient</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
+        <span class="n">tasks</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
+            <span class="c1"># this url will always take 1 second</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="s2">"http://httpbin.org/delay/1"</span>
+            <span class="n">tasks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">scrape</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">session</span><span class="o">=</span><span class="n">session</span><span class="p">,</span> <span class="n">throttler</span><span class="o">=</span><span class="n">throttler</span><span class="p">))</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span><span class="o">*</span><span class="n">tasks</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"finished scraping in: </span><span class="si">{</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">_start</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> seconds"</span><span class="p">)</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
+    <span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">run</span><span class="p">())</span>
+
+<span class="c1"># results in:</span>
+<span class="c1"># finished scraping in: 10.4 seconds</span>
+</code></pre></div>
+</td></tr></table>
+<p>Here we merely replaced our <code>Semaphore</code> from previous code with <code>aiolimiter.AsyncLimiter</code> which allows us to be much more precise: we completed our 100 scrape tasks in 10.4 seconds which matches our limit of 10req/second almost exactly!</p>
+<p>Leaky bucket is a great throttling approach as it allows us to scrape in predictable and controlled speeds. That being said predictability is not a great web scraper feature when it comes to blocking and banning - scraper can be identified quite easily if it shows a consistent pattern of connections.<br/>
+So which throttling pattern to use entirely depends on scraped targets, but Leaky Bucket is often the best approach!</p>
+<h3 id="how-much-to-throttle">How Much To Throttle?</h3>
+<p>Finally with throttling figured out, we need to decide on the number? Unfortunately, there are no standard accepted practices other than it's respectful to keep connection number lower to not cause issues to web servers.  </p>
+<p>Keeping in the <strong>10-30 requests/second</strong> range (depending on page and website size) is widely considered to be a respectful scraping rate - so that's a good starting point. Other than that it's a good idea to grab some proxies and experiment!</p>
+<h2 id="summary-alternatives-and-further-reading_1">Summary, Alternatives and Further Reading</h2>
+<p>In this introductory article, we've taken a look how we can use asynchronous python to speed up our web-scrapers to the point where we had to figure out how to throttle ourselves! For throttling, we've discovered Semaphore and Leaky Bucket approaches and how can we apply them in web-scraping. </p>
+<p>Asynchronous programming can often be difficult, complex and even ugly. However, when it comes to such IO heavy tasks like web connections in web-scraping it is often unavoidable, so better get comfortable with it! </p>
+<hr/>
+<p>As for further reading and alternatives?</p>
+<p>Asynchronous programming is not a new concept by any means, but it's still evolving in many different directions. In this article we focused on Python's async/await approach, however there are other paradigms that are also used in web-scraping.</p>
+<p>One of the biggest web-scraping frameworks <a href="https://scrapy.org">Scrapy</a> is using <a href="https://duckduckgo.com/?q=twisted+python&amp;ia=web">Twisted</a> callback based async engine which allows running functions in the background and call result function once they complete. Callbacks and Futures are also often used in Javascript and can be used in Python's asyncio as well! </p>
+<p>Other than that, <a href="https://github.com/celery/celery">Celery</a> task engine is also often used to execute scraping tasks concurrently. <br/>
+<a href="http://www.gevent.org/">Gevent</a> is yet another popular asynchronous library that integrates well with web-scraping ecosystem. </p>
+<p>In the future of this blog we'll cover more examples of these alternative approaches, however do not underestimate python's <code>asyncio</code> - as we've seen in this article it's extremely fast, surprisingly accessible and once understood can be an absolute pleasure to work with!</p>
+<hr/>
+<p>So stick around for more articles and if you have any questions, come join us on <a href="https://matrix.to/#/%23web-scraping:matrix.org">#web-scraping on matrix</a>, check out <a href="https://stackoverflow.com/questions/tagged/web-scraping">#web-scraping on stackoverflow</a> or leave a comment below!  </p>
+<p>As always, you can hire me for web-scraping consultation over at <a href="/pages/hire.html">hire</a> page and happy scraping!  </p>
+  </div>
+</div>
+<hr>
+<div class="article-buttons">
+  <div class="float-side applause" title="show your appreciation">
+    <applause-button url="https://scrapecrow.com/asynchronous-web-scraping.html" style="width: 58px; height: 58px;" />
+  </div>
+  <div class="article-button applause" title="show your appreciation">
+    <applause-button url="https://scrapecrow.com/asynchronous-web-scraping.html" style="width: 58px; height: 58px;" />
+  </div>
+  <div class="article-button twitter" title="share on twitter">
+    <a href="http://twitter.com/share?text=&url=https://scrapecrow.com/asynchronous-web-scraping.html&hashtags=">
+      <i class="fa fa-twitter fa-3x pure-menu-link" aria-hidden="true"></i>
+    </a>
+  </div>
+  <div class="article-button email">
+    <a href="https://716df175.sibforms.com/serve/MUIEALpKPp8WjHrVwQOX6keZXLkJRbnFEh2y6YhTmVmT4Z0Khgbi2MFvPO1OObOrjbMi_S0M7VXkXGkcbh36H-SqEwM3dHXxdrOOXwEPGcp9rTQKkQvMkC70Dq9RmCoikia87nLsRcx0VVGmCG2zyx5s8BwpqevRmh70vKSaLe7e95yZDCROMvm2HcN3UpLw7UsFxl_UbI6TjY_e" title="subscribe to mailist">
+      <i class="fa fa-email-bulk-o fa-3x pure-menu-link" aria-hidden="true"></i>
+    </a>
+  </div>
+</div>
+<hr>
+<div class="comments">
+  <script src="https://utteranc.es/client.js" repo="granitosaurus/scrapecrow"
+    issue-term="asynchronous-web-scraping" label="comments"
+    theme="github-light" crossorigin="anonymous" async>
+  </script>
+</div>
+  </div>
+  <footer class="footer">
+    <div class="content">
+      <span class="footer-item"><a href="/archives.html">Archives</a></span>
+      <span class="footer-item"><a href="/tags.html">Tags</a></span>
+      <span class="footer-item"><a href="https://blog.getpelican.com/">Made with Pelican</a></span>
+      <span class="footer-item"><a href="https://github.com/granitosaurus/scrapecrow/">Source on Github</a></span>
+      <span class="footer-item"><a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA</a></span>
+      <span class="footer-item">
+        <a href="atom.xml">
+          <i class="fa fa-rss-square" aria-hidden="true"></i>
+        </a>
+      </span>
+    </div>
+  </footer>
+<script data-goatcounter="https://scrapecrow.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+
+</html>
