@@ -13380,19 +13380,19 @@ nav.navbar .navbar-item img {
 }
 
 .fullc {
-  margin-left: calc(min(calc((65ch - 100vw) / 2), 0px));
+  margin-left: calc(min(calc((65ch - 100vw) / 2), -20px));
   max-width: 100vw;
   width: 100vw;
 }
 
 .bigc {
-  margin-left: calc(min(calc((min(100ch, 100vw) - 65ch) / 2 * -1), 0px));
+  margin-left: calc(min(calc((min(100ch, 100vw) - 65ch) / 2 * -1), -20px));
   max-width: calc(min(100ch, calc(100vw - 40px)));
   width: 100vw;
 }
 
 .biggerc {
-  margin-left: calc(min(calc((min(130ch, 100vw) - 65ch) / 2 * -1), 0px));
+  margin-left: calc(min(calc((min(130ch, 100vw) - 65ch) / 2 * -1), -20px));
   max-width: calc(min(130ch, calc(100vw - 40px)));
   width: 100vw;
 }
