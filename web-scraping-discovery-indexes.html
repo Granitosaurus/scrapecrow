@@ -57,7 +57,6 @@
       <div class="navbar-menu" id="navMenu">
         <div class="navbar-start">
           <a class="navbar-item" href="/pages/about.html">about</a>
-          <a class="navbar-item" href="/pages/hire.html">hire</a>
           <a class="navbar-item" href="/pages/coffee.html">☕</a>
           <a class="navbar-item" href="https://matrix.to/#/#web-scraping:matrix.org">#web-scraping on matrix</a>
         </div>
@@ -133,25 +132,24 @@ Despite coverage issues commoncrawl url dataset is a useful tool to have in web-
 <p>We can use archive.org website archive as our discovery engine. If we go to <a href="https://archive.org">https://archive.org</a> and type in our source:</p>
 <p><a href="/images/archive.org-crunchbase-search.png"><img class="bigc" loading="lazy" src="/images/archive.org-crunchbase-search.png" title=""/></a><figcaption></figcaption></p>
 <p>We can see that archive.org has captured a lot of urls! Let's take a quick look how we could scrape it as a discovery source. If we open up web inspector and see requests made when we click search we'll find a backend API url that looks something like this (<a href="https://web.archive.org/web/timemap/?url=crunchbase.com/organization/%2F&amp;matchType=prefix&amp;collapse=urlkey&amp;output=json&amp;fl=original%2Cendtimestamp%2Cgroupcount%2Cuniqcount&amp;filter=!statuscode%3A[45]..&amp;limit=10000&amp;_=1632308317409">clickable</a>):</p>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
 <span class="normal">2</span>
 <span class="normal">3</span>
 <span class="normal">4</span>
 <span class="normal">5</span>
 <span class="normal">6</span>
 <span class="normal">7</span>
-<span class="normal">8</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="nv">https</span>:<span class="o">//</span><span class="nv">web</span>.<span class="nv">archive</span>.<span class="nv">org</span><span class="o">/</span><span class="nv">web</span><span class="o">/</span><span class="nv">timemap</span><span class="o">/</span>?
+<span class="normal">8</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nv">https</span>:<span class="o">//</span><span class="nv">web</span>.<span class="nv">archive</span>.<span class="nv">org</span><span class="o">/</span><span class="nv">web</span><span class="o">/</span><span class="nv">timemap</span><span class="o">/</span>?
 <span class="nv">url</span><span class="o">=</span><span class="nv">crunchbase</span>.<span class="nv">com</span><span class="o">/</span><span class="nv">organization</span><span class="o">/%</span><span class="mi">2</span><span class="nv">F</span><span class="o">&amp;</span><span class="nv">matchType</span><span class="o">=</span><span class="nv">prefix</span><span class="o">&amp;</span>
 <span class="nv">collapse</span><span class="o">=</span><span class="nv">urlkey</span><span class="o">&amp;</span>
 <span class="nv">output</span><span class="o">=</span><span class="nv">json</span><span class="o">&amp;</span>
-<span class="nv">fl</span><span class="o">=</span><span class="nv">original</span><span class="o">%</span><span class="mi">2</span><span class="nv">Cendtimestamp</span><span class="o">%</span><span class="mi">2</span><span class="nv">Cgroupcount</span><span class="o">%</span><span class="mi">2</span><span class="nv">Cuniqcount</span><span class="o">&amp;</span>  # <span class="nv">rows</span> <span class="nv">to</span> <span class="k">return</span>, <span class="nv">we</span><span class="s1">'</span><span class="s">re mostly interested in "original"</span>
-<span class="nv">filter</span><span class="o">=!</span><span class="nv">statuscode</span><span class="o">%</span><span class="mi">3</span><span class="nv">A</span>[<span class="mi">45</span>]..<span class="o">&amp;</span>  
-<span class="nv">limit</span><span class="o">=</span><span class="mi">10000</span><span class="o">&amp;</span>  # <span class="nb">result</span> <span class="nv">limit</span>
-<span class="nv">_</span><span class="o">=</span><span class="mi">1632308317409</span>  # <span class="nv">current</span> <span class="nv">timestamp</span>
-</code></pre></div>
-</td></tr></table>
+<span class="nv">fl</span><span class="o">=</span><span class="nv">original</span><span class="o">%</span><span class="mi">2</span><span class="nv">Cendtimestamp</span><span class="o">%</span><span class="mi">2</span><span class="nv">Cgroupcount</span><span class="o">%</span><span class="mi">2</span><span class="nv">Cuniqcount</span><span class="o">&amp;</span><span class="w">  </span>#<span class="w"> </span><span class="nv">rows</span><span class="w"> </span><span class="nv">to</span><span class="w"> </span><span class="k">return</span>,<span class="w"> </span><span class="nv">we</span><span class="err">'re mostly interested in "original"</span>
+<span class="err">filter=!statuscode%3A[45]..&amp;  </span>
+<span class="err">limit=10000&amp;  # result limit</span>
+<span class="err">_=1632308317409  # current timestamp</span>
+</code></pre></div></td></tr></table></div>
 <p>If we submit get request to this url we'll get the whole dataset of matching results:</p>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
 <span class="normal"> 4</span>
@@ -161,7 +159,7 @@ Despite coverage issues commoncrawl url dataset is a useful tool to have in web-
 <span class="normal"> 8</span>
 <span class="normal"> 9</span>
 <span class="normal">10</span>
-<span class="normal">11</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>[["original","endtimestamp","groupcount","uniqcount"],
+<span class="normal">11</span></pre></div></td><td class="code"><div><pre><span></span><code>[["original","endtimestamp","groupcount","uniqcount"],
 ["http://crunchbase.com:80/organization/","20200218003314","379","100"],
 ["https://www.crunchbase.com/organization.investors","20171204192453","2","2"],
 ["https://www.crunchbase.com/organization.similarwebs","20171204192356","1","1"],
@@ -172,8 +170,7 @@ Despite coverage issues commoncrawl url dataset is a useful tool to have in web-
 ["https://crunchbase.com/organization/%22/organization/canaan-partners%22","20190517071111","1","1"],
 ["https://crunchbase.com/organization/%22/organization/fog-creek-software%22","20190518102954","1","1"],
 ...
-</code></pre></div>
-</td></tr></table>
+</code></pre></div></td></tr></table></div>
 <p>This query generates thousands of unique urls with timestamps of last time they were scraped by internet archive which can be easily adapted as a target discovery source!</p>
 <p class="info">If you find Internet Archive useful it's a non-profit organization <a href="https://archive.org/donate/">accepting public donations</a>!</p>
 <h2 id="summary-and-further-reading">Summary and Further Reading</h2>

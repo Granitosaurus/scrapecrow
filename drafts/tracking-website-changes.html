@@ -57,7 +57,6 @@
       <div class="navbar-menu" id="navMenu">
         <div class="navbar-start">
           <a class="navbar-item" href="/pages/about.html">about</a>
-          <a class="navbar-item" href="/pages/hire.html">hire</a>
           <a class="navbar-item" href="/pages/coffee.html">☕</a>
           <a class="navbar-item" href="https://matrix.to/#/#web-scraping:matrix.org">#web-scraping on matrix</a>
         </div>
@@ -95,12 +94,11 @@ Not only that, but we put unnecessary pressure to target websites which might le
 <p>There are few ways for a server to indicate content version, so let's take a quick look at them.</p>
 <h3 id="last-modified-header">Last Modified Header</h3>
 <p>This header is often used by dynamic articles such as wikipedia to indicate when the source was last modified:</p>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>"Last-Modified": "Tue, 16 Nov 2021 11:04:59 GMT"
-</code></pre></div>
-</td></tr></table>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code>"Last-Modified": "Tue, 16 Nov 2021 11:04:59 GMT"
+</code></pre></div></td></tr></table></div>
 <p>Using this header we can reduce our resource load significantly by looping <code>HEAD</code> requests until change detected. 
 Let's take this wikipedia page for example <a href="https://en.wikipedia.org/wiki/Web_scraping">https://en.wikipedia.org/wiki/Web_scraping</a> for which we'd like to write a notification scraper that detect changes as soon as possible:</p>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
 <span class="normal"> 4</span>
@@ -114,7 +112,7 @@ Let's take this wikipedia page for example <a href="https://en.wikipedia.org/wik
 <span class="normal">12</span>
 <span class="normal">13</span>
 <span class="normal">14</span>
-<span class="normal">15</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">sleep</span>
+<span class="normal">15</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">sleep</span>
 <span class="kn">import</span> <span class="nn">requests</span>
 
 <span class="n">session</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">Session</span><span class="p">()</span>
@@ -129,14 +127,13 @@ Let's take this wikipedia page for example <a href="https://en.wikipedia.org/wik
         <span class="n">resp_full</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="n">resp_full</span><span class="p">)</span>
     <span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-</code></pre></div>
-</td></tr></table>
+</code></pre></div></td></tr></table></div>
 <p>In this tiny notification script we establish a requests session and every second we make a <code>HEAD</code> request to our target. If the response headers' contain a new <code>Last-Modified</code> value we call our notification, otherwise we continue checking until it does!</p>
 <h3 id="etag-header">Etag Header</h3>
 <p>One alternative to <code>Last-Modified</code> header is the <code>Etag</code> header which just like the former indicates a soft version of the page. Just instead of a datetime string, Etag header uses a short hash.</p>
 <p>Let's take a look at <code>Etag</code> header in a common example: sports match tracking.
 Imagine we're following a football game and we'd like to know scores as soon as they change. Again, we can apply similar logic we used in <code>Last-Modified</code> scraper above:</p>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
 <span class="normal"> 4</span>
@@ -150,7 +147,7 @@ Imagine we're following a football game and we'd like to know scores as soon as 
 <span class="normal">12</span>
 <span class="normal">13</span>
 <span class="normal">14</span>
-<span class="normal">15</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">sleep</span>
+<span class="normal">15</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">sleep</span>
 <span class="kn">import</span> <span class="nn">requests</span>
 
 <span class="n">session</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">Session</span><span class="p">()</span>
@@ -165,8 +162,7 @@ Imagine we're following a football game and we'd like to know scores as soon as 
         <span class="n">resp_full</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="n">extract_scores_from_response</span><span class="p">(</span><span class="n">resp_full</span><span class="p">))</span>
     <span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-</code></pre></div>
-</td></tr></table>
+</code></pre></div></td></tr></table></div>
 <p>In this script we keep sending <code>HEAD</code> requests until a new <code>Etag</code> header is encountered - then we can scrape HTML body for match updates and send them to our notification server (email, notification, SMS)</p>
 <h2 id="summary-and-further-reading_1">Summary and Further Reading</h2>
   </div>

@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title> Scrapecrow - A Year of Writing about Web Scraping in Review</title>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="description" content="Educational blog about web-scraping, crawling and related data extraction subjects" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css"
+    integrity="sha256-XoaMnoYC5TH6/+ihMEnospgm0J1PM/nioxbOUdnM8HY=" crossorigin="anonymous">
+  <script src="https://scrapecrow.com/theme/main.js"></script>
+  <link rel="stylesheet" href="https://scrapecrow.com/theme/css/main.css" />
+  <link rel="stylesheet" href="https://scrapecrow.com/theme/css/applause-button.css" />
+  <script src="https://scrapecrow.com/theme/applause-button.js"></script>
+  <link href="Scrapecrow/feeds/all.atom.xml" type="application/atom+xml" rel="alternate"
+    title="Scrapecrow Full Atom Feed" />
+  <link href="Scrapecrow/atom.xml" type="application/atom+xml" rel="alternate"
+    title="Scrapecrow Atom Feed" />
+  <link href="Scrapecrow/rss.xml" type="application/rss+xml" rel="alternate"
+    title="Scrapecrow RSS Feed" />
+  <link href="Scrapecrow/feeds/{slug}.atom.xml" type="application/atom+xml"
+    rel="alternate" title="Scrapecrow Categories Atom Feed" />
+
+<meta name="author" content="Bernardas Ališauskas" />
+<meta name="description" content="I&#39;d like to share the favorite things I wrote in a year of professional web scraping blogging at ScrapFly and my key takeaways." />
+  <meta property="og:site_name" content="Scrapecrow"/>
+  <meta property="og:title" content="A Year of Writing about Web Scraping in Review"/>
+  <meta property="og:description" content="I&#39;d like to share the favorite things I wrote in a year of professional web scraping blogging at ScrapFly and my key takeaways."/>
+  <meta property="og:locale" content="en_US"/>
+  <meta property="og:url" content="https://scrapecrow.com/year-of-writing-in-review.html"/>
+  <meta property="og:type" content="article"/>
+  <meta property="article:published_time" content="2023-01-02 00:00:00+01:00"/>
+  <meta property="article:modified_time" content="2023-01-02 00:00:00+01:00"/>
+  <meta property="article:author" content="Bernardas Ališauskas">
+  <meta property="article:section" content="articles"/>
+  <meta property="article:tag" content="python"/>
+  <meta property="article:tag" content="beginner"/>
+  <meta property="article:tag" content="tracking"/>
+  <meta property="og:image" content="https://scrapecrow.com/images/logo-og.png">
+</head>
+
+<body>
+  <div class="navigation">
+    <nav class="navbar" role="navigation" aria-label="main navigation">
+      <div class="navbar-brand">
+        <a class="navbar-item" href="https://scrapecrow.com">
+          <img src="/images/logo.svg" width="50"></img>
+        </a>
+        <a class="navbar-item" href="https://scrapecrow.com">Scrapecrow</a>
+        <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navMenu">
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+        </a>
+      </div>
+      <div class="navbar-menu" id="navMenu">
+        <div class="navbar-start">
+          <a class="navbar-item" href="/pages/about.html">about</a>
+          <a class="navbar-item" href="/pages/coffee.html">☕</a>
+          <a class="navbar-item" href="https://matrix.to/#/#web-scraping:matrix.org">#web-scraping on matrix</a>
+        </div>
+      </div>
+    </nav>
+  </div>
+  <div class="main">
+<div class="content">
+  <div class="post-meta">
+<div class="post-meta">
+    <a href="https://scrapecrow.com/category/articles.html" class="category">articles</a>
+    &mdash;
+    <span title="2023-01-02T00:00:00+01:00">Mon 02 January 2023</span></br>
+    <a class="tag" href="https://scrapecrow.com/tag/python.html" title="python programming language">python</a>
+    <a class="tag" href="https://scrapecrow.com/tag/beginner.html" title="beginner level article">beginner</a>
+    <a class="tag" href="https://scrapecrow.com/tag/tracking.html" title="">tracking</a>
+    </br>
+</div>  </div>
+  <h1>A Year of Writing about Web Scraping in Review</h1>
+  <div class="post-content">
+    <!--insert table of contents between text and first header-->
+    <p>At the beginning of 2022 I've joined <a href="https://scrapfly.io">Scrapfly.io</a> - a small web scraping API company. One of my main roles is to keep <a href="https://scrapfly.io/blog/">our blog</a> running with various tutorials and web scraping highlights.<br/>
+So, to wrap up this year, here's a list of my favorite articles I've worked on in 2022 and what I've learned from working on them!</p>
+
+    <hr>
+    <div class="pure-u">
+      <div id="toc"><ul><li><a class="toc-href" href="#introductions" title="Introductions">Introductions</a></li><li><a class="toc-href" href="#guides" title="Guides">Guides</a></li><li><a class="toc-href" href="#key-subjects" title="Key Subjects">Key Subjects</a></li><li><a class="toc-href" href="#favorites" title="Favorites">Favorites</a></li><li><a class="toc-href" href="#lessons-learned" title="Lessons Learned">Lessons Learned</a></li><li><a class="toc-href" href="#the-great-beyond" title="The Great Beyond!">The Great Beyond!</a></li></ul></div>
+    </div>
+    <hr>
+    <h2 id="introductions">Introductions</h2>
+<p>Web scraping is a very available niche. You can write a scraper in almost any programming language as long as it has a viable HTTP client (which is basically any language). </p>
+<p>At ScrapFly, we have a diverse client base using all sorts off programming languages to scrape the web using our API. 
+So, I wrote an in-depth and up-to-date introductions to web scraping in several languages which was quite a journey on it's own:</p>
+<ul>
+<li><a href="https://scrapfly.io/blog/web-scraping-with-python/">Python</a> is the most popular language in this medium for a reason - it's a great data language with strong async support and some of the best community libraries out there.</li>
+<li><a href="https://scrapfly.io/blog/web-scraping-with-r/">R language</a> is surprisingly effective. The pipe operator really fits into web scraping flows.</li>
+<li><a href="https://scrapfly.io/blog/web-scraping-with-php-101/">PHP</a> has a lot of great web tools that fit into web scraping.</li>
+<li><a href="https://scrapfly.io/blog/web-scraping-with-ruby/">Ruby</a> feels a lot like Python just with a smaller community and fewer tools.</li>
+<li><a href="https://scrapfly.io/blog/web-scraping-with-nodejs/">Javascript/NodeJS</a> seems to be able to do everything and scraping is no exception. I'd say that it's not a very good data language so it wouldn't be my first choice for scraping.</li>
+</ul>
+<p>This was a great exercise to understand what makes a good web scraping environment. 
+Working on these articles provided really valuable horizontal growth as it presented the problem of web scraping from different perspectives. Every language seems to have something unique and special about it and having general overview can help you to create your own mutant of valuable ideas and techniques.</p>
+<h2 id="guides">Guides</h2>
+<p>Another way we tried to reach out to scraper developers is by writing hands-on <strong><a href="https://scrapfly.io/blog/tag/scrapeguide/">scrape guides</a></strong> for popular scraping targets like:   </p>
+<ul>
+<li><a href="https://scrapfly.io/blog/how-to-scrape-instagram/">Instagram</a> </li>
+<li><a href="https://scrapfly.io/blog/how-to-scrape-bookingcom/">Booking.com</a> </li>
+<li><a href="https://scrapfly.io/blog/how-to-scrape-amazon/">Amazon</a></li>
+<li><a href="https://scrapfly.io/blog/how-to-scrape-zillow/">Zillow</a></li>
+</ul>
+<p>And dozens of others.</p>
+<p>For these, I had to set on standard tools and libraries which was a difficult choice. Using browser automation tools like <a href="https://scrapfly.io/blog/web-scraping-with-selenium-and-python/">Selenium</a>, <a href="https://scrapfly.io/blog/web-scraping-with-playwright-and-python/">Playwright</a> or <a href="https://scrapfly.io/blog/web-scraping-with-puppeteer-and-nodejs/">Puppeteer</a> can often be easier but they don't 
+fit the tutorial format well as browser are complicated and work differently on different user machines. </p>
+<p>I've settled on Python with <a href="https://pypi.org/project/httpx/">httpx</a> and <a href="https://pypi.org/project/parsel/">parsel</a> as the de facto scraping environment as it really powerful and approachable.   </p>
+<p>Httpx is a brilliant http client which supports http2 and respects RFC standards. </p>
+<p>Parsel supports both CSS and XPath selectors for HTML parsing. Python itself comes with loads of built-in tools like <code>collections</code> and <code>urllib</code> libraries that really fit into the web scraping world.</p>
+<p>Each popular target is surprisingly different though I noticed how prevelant client-side rendering is in the modern web. More than half of the scrape guides didn't use much of HTML parsing at all! Instead, <a href="https://scrapfly.io/blog/how-to-scrape-hidden-web-data/">hidden web data</a> scraping turned out to be a much easier way to scrape this modern javascript-powered part of the web.</p>
+<h2 id="key-subjects">Key Subjects</h2>
+<p>Once we started working on scrape guides we noticed a lot of repetition. </p>
+<p>Common subjects like <a href="https://scrapfly.io/blog/how-to-scrape-hidden-web-data/">how to scrape hidden web data</a>, <a href="https://scrapfly.io/blog/parse-json-jmespath-python/">how to parse JSON data</a> and how to use <a href="https://scrapfly.io/blog/parsing-html-with-css/">CSS</a> and <a href="https://scrapfly.io/blog/parsing-html-with-xpath/">XPath</a> selectors would have to be repeated in each article. </p>
+<p>So, it seemed like it'd be appropriate that we cover each of these subjects individually. This, lead us even further - what are some other key web scraping subjects that could be referenced anywhere? Here are a few we've settled on:</p>
+<ul>
+<li><a href="https://scrapfly.io/blog/how-to-ensure-web-scrapped-data-quality/">How to ensure web scraped data quality?</a> - data validation is boring but vital for consistent data delivery.</li>
+<li><a href="https://scrapfly.io/blog/how-to-turn-web-scrapers-into-data-apis/">How to turn web scrapers into data APIs?</a> - real time scraping API with FastAPI and async Python.</li>
+<li><a href="https://scrapfly.io/blog/how-to-rotate-proxies-in-web-scraping/">How to rotate proxies?</a> - weighted randomization!</li>
+<li><a href="https://scrapfly.io/blog/web-scraping-speed/">web scraper scaling in Python</a> - Asyncio, threads and subprocesses from the point of view of web scraping.</li>
+<li><a href="https://scrapfly.io/blog/how-to-rate-limit-asynchronous-python-requests/">How to rate limit requests?</a></li>
+<li>How to use browser automation tools like <a href="https://scrapfly.io/blog/web-scraping-with-puppeteer-and-nodejs/">Puppeteer</a>, <a href="https://scrapfly.io/blog/web-scraping-with-playwright-and-python/">Playwright</a> and <a href="https://scrapfly.io/blog/web-scraping-with-selenium-and-python/">Selenium</a></li>
+</ul>
+<h2 id="favorites">Favorites</h2>
+<p>The most difficult and interesting subject in web scraping is definitely <strong>scraper blocking</strong>. To cover it I've got a bunch of help from my teammates and put together a <a href="https://scrapfly.io/blog/how-to-scrape-without-getting-blocked-tutorial/">definitive guide on web scraper blocking</a> which took a lot of research and turned out to be our reader's favorite!</p>
+<p>I thought I was pretty well versed in the blocking subject but stuff like how powerful <a href="https://scrapfly.io/blog/how-to-avoid-web-scraping-blocking-tls/">TLS fingerprinting</a> is really blew my mind.</p>
+<p>My personal favorite article, however, is <a href="https://scrapfly.io/blog/search-engine-using-web-scraping/">creating search engines using web scraping</a> where we demo how any website can be quickly indexed with a bit of scraper code, some clever HTML parsing and index front-end like LunrJS.</p>
+<h2 id="lessons-learned">Lessons Learned</h2>
+<p>We spent a lot of time designing our blog to function as a knowledge graph rather than a series of individual guides. This paid off pretty well as SEO seems to like references. </p>
+<p>One slight disappointment was how cool features can backfire when it comes to SEO. For our <a href="https://scrapfly.io/blog/parsing-html-with-css/">CSS</a> and <a href="https://scrapfly.io/blog/parsing-html-with-xpath/">XPath</a> articles, we built real-time on-page testing widgets that were not liked by the search engines and took a while to optimize and finally pay off.</p>
+<p>Keyword management was another important challenge as we wanted all sorts of users to find our content be it beginners or advanced masters.</p>
+<h2 id="the-great-beyond">The Great Beyond!</h2>
+<p>Exploring web scraping subject is a real pleasure - it's vast and challenging thought the best part is that the end of the day you see concrete data results making all of that work worth it.</p>
+<p>We still have loads of ideas on educational web scraping content that we wil be working on in 2023. We've started work on a collection of <a href="https://scrapfly.io/web-scraping-tools">web scraping tools</a> and a few more secret projects that should pop up soon! :)</p>
+  </div>
+</div>
+<hr>
+<div class="article-buttons">
+  <div class="float-side applause" title="show your appreciation">
+    <applause-button url="https://scrapecrow.com/year-of-writing-in-review.html" style="width: 58px; height: 58px;" />
+  </div>
+  <div class="article-button applause" title="show your appreciation">
+    <applause-button url="https://scrapecrow.com/year-of-writing-in-review.html" style="width: 58px; height: 58px;" />
+  </div>
+  <div class="article-button twitter" title="share on twitter">
+    <a href="http://twitter.com/share?text=&url=https://scrapecrow.com/year-of-writing-in-review.html&hashtags=">
+      <i class="fa fa-twitter fa-3x pure-menu-link" aria-hidden="true"></i>
+    </a>
+  </div>
+  <div class="article-button email">
+    <a href="https://716df175.sibforms.com/serve/MUIEALpKPp8WjHrVwQOX6keZXLkJRbnFEh2y6YhTmVmT4Z0Khgbi2MFvPO1OObOrjbMi_S0M7VXkXGkcbh36H-SqEwM3dHXxdrOOXwEPGcp9rTQKkQvMkC70Dq9RmCoikia87nLsRcx0VVGmCG2zyx5s8BwpqevRmh70vKSaLe7e95yZDCROMvm2HcN3UpLw7UsFxl_UbI6TjY_e" title="subscribe to mailist">
+      <i class="fa fa-email-bulk-o fa-3x pure-menu-link" aria-hidden="true"></i>
+    </a>
+  </div>
+</div>
+<hr>
+<div class="comments">
+  <script src="https://utteranc.es/client.js" repo="granitosaurus/scrapecrow"
+    issue-term="year-of-writing-in-review" label="comments"
+    theme="github-light" crossorigin="anonymous" async>
+  </script>
+</div>
+  </div>
+  <footer class="footer">
+    <div class="content">
+      <span class="footer-item"><a href="/archives.html">Archives</a></span>
+      <span class="footer-item"><a href="/tags.html">Tags</a></span>
+      <span class="footer-item"><a href="https://blog.getpelican.com/">Made with Pelican</a></span>
+      <span class="footer-item"><a href="https://github.com/granitosaurus/scrapecrow/">Source on Github</a></span>
+      <span class="footer-item"><a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA</a></span>
+      <span class="footer-item">
+        <a href="atom.xml">
+          <i class="fa fa-rss-square" aria-hidden="true"></i>
+        </a>
+      </span>
+    </div>
+  </footer>
+<script data-goatcounter="https://scrapecrow.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+
+</html>

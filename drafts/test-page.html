@@ -54,7 +54,6 @@
       <div class="navbar-menu" id="navMenu">
         <div class="navbar-start">
           <a class="navbar-item" href="/pages/about.html">about</a>
-          <a class="navbar-item" href="/pages/hire.html">hire</a>
           <a class="navbar-item" href="/pages/coffee.html">☕</a>
           <a class="navbar-item" href="https://matrix.to/#/#web-scraping:matrix.org">#web-scraping on matrix</a>
         </div>
@@ -84,21 +83,20 @@
 <p>Here lets add some code:<br/>
 Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. <br/>
 It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
 <span class="normal">2</span>
 <span class="normal">3</span>
 <span class="normal">4</span>
 <span class="normal">5</span>
 <span class="normal">6</span>
-<span class="normal">7</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">parsel</span> <span class="kn">import</span> <span class="n">Selector</span>
+<span class="normal">7</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">from</span> <span class="nn">parsel</span> <span class="kn">import</span> <span class="n">Selector</span>
 
 <span class="k">async</span> <span class="k">def</span> <span class="nf">foo</span><span class="p">(</span><span class="n">one</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span> <span class="n">two</span><span class="p">:</span><span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span><span class="p">:</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">one</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">two</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">one</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">two</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-</code></pre></div>
-</td></tr></table>
+</code></pre></div></td></tr></table></div>
 <p>Some sorted list:</p>
 <ol>
 <li>Entry number one</li>

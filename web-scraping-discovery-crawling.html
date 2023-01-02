@@ -58,7 +58,6 @@
       <div class="navbar-menu" id="navMenu">
         <div class="navbar-start">
           <a class="navbar-item" href="/pages/about.html">about</a>
-          <a class="navbar-item" href="/pages/hire.html">hire</a>
           <a class="navbar-item" href="/pages/coffee.html">☕</a>
           <a class="navbar-item" href="https://matrix.to/#/#web-scraping:matrix.org">#web-scraping on matrix</a>
         </div>
@@ -125,19 +124,18 @@ Lets take a look at example target discovery implementation that uses web crawli
 <p>These are 4 components that make up a basic web crawler. Lets see how we can implement them for hm.com.</p>
 <h3 id="crawling-rules">Crawling Rules</h3>
 <p>First lets establish our crawling rules. As per above flowchart our crawler needs to know which urls to follow up and which to save:</p>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
 <span class="normal">2</span>
 <span class="normal">3</span>
 <span class="normal">4</span>
 <span class="normal">5</span>
-<span class="normal">6</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">re</span>
+<span class="normal">6</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">import</span> <span class="nn">re</span>
 
 <span class="k">class</span> <span class="nc">HMScraper</span><span class="p">:</span>
     <span class="n">save_urls</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s2">"/productpage\."</span><span class="p">)</span>  <span class="c1"># e.g ...com/en_us/productpage.09008.html</span>
     <span class="n">follow_urls</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s2">"\.html"</span><span class="p">)</span>
     <span class="n">follow_saved_urls</span> <span class="o">=</span> <span class="kc">False</span>
-</code></pre></div>
-</td></tr></table>
+</code></pre></div></td></tr></table></div>
 <p>Here we defined our crawling rules:</p>
 <ul>
 <li>We want to save all urls that contain <code>/productpage.</code> in the url as all hm.com products follow this pattern  </li>
@@ -151,7 +149,7 @@ Lets take a look at example target discovery implementation that uses web crawli
 <h3 id="crawl-loop">Crawl Loop</h3>
 <p>Having crawling rules defined we need to create a crawl loop that uses these rules to schedule a whole crawl process. <br/>
 In this example for our http processing we'll be using <code>httpx</code> and for html parsing <code>parsel</code> python packages. With these two tools we can define basic crawler skeleton:</p>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
 <span class="normal"> 4</span>
@@ -202,7 +200,7 @@ In this example for our http processing we'll be using <code>httpx</code> and fo
 <span class="normal">49</span>
 <span class="normal">50</span>
 <span class="normal">51</span>
-<span class="normal">52</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">logging</span>
+<span class="normal">52</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">asyncio</span>
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">from</span> <span class="nn">urllib.parse</span> <span class="kn">import</span> <span class="n">urlparse</span>
@@ -223,7 +221,7 @@ In this example for our http processing we'll be using <code>httpx</code> and fo
         <span class="bp">self</span><span class="o">.</span><span class="n">seen_urls</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="fm">__aenter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">"""on scraper creation open http session"""</span>
+<span class="w">        </span><span class="sd">"""on scraper creation open http session"""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">session</span> <span class="o">=</span> <span class="n">AsyncClient</span><span class="p">(</span>
             <span class="c1"># we should use a browser-like user agent header to avoid being blocked</span>
             <span class="n">headers</span><span class="o">=</span><span class="p">{</span>
@@ -233,11 +231,11 @@ In this example for our http processing we'll be using <code>httpx</code> and fo
         <span class="k">return</span> <span class="bp">self</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="fm">__aexit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
-        <span class="sd">"""on scraper destruction close http session"""</span>
+<span class="w">        </span><span class="sd">"""on scraper destruction close http session"""</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">aclose</span><span class="p">()</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="sd">"""our http request wrapper function that implements rate limiting"""</span>
+<span class="w">        </span><span class="sd">"""our http request wrapper function that implements rate limiting"""</span>
         <span class="k">async</span> <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">limiter</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">resp</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
@@ -254,10 +252,9 @@ In this example for our http processing we'll be using <code>httpx</code> and fo
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">find_links</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">response</span><span class="p">):</span>
         <span class="o">...</span>
-</code></pre></div>
-</td></tr></table>
+</code></pre></div></td></tr></table></div>
 <p>With this skeleton, we have basic usage API for our scraper. We can define our run function:</p>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
 <span class="normal"> 4</span>
@@ -266,7 +263,7 @@ In this example for our http processing we'll be using <code>httpx</code> and fo
 <span class="normal"> 7</span>
 <span class="normal"> 8</span>
 <span class="normal"> 9</span>
-<span class="normal">10</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">run</span><span class="p">():</span>
+<span class="normal">10</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">async</span> <span class="k">def</span> <span class="nf">run</span><span class="p">():</span>
     <span class="k">async</span> <span class="k">with</span> <span class="n">HMScraper</span><span class="p">()</span> <span class="k">as</span> <span class="n">scraper</span><span class="p">:</span>
         <span class="n">start_urls</span> <span class="o">=</span> <span class="p">[</span>
             <span class="c1"># homepage for US website</span>
@@ -276,11 +273,10 @@ In this example for our http processing we'll be using <code>httpx</code> and fo
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
     <span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">run</span><span class="p">())</span>
-</code></pre></div>
-</td></tr></table>
+</code></pre></div></td></tr></table></div>
 <p>Great! Now all we have to do is fill in the interesting bits: link extraction and scrape loop.<br/>
 For scrape loop all we need to do is request urls, find links in them, follow or save ones that match our rules:</p>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
 <span class="normal"> 4</span>
@@ -304,8 +300,8 @@ For scrape loop all we need to do is request urls, find links in them, follow or
 <span class="normal">22</span>
 <span class="normal">23</span>
 <span class="normal">24</span>
-<span class="normal">25</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>    <span class="k">async</span> <span class="k">def</span> <span class="nf">scrape</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">urls</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
-        <span class="sd">"""Breadth first"""</span>
+<span class="normal">25</span></pre></div></td><td class="code"><div><pre><span></span><code>    <span class="k">async</span> <span class="k">def</span> <span class="nf">scrape</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">urls</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+<span class="w">        </span><span class="sd">"""Breadth first"""</span>
         <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
             <span class="n">to_follow</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
             <span class="k">for</span> <span class="n">resp</span> <span class="ow">in</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">as_completed</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_request</span><span class="p">(</span><span class="n">url</span><span class="p">)</span> <span class="k">for</span> <span class="n">url</span> <span class="ow">in</span> <span class="n">urls</span><span class="p">]):</span>
@@ -329,12 +325,11 @@ For scrape loop all we need to do is request urls, find links in them, follow or
                 <span class="n">urls</span> <span class="o">=</span> <span class="n">to_follow</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">return</span>  <span class="c1"># end of the crawl</span>
-</code></pre></div>
-</td></tr></table>
+</code></pre></div></td></tr></table></div>
 <p>Here we've defined an "endless" while loop that does exactly that: get htmls, parse them for urls where we store some of them and follow up the others. The last remaining piece is our link extraction logic.   </p>
 <h3 id="link-extracting">Link Extracting</h3>
 <p>Link extraction process is the core part that makes the crawler and can get quite complex in logic. For our example domain <code>hm.com</code> it's relatively simple. We'll find all urls in the page by following <code>&lt;a&gt;</code> nodes:</p>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
 <span class="normal"> 4</span>
@@ -351,7 +346,7 @@ For scrape loop all we need to do is request urls, find links in them, follow or
 <span class="normal">15</span>
 <span class="normal">16</span>
 <span class="normal">17</span>
-<span class="normal">18</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>    <span class="k">def</span> <span class="nf">find_links</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resp</span><span class="p">,</span> <span class="n">only_unique</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="normal">18</span></pre></div></td><td class="code"><div><pre><span></span><code>    <span class="k">def</span> <span class="nf">find_links</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resp</span><span class="p">,</span> <span class="n">only_unique</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="c1"># build a parsable tree from html body</span>
         <span class="n">sel</span> <span class="o">=</span> <span class="n">Selector</span><span class="p">(</span><span class="n">resp</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
         <span class="n">current_url_parts</span> <span class="o">=</span> <span class="n">urlparse</span><span class="p">(</span><span class="n">resp</span><span class="o">.</span><span class="n">url</span><span class="p">)</span>
@@ -369,14 +364,13 @@ For scrape loop all we need to do is request urls, find links in them, follow or
                 <span class="k">continue</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">seen_urls</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
             <span class="k">yield</span> <span class="n">url</span>
-</code></pre></div>
-</td></tr></table>
+</code></pre></div></td></tr></table></div>
 <p>Here we first build a tree parser object to get all those <code>&lt;a&gt;</code> node links. Then we iterate through them and filter out anything that is not an url of this website or has been visited already.</p>
 <p class="info">Link Extraction can get complicated very quickly as some website can contain non-html files (e.g. <code>/document.pdf</code>) that need to be filtered out and many other niche scenarios. </p>
 <p>With link extraction complete, we can put together our whole crawler into once piece and see how it performs!</p>
 <h3 id="putting-it-all-together">Putting It All Together</h3>
 <p>Now that we have all parts complete: crawl loop, link extraction, link matching and request limiting. Let's put it all together and run it:</p>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">  1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">  1</span>
 <span class="normal">  2</span>
 <span class="normal">  3</span>
 <span class="normal">  4</span>
@@ -476,7 +470,7 @@ For scrape loop all we need to do is request urls, find links in them, follow or
 <span class="normal"> 98</span>
 <span class="normal"> 99</span>
 <span class="normal">100</span>
-<span class="normal">101</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">logging</span>
+<span class="normal">101</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">asyncio</span>
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">from</span> <span class="nn">urllib.parse</span> <span class="kn">import</span> <span class="n">urlparse</span>
@@ -496,7 +490,7 @@ For scrape loop all we need to do is request urls, find links in them, follow or
         <span class="bp">self</span><span class="o">.</span><span class="n">seen_urls</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="fm">__aenter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">"""on scraper creation open http session"""</span>
+<span class="w">        </span><span class="sd">"""on scraper creation open http session"""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">session</span> <span class="o">=</span> <span class="n">AsyncClient</span><span class="p">(</span>
             <span class="c1"># we should use a browser-like user agent header to avoid being blocked</span>
             <span class="n">headers</span><span class="o">=</span><span class="p">{</span>
@@ -506,7 +500,7 @@ For scrape loop all we need to do is request urls, find links in them, follow or
         <span class="k">return</span> <span class="bp">self</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="fm">__aexit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
-        <span class="sd">"""on scraper destruction close http session"""</span>
+<span class="w">        </span><span class="sd">"""on scraper destruction close http session"""</span>
         <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">aclose</span><span class="p">()</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
@@ -521,7 +515,7 @@ For scrape loop all we need to do is request urls, find links in them, follow or
         <span class="nb">print</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
 
     <span class="k">async</span> <span class="k">def</span> <span class="nf">scrape</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">urls</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
-        <span class="sd">"""Breadth first"""</span>
+<span class="w">        </span><span class="sd">"""Breadth first"""</span>
         <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
             <span class="n">to_follow</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
             <span class="k">for</span> <span class="n">resp</span> <span class="ow">in</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">as_completed</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_request</span><span class="p">(</span><span class="n">url</span><span class="p">)</span> <span class="k">for</span> <span class="n">url</span> <span class="ow">in</span> <span class="n">urls</span><span class="p">]):</span>
@@ -544,7 +538,7 @@ For scrape loop all we need to do is request urls, find links in them, follow or
                 <span class="k">return</span>  <span class="c1"># end of the crawl</span>
 
     <span class="k">def</span> <span class="nf">find_links</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resp</span><span class="p">,</span> <span class="n">only_unique</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-        <span class="sd">"""</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        find all relative page links in html link nodes</span>
 <span class="sd">        """</span>
         <span class="c1"># build a parsable tree from html body</span>
@@ -577,8 +571,7 @@ For scrape loop all we need to do is request urls, find links in them, follow or
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
     <span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">run</span><span class="p">())</span>
-</code></pre></div>
-</td></tr></table>
+</code></pre></div></td></tr></table></div>
 <p>If we run our crawler we'll notice few things:
 - At time of writing 13800~ results are being found which matches well with our other <a href="/tag/discovery-methods.html">#discovery-methods</a> used in this blog series.
 - It took a while to complete this crawl: TODO second. Since we are crawling so many pages compared to other discovery methods we crawl </p>

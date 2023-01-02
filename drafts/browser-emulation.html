@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title> Scrapecrow - Using Web Browser Emulation To Scrape Dynamic Content</title>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="description" content="Educational blog about web-scraping, crawling and related data extraction subjects" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css"
+    integrity="sha256-XoaMnoYC5TH6/+ihMEnospgm0J1PM/nioxbOUdnM8HY=" crossorigin="anonymous">
+  <script src="https://scrapecrow.com/theme/main.js"></script>
+  <link rel="stylesheet" href="https://scrapecrow.com/theme/css/main.css" />
+  <link rel="stylesheet" href="https://scrapecrow.com/theme/css/applause-button.css" />
+  <script src="https://scrapecrow.com/theme/applause-button.js"></script>
+  <link href="Scrapecrow/feeds/all.atom.xml" type="application/atom+xml" rel="alternate"
+    title="Scrapecrow Full Atom Feed" />
+  <link href="Scrapecrow/atom.xml" type="application/atom+xml" rel="alternate"
+    title="Scrapecrow Atom Feed" />
+  <link href="Scrapecrow/rss.xml" type="application/rss+xml" rel="alternate"
+    title="Scrapecrow RSS Feed" />
+  <link href="Scrapecrow/feeds/{slug}.atom.xml" type="application/atom+xml"
+    rel="alternate" title="Scrapecrow Categories Atom Feed" />
+
+<meta name="author" content="Bernardas Ališauskas" />
+<meta name="description" content="TODO" />
+  <meta property="og:site_name" content="Scrapecrow"/>
+  <meta property="og:title" content="Using Web Browser Emulation To Scrape Dynamic Content"/>
+  <meta property="og:description" content="TODO"/>
+  <meta property="og:locale" content="en_US"/>
+  <meta property="og:url" content="https://scrapecrow.com/drafts/browser-emulation.html"/>
+  <meta property="og:type" content="article"/>
+  <meta property="article:published_time" content="2021-12-12 00:00:00+01:00"/>
+  <meta property="article:modified_time" content="2021-12-12 00:00:00+01:00"/>
+  <meta property="article:author" content="Bernardas Ališauskas">
+  <meta property="article:section" content="articles"/>
+  <meta property="article:tag" content="python"/>
+  <meta property="article:tag" content="beginner"/>
+  <meta property="article:tag" content="tracking"/>
+  <meta property="og:image" content="https://scrapecrow.com/images/logo-og.png">
+</head>
+
+<body>
+  <div class="navigation">
+    <nav class="navbar" role="navigation" aria-label="main navigation">
+      <div class="navbar-brand">
+        <a class="navbar-item" href="https://scrapecrow.com">
+          <img src="/images/logo.svg" width="50"></img>
+        </a>
+        <a class="navbar-item" href="https://scrapecrow.com">Scrapecrow</a>
+        <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navMenu">
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+        </a>
+      </div>
+      <div class="navbar-menu" id="navMenu">
+        <div class="navbar-start">
+          <a class="navbar-item" href="/pages/about.html">about</a>
+          <a class="navbar-item" href="/pages/coffee.html">☕</a>
+          <a class="navbar-item" href="https://matrix.to/#/#web-scraping:matrix.org">#web-scraping on matrix</a>
+        </div>
+      </div>
+    </nav>
+  </div>
+  <div class="main">
+<div class="content">
+  <div class="post-meta">
+<div class="post-meta">
+    <a href="https://scrapecrow.com/category/articles.html" class="category">articles</a>
+    &mdash;
+    <span title="2021-12-12T00:00:00+01:00">Sun 12 December 2021</span></br>
+    <a class="tag" href="https://scrapecrow.com/tag/python.html" title="python programming language">python</a>
+    <a class="tag" href="https://scrapecrow.com/tag/beginner.html" title="beginner level article">beginner</a>
+    <a class="tag" href="https://scrapecrow.com/tag/tracking.html" title="">tracking</a>
+    </br>
+</div>  </div>
+  <h1>Using Web Browser Emulation To Scrape Dynamic Content</h1>
+  <div class="post-content">
+    <!--insert table of contents between text and first header-->
+    <p>The web is becoming increasingly more complex and dynamic. Many websites these days rely on heavily on javascript to render interactive data (frameworks such as React, Angular, Vue.js) which for web-scrapers can be a challenging problem.  </p>
+<p>Traditional web-scrapers use HTTP client to request specific web resources, however most of the time web servers expect the client to be a browser with all the browser capabilities such as javascript execution and styling.  </p>
+<p>Thus, web-scraper developers would often run into a very common difficulty: the scraper program sees different data than the browser. </p>
+<figure class="kg-card kg-image-card kg-width-wide kg-card-hascaption">
+
+![comparison of what browser and web scraper sees](https://scrapfly.io/blog/content/images/2021/12/scraper-vs-browser.png)
+
+<figcaption>On the left we see what the browser sees; on the right is our http webscraper - where did everything go?</figcaption>
+</figure>
+<p>There are few ways to deal with this dynamic javascript generated content in the context of web-scraping:</p>
+<p>First, we could <strong>reverse engineer website's behavior</strong> and replicate it in our scraper program. However, as the complexity of the web grows, this approach is becoming very time-consuming, difficult and is required to be done for every website individually.<br/>
+Alternatively, we can <strong>automate a real browser</strong> to do the heavy lifting for us by integrating it into our web scraper program.   </p>
+<p>In this article, we'll take a look at the latter - what are the most common browser automation approaches for web-scraping? What are common pitfalls and challenges when using this approach? And ScrapFly's very own approach to this problem that simplifies it all!</p>
+
+    <hr>
+    <div class="pure-u">
+      <div id="toc"><ul><li><a class="toc-href" href="#example-scrape-task" title="Example Scrape Task">Example Scrape Task</a></li><li><a class="toc-href" href="#browser-automation" title="Browser Automation">Browser Automation</a><ul><li><a class="toc-href" href="#selenium" title="Selenium">Selenium</a></li><li><a class="toc-href" href="#puppeteer" title="Puppeteer">Puppeteer</a></li><li><a class="toc-href" href="#playwright" title="Playwright">Playwright</a></li><li><a api'="" class="toc-href" href="#scrapflys-api" s="" title="ScrapFly">ScrapFly's API</a></li><li><a class="toc-href" href="#which-one-to-choose" title="Which One To Choose?">Which One To Choose?</a></li></ul></li><li><a class="toc-href" href="#challenges-and-tips_1" title="Challenges and Tips">Challenges and Tips</a><ul><li><a class="toc-href" href="#fingerprints" title="Fingerprints">Fingerprints</a></li><li><a class="toc-href" href="#scaling-asynchronous-clients" title="Scaling - Asynchronous Clients">Scaling - Asynchronous Clients</a></li><li><a class="toc-href" href="#disabling-unnecessary-load" title="Disabling Unnecessary Load">Disabling Unnecessary Load</a></li></ul></li><li><a class="toc-href" href="#summary_2" title="Summary">Summary</a></li></ul></div>
+    </div>
+    <hr>
+    <h2 id="example-scrape-task">Example Scrape Task</h2>
+<p>For this article, we'll be using a real world web-scraping example:  </p>
+<p>We'll be scraping online experience data from <a href="https://airbnb.com/experiences">https://airbnb.com/experiences</a>. We'll keep our demo task short and see how can we fully render a single experience page: <a href="https://www.airbnb.com/experiences/2496585">https://www.airbnb.com/experiences/2496585</a>.</p>
+<p><img alt="Example target used in this tutorial" src="https://scrapfly.io/blog/content/images/2021/12/browser-automation-exampletask.png"/></p>
+<p>Airbnb is one of the biggest websites that is using dynamic front-end generated by React Javascript framework. Without browser emulation, we'd have to reverse-engineering how the website functions before we could see and scrape it's full HTML content. However, with browser emulation things are much simpler for us: we can go to the page, wait for the contents to load and render, and finally pull the full page contents for parsing.</p>
+<p>We'll implement a short solution to this challenge in 4 different approaches: Selenium, Puppeteer, Playwright and ScrapFly's API and see how they match up!</p>
+<h2 id="browser-automation">Browser Automation</h2>
+<p>Modern browsers such as Chrome and Firefox (and their derivatives) come with automation protocols built-in. These protocols introduce a standard way for programs to control an active browser instance in a headless manner (meaning without GUI element) which is great for web-scraping as we can execute the entire browser execution pipeline on a dedicated server rendering our webpages for us.</p>
+<p>Currently, there are two popular browser automation protocols: </p>
+<ul>
+<li>older <strong>webdriver protocol</strong> which is implemented through extra browser layer called <em>webdriver</em>. Webdriver intercepts action requests and issues browser control commands.</li>
+<li>newer <strong>Chrome DevTools Protocol</strong> (<strong>CDP</strong> for short). Unlike webdriver, CDP control layer is already implemented in modern browsers implicitly.</li>
+</ul>
+<p>In this article we'll be mostly covering CDP, but the developer experience of these protocols is very similar, often even interchangeable.</p>
+<div class="kg-card kg-callout-card kg-callout-card-blue">
+<div class="kg-callout-emoji">ℹ️</div>
+<div class="kg-callout-text">
+
+For more on these protocols see official documentation pages [Chrome DevTools Protocol](https://chromedevtools.github.io/devtools-protocol/) and [WebDriver MDN documentation](https://developer.mozilla.org/en-US/docs/Web/WebDriver)
+
+</div></div>
+<p>Let's take a look at the most common browser automation clients and how can we solve our real world example in each one of them.</p>
+<h3 id="selenium">Selenium</h3>
+<p>Selenium is one of the first big automation clients created for automating web-site testing. It supports two browser control protocols: older webdriver protocol and since Selenium v4 Chrome Devtools Protocol (CDP). It's a very popular package that is implemented in multiple languages as well as supporting all major web browsers. Meaning it has huge community, big feature set and a robust underlying structure. </p>
+<p><strong>Languages</strong>: Java, Python, C#, Ruby, JavaScript, Perl, PHP, R, Objective-C and Haskell<br/>
+<strong>Browsers</strong>: Chrome, Firefox, Safari, Edge, Internet Explorer (and their derivatives)<br/>
+<strong>Pros</strong>: Big community that has been around for a while - meaning loads of free resources. Easy to understand synchronous API for common automation tasks.</p>
+<p>Let's take a look how we could use Selenium to solve our airbnb.com scraper problem. Our goal is to render retrieve the fully rendered html page of this location so we could later parse the available data. </p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="c1"># Python with Selenium</span>
+<span class="kn">from</span> <span class="nn">selenium</span> <span class="kn">import</span> <span class="n">webdriver</span>
+<span class="kn">from</span> <span class="nn">selenium.webdriver.common.by</span> <span class="kn">import</span> <span class="n">By</span>
+<span class="kn">from</span> <span class="nn">selenium.webdriver.support.ui</span> <span class="kn">import</span> <span class="n">WebDriverWait</span>
+<span class="kn">from</span> <span class="nn">selenium.webdriver.support.expected_conditions</span> <span class="kn">import</span> <span class="n">visibility_of_element_located</span>
+
+<span class="n">browser</span> <span class="o">=</span> <span class="n">webdriver</span><span class="o">.</span><span class="n">Chrome</span><span class="p">()</span>
+<span class="n">browser</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"https://www.airbnb.com/experiences/272085"</span><span class="p">)</span>
+<span class="n">title</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">WebDriverWait</span><span class="p">(</span><span class="n">driver</span><span class="o">=</span><span class="n">browser</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">until</span><span class="p">(</span><span class="n">visibility_of_element_located</span><span class="p">((</span><span class="n">By</span><span class="o">.</span><span class="n">CSS_SELECTOR</span><span class="p">,</span> <span class="s2">"h1"</span><span class="p">)))</span>
+    <span class="o">.</span><span class="n">text</span>
+<span class="p">)</span>
+<span class="n">content</span> <span class="o">=</span> <span class="n">browser</span><span class="o">.</span><span class="n">page_source</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
+<span class="n">browser</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</code></pre></div></td></tr></table></div>
+<p>Here, we started by initiating a web browser window and requesting location to a single airbnb experience page. Next we tell our program to wait for first header to appear which indicates that full html content has loaded.<br/>
+With the page rendered fully, we can pop it's html content and parse it just as we would parse the results of a http client scraper.</p>
+<p>However, one down-side of using selenium that it doesn't support asynchronous programming, meaning every time we tell browser to do something it'll block our program until it's done. <br/>
+When working with bigger scale web-scrapers non-blocking IO is an important scaling feature as we can scrape multiple targets much faster. <br/>
+For this, let's take a look at other clients that do support asynchronous programming out of the box: puppeteer and playwright</p>
+<h3 id="puppeteer">Puppeteer</h3>
+<p>Puppeteer is an asynchronous web browser automation library for Javascript by Google (as well as Python through unofficial <a href="https://github.com/pyppeteer/pyppeteer">Pyppeteer</a> package). </p>
+<p><strong>Languages</strong>: Javascript, Python (unofficial)<br/>
+<strong>Browsers</strong>: Chrome, Firefox (Experimental)<br/>
+<strong>Pros</strong>: First strong implementation of CDP, maintained by Google, intended to be a general browser automation tool.  </p>
+<p>Compared to Selenium puppeteer support fewer languages but it fully implements CDP protocol and has strong team by Google behind it. Puppeteer also describes itself as a general purpose browser automation client rather rather than fitting itself into web testing niche - which is good news as web-scraping receives official support.</p>
+<p>Let's take a look how our airbnb.com example would look in puppeteer and javascript:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kd">const</span><span class="w"> </span><span class="nx">puppeteer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">require</span><span class="p">(</span><span class="s1">'puppeteer'</span><span class="p">);</span>
+
+<span class="p">(</span><span class="k">async</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">browser</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">puppeteer</span><span class="p">.</span><span class="nx">launch</span><span class="p">();</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="nx">page</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">browser</span><span class="p">.</span><span class="nx">newPage</span><span class="p">();</span>
+<span class="w">  </span><span class="k">await</span><span class="w"> </span><span class="nx">page</span><span class="p">.</span><span class="kr">goto</span><span class="p">(</span><span class="s1">'https://airbnb.com/experiences/272085'</span><span class="p">);</span>
+<span class="w">  </span><span class="k">await</span><span class="w"> </span><span class="nx">page</span><span class="p">.</span><span class="nx">waitForSelector</span><span class="p">(</span><span class="s2">"h1"</span><span class="p">);</span>
+<span class="w">  </span><span class="k">await</span><span class="w"> </span><span class="nx">page</span><span class="p">.</span><span class="nx">content</span><span class="p">();</span>
+<span class="w">  </span><span class="k">await</span><span class="w"> </span><span class="nx">browser</span><span class="p">.</span><span class="nx">close</span><span class="p">();</span>
+<span class="p">})();</span>
+</code></pre></div></td></tr></table></div>
+<p>As you can see, Puppeteer usage looks almost identical to that of our Selenium example with the exception of <code>await</code> keyword that indicates async nature of our program (we'll cover the value of async programming further below).</p>
+<p>Puppeteer is great, but Chrome browser + Javascript might not be the best option when it comes to maintaining complex web-scraping systems. For that, let's continue our browser automation journey and take a look at Playwright which is implemented in many more languages and browsers making it more accessible and easier to scale.</p>
+<h3 id="playwright">Playwright</h3>
+<p>Playwright is a synchronous and asynchronous web browser automation library for multiple languages by Microsoft. The main goal is Playwright is reliable end-to-end modern web app testing, however it still implements all general purpose browser automation functions (like Puppeteer) and has a growing web-scraping community.  </p>
+<p><strong>Languages</strong>: Javascript, .Net, Java and Python<br/>
+<strong>Browsers</strong>: Chrome, Firefox, Safari, Edge, Opera<br/>
+<strong>Pros</strong>: Feature rich with multiple language, browser support, both asynchronous and synchronous client implementations. Maintained by Microsoft.</p>
+<p>Let's continue with our airbnb.com example and see how it would look in Playwright:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">import</span> <span class="nn">asyncio</span>
+<span class="kn">from</span> <span class="nn">playwright.async_api</span> <span class="kn">import</span> <span class="n">async_playwright</span>
+<span class="kn">from</span> <span class="nn">playwright.sync_api</span> <span class="kn">import</span> <span class="n">sync_playwright</span>
+<span class="kn">from</span> <span class="nn">playwright.async_api._generated</span> <span class="kn">import</span> <span class="n">Page</span>
+
+<span class="c1"># asynchronous example</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">run</span><span class="p">():</span>
+    <span class="k">async</span> <span class="k">with</span> <span class="n">async_playwright</span><span class="p">()</span> <span class="k">as</span> <span class="n">pw</span><span class="p">:</span>
+        <span class="n">browser</span> <span class="o">=</span> <span class="k">await</span> <span class="n">pw</span><span class="o">.</span><span class="n">chromium</span><span class="o">.</span><span class="n">launch</span><span class="p">()</span>
+        <span class="n">pages</span> <span class="o">=</span> <span class="k">await</span> <span class="n">browser</span><span class="o">.</span><span class="n">new_page</span><span class="p">()</span>
+        <span class="k">await</span> <span class="n">page</span><span class="o">.</span><span class="n">goto</span><span class="p">(</span><span class="s1">'https://airbnb.com/experiences/272085'</span><span class="p">)</span>
+        <span class="k">await</span> <span class="n">page</span><span class="o">.</span><span class="n">wait_for_selector</span><span class="p">(</span><span class="s1">'h1'</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">url</span><span class="p">,</span> <span class="k">await</span> <span class="n">page</span><span class="o">.</span><span class="n">content</span><span class="p">()</span>
+
+<span class="c1"># synchronous example</span>
+<span class="k">def</span> <span class="nf">run</span><span class="p">():</span>
+    <span class="k">with</span> <span class="n">sync_playwright</span><span class="p">()</span> <span class="k">as</span> <span class="n">pw</span><span class="p">:</span>
+        <span class="n">browser</span> <span class="o">=</span> <span class="n">pw</span><span class="o">.</span><span class="n">chromium</span><span class="o">.</span><span class="n">launch</span><span class="p">()</span>
+        <span class="n">pages</span> <span class="o">=</span> <span class="n">browser</span><span class="o">.</span><span class="n">new_page</span><span class="p">()</span>
+        <span class="n">page</span><span class="o">.</span><span class="n">goto</span><span class="p">(</span><span class="s1">'https://airbnb.com/experiences/272085'</span><span class="p">)</span>
+        <span class="n">page</span><span class="o">.</span><span class="n">wait_for_selector</span><span class="p">(</span><span class="s1">'h1'</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">url</span><span class="p">,</span> <span class="n">page</span><span class="o">.</span><span class="n">content</span><span class="p">()</span>
+</code></pre></div></td></tr></table></div>
+<p>As you can see, playwright's API doesn't differ much from that of Selenium's or Puppeteers, and it offers both synchronous client for simple script convenience and asynchronous client for additional performance scaling. </p>
+<p>Playwright seems to tick all the boxes for browser automation: it's implemented in many languages, browsers and offers both async and sync clients.</p>
+<h3 id="scrapflys-api">ScrapFly's API</h3>
+<p>Web browser automation can be a difficult, time-consuming process: there are a lot of moving parts and variables - so many things that can go wrong. For this at ScrapFly we're offering to do the heavy lifting for you! </p>
+<p>ScrapFly's API implements core web browser automation functions: page rendering, session/proxy management, custom javascript evaluation and page loading rules - all of which help produce highly scalable and easy to manage web scraper.</p>
+<div class="kg-card kg-callout-card kg-callout-card-blue">
+<div class="kg-callout-emoji">ℹ️</div>
+<div class="kg-callout-text">
+
+One important feature of ScrapFly's API is seamless mixing of browser rendering and traditional http requests - allowing developers to optimize scrapers to their full scraping potential.
+
+</div></div>
+<p>Let's quickly take a look how can we replicate our airbnb.com scraper in ScrapFly's Python SDK:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">import</span> <span class="nn">asyncio</span>
+<span class="kn">from</span> <span class="nn">scrapfly</span> <span class="kn">import</span> <span class="n">ScrapeConfig</span><span class="p">,</span> <span class="n">ScrapflyClient</span><span class="p">,</span> <span class="n">ScrapeApiResponse</span>
+
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">run</span><span class="p">():</span>
+    <span class="n">scrapfly</span> <span class="o">=</span> <span class="n">ScrapflyClient</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s2">"YOURKEY"</span><span class="p">,</span> <span class="n">max_concurrency</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+    <span class="n">to_scrape</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">ScrapeConfig</span><span class="p">(</span>
+            <span class="n">url</span><span class="o">=</span><span class="s2">"https://www.airbnb.com/experiences/272085"</span><span class="p">,</span>
+            <span class="n">render_js</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">wait_for_selector</span><span class="o">=</span><span class="s2">"h1"</span><span class="p">,</span>
+        <span class="p">),</span>
+    <span class="p">]</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="k">await</span> <span class="n">scrapfly</span><span class="o">.</span><span class="n">concurrent_scrape</span><span class="p">(</span><span class="n">to_scrape</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">results</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">'content'</span><span class="p">])</span>
+</code></pre></div></td></tr></table></div>
+<p>ScrapFly's API simplifies the whole process to few parameter configurations. Not only that, but it automatically configures the backend browser for the best browser configurations for the given scrape target!</p>
+<p>For more on ScrapFly's browser rendering and more see our official documentation: <a href="https://scrapfly.io/docs/scrape-api/javascript-rendering">https://scrapfly.io/docs/scrape-api/javascript-rendering</a></p>
+<h3 id="which-one-to-choose">Which One To Choose?</h3>
+<p>We've covered three major browser automation clients: Selenium, Puppeteer and Playwright - so which one you should stick with? </p>
+<p>Well, it entirely depends on the project working on, but both Playwright and Puppeteer have a huge advantage over selenium by providing asynchronous clients which are much easier to scale when it comes to web-scraping.<br/>
+Further, if your project is in Javascript both puppeteer and playwright provide equally brilliant clients, however for other languages Playwright seems to be the best all-around solution. </p>
+<p>With all that being said, we at ScrapFly offer a generic, scalable and easy to manage solution. <br/>
+Our API simplifies the whole process and implements many optimizations and handles all accessibility issues such as proxies, anti-bot protection etc. your scraper might encounter.  </p>
+<div class="kg-card kg-callout-card kg-callout-card-blue">
+<div class="kg-callout-emoji">ℹ️</div>
+<div class="kg-callout-text">
+
+For more on ScrapFly's capabilities, see our handy use case guide: <https: scrapfly.io="" use-case="">
+</https:></div></div>
+<p>Finally, to wrap this up, let's take a quick look at common challenges browser based web-scrapers have to deal with and our advice of how to approach them.</p>
+<h2 id="challenges-and-tips_1">Challenges and Tips</h2>
+<p>While automating a single instance of a browser appears to be an easy task, when it comes to web-scraping there are a lot of extra challenges that need solving, such as:</p>
+<ul>
+<li>Ban prevention.</li>
+<li>Session persistence.</li>
+<li>Proxy integration.</li>
+<li>Scaling and resource usage optimization.</li>
+</ul>
+<p>Unfortunately, none of the browser automation clients are designed for web-scraping first, thus solutions to these problems have to be implemented by each developer either through community extensions or custom code.  </p>
+<p>In the next section let's take a look at a few common challenges and existing common wisdom for dealing with them.</p>
+<h3 id="fingerprints">Fingerprints</h3>
+<p>Unfortunately, modern web-browsers provide so much information about themselves that they can be easily identified and potentially blocked from accessing a web-site. To prevent this, automated browsers need to be fortified against fingerprinting, and generally this is referred to as "stealthing".</p>
+<p>First, to understand stealthing let's take a look at what is browser fingerprint. For example, <a href="https://abrahamjuliot.github.io/creepjs/">https://abrahamjuliot.github.io/creepjs/</a> is a public analysis tool that displays fingerprinting information:</p>
+<figure class="kg-card kg-image-card kg-width-wide kg-card-hascaption">
+
+![Fingerprint analysis of a Chrome browser controller by Playwright (Python)](https://scrapfly.io/blog/content/images/2021/12/browser-automation-fingerprint.png)
+
+<figcaption>Fingerprint test being run on headless Chrome browser via Playwright</figcaption>
+</figure>
+<p>In the above screenshot, we can see that the analysis tool is successfully identifying us as a headless browser. Websites could use such analysis to identify us as a bot and block our access. <br/>
+However, having this analysis information, we can start plugging these holes up and fortifying our web scraper to prevent detection. In other words, we can tell our controlled browser to lie about it's configuration - making bot identification more difficult and scraping process easier!</p>
+<p>Fortunately, web-scraping community has been working on this problem for years and there are existing tools that patch up major fingerprinting holes automatically:</p>
+<ul>
+<li>Playwright: <ul>
+<li><a href="https://github.com/berstend/puppeteer-extra/tree/automation-extra/packages/playwright-extra#readme">Playwright Extra for Javascript</a> contains various scraping addons and browser stealthing extensions</li>
+<li><a href="https://github.com/Granitosaurus/playwright-stealth">Stealth for Python</a> contains stealthing extensions.</li>
+</ul>
+</li>
+<li>Puppeteer:<ul>
+<li><a href="https://github.com/berstend/puppeteer-extra/tree/automation-extra">Puppeteer Extra for Javascript</a> contains various scraping addons and browser stealthing extensions.</li>
+</ul>
+</li>
+<li>Selenium:<ul>
+<li><a href="https://github.com/diprajpatra/selenium-stealth">Selenium Stealth for Python</a> contains browser stealthing extensions.</li>
+</ul>
+</li>
+</ul>
+<p>Despite that, there are many domain-specific and secret techniques that still manage to fingerprint a browser even with all of these fortifications applied. It's often referred to as an endless cat-and-mouse game issue, and it's worth being aware of when scaling web-scrapers.</p>
+<p>We at ScrapyFly invest a lot of time in this cat-and-mouse game and provide the best approaches available to your scraped targets automatically. So if you ever feel overwhelmed by this issue, take advantage of our countless hours of work!</p>
+<h3 id="scaling-asynchronous-clients">Scaling - Asynchronous Clients</h3>
+<p>Web browsers are some of the most complex software in the world, thus unsurprisingly they use a lot of resources and are typically quite difficult to work with reliably. When it comes to scaling web scrapers powered by web browsers there's one easy thing we can do that'll yield immediate significant performance boost: use multiple asynchronous clients!</p>
+<p>In this article we've covered Selenium, Playwright and Pupeteer.<br/>
+Unfortunately, Selenium only offers synchronous implementation, which means our scraper program has to sit idle while browser is doing blocking work (such as loading a page).<br/>
+Alternatively, with async clients offered by Puppeteer or Playwright we can optimize our scrapers to avoid unnecessary waiting. Meaning we can run multiple browsers in parallel which is a very efficient way to speeding up the whole process:</p>
+<p><img alt="synchronous scraper compared to an asynchronous one" src="https://scrapfly.io/blog/content/images/2021/12/browser-automation-sync-vs-async.png"/></p>
+<p>In this ilustration, we see how synchronous scraper is waiting for the browser to finish loading page before it can continue, while asynchronous scraper on the right using 4 different browsers can eliminate this wait. In this imaginary scenario, our async scraper can perform 4 request while sync only manages one however in real life this number could be significantly higher!</p>
+<p>Let's see how would this look in code. For this example we'll use Python and Playwright and schedule 3 different URLs to be scraped asynchronously:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">import</span> <span class="nn">asyncio</span>
+<span class="kn">from</span> <span class="nn">asyncio</span> <span class="kn">import</span> <span class="n">gather</span>
+<span class="kn">from</span> <span class="nn">playwright.async_api</span> <span class="kn">import</span> <span class="n">async_playwright</span>
+<span class="kn">from</span> <span class="nn">playwright.async_api._generated</span> <span class="kn">import</span> <span class="n">Page</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Tuple</span>
+
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">scrape_3_pages_concurrently</span><span class="p">():</span>
+    <span class="k">async</span> <span class="k">with</span> <span class="n">async_playwright</span><span class="p">()</span> <span class="k">as</span> <span class="n">pw</span><span class="p">:</span>
+        <span class="c1"># launch 3 browsers</span>
+        <span class="n">browsers</span> <span class="o">=</span> <span class="k">await</span> <span class="n">gather</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">pw</span><span class="o">.</span><span class="n">chromium</span><span class="o">.</span><span class="n">launch</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">)))</span>
+        <span class="c1"># start 1 tab each on every browser</span>
+        <span class="n">pages</span> <span class="o">=</span> <span class="k">await</span> <span class="n">gather</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">browser</span><span class="o">.</span><span class="n">new_page</span><span class="p">()</span> <span class="k">for</span> <span class="n">browser</span> <span class="ow">in</span> <span class="n">browsers</span><span class="p">))</span>
+
+        <span class="k">async</span> <span class="k">def</span> <span class="nf">get_loaded_html</span><span class="p">(</span><span class="n">page</span><span class="p">:</span> <span class="n">Page</span><span class="p">,</span> <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="w">            </span><span class="sd">"""go to url, wait for DOM to load and return url and return page content"""</span>
+            <span class="k">await</span> <span class="n">page</span><span class="o">.</span><span class="n">goto</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+            <span class="k">await</span> <span class="n">page</span><span class="o">.</span><span class="n">wait_for_load_state</span><span class="p">(</span><span class="s2">"domcontentloaded"</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">url</span><span class="p">,</span> <span class="k">await</span> <span class="n">page</span><span class="o">.</span><span class="n">content</span><span class="p">()</span>
+
+        <span class="c1"># scrape 3 pages asynchronously on 3 different pages</span>
+        <span class="n">urls</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s2">"http://url1.com"</span><span class="p">,</span>
+            <span class="s2">"http://url2.com"</span><span class="p">,</span>
+            <span class="s2">"http://url3.com"</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="n">htmls</span> <span class="o">=</span> <span class="k">await</span> <span class="n">gather</span><span class="p">(</span><span class="o">*</span><span class="p">(</span>
+            <span class="n">get_loaded_html</span><span class="p">(</span><span class="n">page</span><span class="p">,</span> <span class="n">url</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">page</span><span class="p">,</span> <span class="n">url</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">pages</span><span class="p">,</span> <span class="n">urls</span><span class="p">)</span>
+        <span class="p">))</span>
+        <span class="k">return</span> <span class="n">htmls</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
+    <span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">scrape_3_pages_concurrently</span><span class="p">())</span>
+</code></pre></div></td></tr></table></div>
+<p>In this short example we start 3 web browser instances, then we can use them asynchronously to retrieve multiple pages. </p>
+<p>Despite the integrated asynchronous nature of these clients, the scalability issue still remain a difficult to solve. Mainly because there are so many things that can go wrong when it comes to web browsers: what if browser tab crashes? How to deal with persistent session information? How to ensure efficient retry strategies? How to reduce browser bootup time?</p>
+<p>There are all important questions that will eventually come up when scaling web-scrapers, so we would advise to start thinking about them early!</p>
+<h3 id="disabling-unnecessary-load">Disabling Unnecessary Load</h3>
+<p>Since we'd be running a real web browser that is intended for humans and not robots, we'd actually be wasting a lot of computing and network resources on retrieving stuff robots don't need: such as images, styling and accessibility features. <br/>
+To get a noticeable optimization boost, we can modify our browser to block requests to non-critical resources. For example, in Playwright (Python) we can implement these simple route options:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span>
+<span class="normal">5</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="n">page</span> <span class="o">=</span> <span class="k">await</span> <span class="n">browser</span><span class="o">.</span><span class="n">new_page</span><span class="p">()</span>
+<span class="c1"># block requests to png, jpg and jpeg files</span>
+<span class="k">await</span> <span class="n">page</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">"**/*.{png,jpg,jpeg}"</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">route</span><span class="p">:</span> <span class="n">route</span><span class="o">.</span><span class="n">abort</span><span class="p">())</span>
+<span class="k">await</span> <span class="n">page</span><span class="o">.</span><span class="n">goto</span><span class="p">(</span><span class="s2">"https://example.com"</span><span class="p">)</span>
+<span class="k">await</span> <span class="n">browser</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</code></pre></div></td></tr></table></div>
+<p>For image heavy targets such as e-commerce websites, this simple rule could reduce website load speeds up to 10 times!</p>
+<p>Finally, that's just the tip of the iceberg - since browsers are such complex software projects, there's a lot of space to optimize for our unique purpose of web-scraping. At ScrapFly, we provide many optimization techniques automatically for the quickest rendering experience possible: we have a sophisticated custom browser pool on standby which implements smart shared caching and resource managing techniques to trim off every possible millisecond!</p>
+<h1 id="summary_2">Summary</h1>
+<p>In this overview article, we took a glance at the capabilities of most popular browser automation clients in the context of web-scraping. We took a look at the classic Selenium client, newer Google's approach - Puppeteer and Microsoft's Playwright which aims to do everything on everything.</p>
+<p>Finally, we covered a few common challenges when it comes to scaling and managing browser emulation based web-scrapers and how ScrapFly's API is designed to solve all of these issue for you!</p>
+<p>Browser automation, while resource intensive and difficult to scale, can be a great generic solution for web-scraping dynamically generated websites and web apps - give it a shot!</p>
+<hr/>
+<p>Banner image: "Wall-E Working" by Arthur40A is licensed under CC BY-SA 2.0</p>
+  </div>
+</div>
+<hr>
+<div class="article-buttons">
+  <div class="float-side applause" title="show your appreciation">
+    <applause-button url="https://scrapecrow.com/drafts/browser-emulation.html" style="width: 58px; height: 58px;" />
+  </div>
+  <div class="article-button applause" title="show your appreciation">
+    <applause-button url="https://scrapecrow.com/drafts/browser-emulation.html" style="width: 58px; height: 58px;" />
+  </div>
+  <div class="article-button twitter" title="share on twitter">
+    <a href="http://twitter.com/share?text=&url=https://scrapecrow.com/drafts/browser-emulation.html&hashtags=">
+      <i class="fa fa-twitter fa-3x pure-menu-link" aria-hidden="true"></i>
+    </a>
+  </div>
+  <div class="article-button email">
+    <a href="https://716df175.sibforms.com/serve/MUIEALpKPp8WjHrVwQOX6keZXLkJRbnFEh2y6YhTmVmT4Z0Khgbi2MFvPO1OObOrjbMi_S0M7VXkXGkcbh36H-SqEwM3dHXxdrOOXwEPGcp9rTQKkQvMkC70Dq9RmCoikia87nLsRcx0VVGmCG2zyx5s8BwpqevRmh70vKSaLe7e95yZDCROMvm2HcN3UpLw7UsFxl_UbI6TjY_e" title="subscribe to mailist">
+      <i class="fa fa-email-bulk-o fa-3x pure-menu-link" aria-hidden="true"></i>
+    </a>
+  </div>
+</div>
+<hr>
+<div class="comments">
+  <script src="https://utteranc.es/client.js" repo="granitosaurus/scrapecrow"
+    issue-term="browser-emulation" label="comments"
+    theme="github-light" crossorigin="anonymous" async>
+  </script>
+</div>
+  </div>
+  <footer class="footer">
+    <div class="content">
+      <span class="footer-item"><a href="/archives.html">Archives</a></span>
+      <span class="footer-item"><a href="/tags.html">Tags</a></span>
+      <span class="footer-item"><a href="https://blog.getpelican.com/">Made with Pelican</a></span>
+      <span class="footer-item"><a href="https://github.com/granitosaurus/scrapecrow/">Source on Github</a></span>
+      <span class="footer-item"><a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA</a></span>
+      <span class="footer-item">
+        <a href="atom.xml">
+          <i class="fa fa-rss-square" aria-hidden="true"></i>
+        </a>
+      </span>
+    </div>
+  </footer>
+<script data-goatcounter="https://scrapecrow.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+
+</html>

@@ -58,7 +58,6 @@
       <div class="navbar-menu" id="navMenu">
         <div class="navbar-start">
           <a class="navbar-item" href="/pages/about.html">about</a>
-          <a class="navbar-item" href="/pages/hire.html">hire</a>
           <a class="navbar-item" href="/pages/coffee.html">☕</a>
           <a class="navbar-item" href="https://matrix.to/#/#web-scraping:matrix.org">#web-scraping on matrix</a>
         </div>
@@ -107,7 +106,7 @@ For example, in synchronous python when we send a request to a server our code s
 <h2 id="how-does-async-web-scraping-work">How Does Async Web Scraping Work?</h2>
 <p class="info">In these examples we'll be using <a href="https://www.python-httpx.org/">httpx</a> http client package which supports both synchronous and asynchronous client APIs</p>
 <p>Let's take a look at a quick example. We have 100 urls that we want to scrape, and we have this really simple synchronous scraper code:</p>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
 <span class="normal"> 4</span>
@@ -130,7 +129,7 @@ For example, in synchronous python when we send a request to a server our code s
 <span class="normal">21</span>
 <span class="normal">22</span>
 <span class="normal">23</span>
-<span class="normal">24</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">httpx</span> <span class="kn">import</span> <span class="n">Client</span>
+<span class="normal">24</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">from</span> <span class="nn">httpx</span> <span class="kn">import</span> <span class="n">Client</span>
 <span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">time</span>
 
 
@@ -146,7 +145,7 @@ For example, in synchronous python when we send a request to a server our code s
             <span class="c1"># this url will always take 1 second</span>
             <span class="n">url</span> <span class="o">=</span> <span class="s2">"http://httpbin.org/delay/1"</span>
             <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">scrape</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">session</span><span class="o">=</span><span class="n">session</span><span class="p">))</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"finished scraping in: </span><span class="si">{</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">_start</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> seconds"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"finished scraping in: </span><span class="si">{</span><span class="n">time</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">_start</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> seconds"</span><span class="p">)</span>
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
@@ -154,12 +153,11 @@ For example, in synchronous python when we send a request to a server our code s
 
 <span class="c1"># results in:</span>
 <span class="c1"># finished scraping in: 135.8 seconds</span>
-</code></pre></div>
-</td></tr></table>
+</code></pre></div></td></tr></table></div>
 <p class="info">Here we're taking advantage of <a href="https://httpbin.org">https://httpbin.org</a> delayed response endpoint <code>/delay/&lt;n&gt;</code> which will simulates slow server which takes N seconds to respond. This tool is great for testing web scraping scaling!</p>
 <p>In this example, we schedule 100 different requests synchronously that each should take at least 1 second to execute each: 1 second delay by the server + all connection overhead our machine does = 100+ seconds.</p>
 <p>Now let's try to run those 100 request at the same time, asynchronously by using <code>asyncio</code> async loop and <code>asyncio.gather()</code> function:</p>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
 <span class="normal"> 4</span>
@@ -181,7 +179,7 @@ For example, in synchronous python when we send a request to a server our code s
 <span class="normal">20</span>
 <span class="normal">21</span>
 <span class="normal">22</span>
-<span class="normal">23</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">asyncio</span>
+<span class="normal">23</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">import</span> <span class="nn">asyncio</span>
 <span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">time</span>
 <span class="kn">from</span> <span class="nn">httpx</span> <span class="kn">import</span> <span class="n">AsyncClient</span>
 
@@ -199,13 +197,12 @@ For example, in synchronous python when we send a request to a server our code s
             <span class="n">url</span> <span class="o">=</span> <span class="s2">"http://httpbin.org/delay/1"</span>
             <span class="n">tasks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">scrape</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">session</span><span class="o">=</span><span class="n">session</span><span class="p">))</span>
         <span class="n">results</span> <span class="o">=</span> <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span><span class="o">*</span><span class="n">tasks</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"finished scraping in: </span><span class="si">{</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">_start</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> seconds"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"finished scraping in: </span><span class="si">{</span><span class="n">time</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">_start</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> seconds"</span><span class="p">)</span>
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
     <span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">run</span><span class="p">())</span>
-</code></pre></div>
-</td></tr></table>
+</code></pre></div></td></tr></table></div>
 <p>If we run this minor async modification, we'll see a colossal speed boost:  </p>
 <blockquote>
 <p>finished scraping in: 2.4 seconds</p>
@@ -227,7 +224,7 @@ For example, in synchronous python when we send a request to a server our code s
 <p>To avoid bans and blocks, we must either use multiple proxies or preferably throttle our connections. Let's take a look at few common ways to throttle web-scrapers.</p>
 <h3 id="asyncios-semaphore">Asyncio's Semaphore</h3>
 <p>This is built in way to throttle coroutine concurrency in python's asyncio. Semaphore is essentially a lock object with limited amount of working slots, i.e. it allows us to specify that no more than N coroutines should be executed concurrently:</p>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
 <span class="normal"> 4</span>
@@ -254,7 +251,7 @@ For example, in synchronous python when we send a request to a server our code s
 <span class="normal">25</span>
 <span class="normal">26</span>
 <span class="normal">27</span>
-<span class="normal">28</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">asyncio</span>
+<span class="normal">28</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">import</span> <span class="nn">asyncio</span>
 <span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">time</span>
 <span class="kn">from</span> <span class="nn">httpx</span> <span class="kn">import</span> <span class="n">AsyncClient</span>
 
@@ -274,7 +271,7 @@ For example, in synchronous python when we send a request to a server our code s
             <span class="n">url</span> <span class="o">=</span> <span class="s2">"http://httpbin.org/delay/1"</span>
             <span class="n">tasks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">scrape</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">session</span><span class="o">=</span><span class="n">session</span><span class="p">,</span> <span class="n">throttler</span><span class="o">=</span><span class="n">throttler</span><span class="p">))</span>
         <span class="n">results</span> <span class="o">=</span> <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span><span class="o">*</span><span class="n">tasks</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"finished scraping in: </span><span class="si">{</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">_start</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> seconds"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"finished scraping in: </span><span class="si">{</span><span class="n">time</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">_start</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> seconds"</span><span class="p">)</span>
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
@@ -282,8 +279,7 @@ For example, in synchronous python when we send a request to a server our code s
 
 <span class="c1"># results in:</span>
 <span class="c1"># finished scraping in: 14.8 seconds</span>
-</code></pre></div>
-</td></tr></table>
+</code></pre></div></td></tr></table></div>
 <p>Here we modified our async scraper code with one key addition of <code>asyncio.Semaphore(10)</code> object, which limits concurrent execution to 10 concurrent coroutines. Our original unlimited code took 2.4 to complete now we managed to slow it down 6 times with few extra lines of code!  </p>
 <p>Some important things to notice about <code>asyncio.Semaphore</code>:</p>
 <p>All throttled coroutines should be use same Semaphore object. This means one throttled needs to be passed around to each individual coroutine introducing slight complexity overhead.</p>
@@ -292,7 +288,7 @@ For example, in synchronous python when we send a request to a server our code s
 <h3 id="leaky-bucket">Leaky Bucket</h3>
 <p>Leaky Bucket is a common throttling algorithm that uses time tracking for throttling rather than just concurrency. Using the Leaky Bucket approach, we can specify how many tasks can be executed in a specific time frame, i.e. we can throttle our scraper to 10 requests/second!</p>
 <p>A popular implementation for python's asyncio is available in <a href="https://github.com/mjpieters/aiolimiter">aiolimiter</a> package. Let's take a quick look, how can we use it in our web-scraper:</p>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
 <span class="normal"> 4</span>
@@ -320,7 +316,7 @@ For example, in synchronous python when we send a request to a server our code s
 <span class="normal">26</span>
 <span class="normal">27</span>
 <span class="normal">28</span>
-<span class="normal">29</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">asyncio</span>
+<span class="normal">29</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">import</span> <span class="nn">asyncio</span>
 <span class="kn">from</span> <span class="nn">aiolimiter</span> <span class="kn">import</span> <span class="n">AsyncLimiter</span>
 <span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">time</span>
 <span class="kn">from</span> <span class="nn">httpx</span> <span class="kn">import</span> <span class="n">AsyncClient</span>
@@ -341,7 +337,7 @@ For example, in synchronous python when we send a request to a server our code s
             <span class="n">url</span> <span class="o">=</span> <span class="s2">"http://httpbin.org/delay/1"</span>
             <span class="n">tasks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">scrape</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">session</span><span class="o">=</span><span class="n">session</span><span class="p">,</span> <span class="n">throttler</span><span class="o">=</span><span class="n">throttler</span><span class="p">))</span>
         <span class="n">results</span> <span class="o">=</span> <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span><span class="o">*</span><span class="n">tasks</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"finished scraping in: </span><span class="si">{</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">_start</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> seconds"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"finished scraping in: </span><span class="si">{</span><span class="n">time</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">_start</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> seconds"</span><span class="p">)</span>
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
@@ -349,8 +345,7 @@ For example, in synchronous python when we send a request to a server our code s
 
 <span class="c1"># results in:</span>
 <span class="c1"># finished scraping in: 10.4 seconds</span>
-</code></pre></div>
-</td></tr></table>
+</code></pre></div></td></tr></table></div>
 <p>Here we merely replaced our <code>Semaphore</code> from previous code with <code>aiolimiter.AsyncLimiter</code> which allows us to be much more precise: we completed our 100 scrape tasks in 10.4 seconds which matches our limit of 10req/second almost exactly!</p>
 <p>Leaky bucket is a great throttling approach as it allows us to scrape in predictable and controlled speeds. That being said predictability is not a great web scraper feature when it comes to blocking and banning - scraper can be identified quite easily if it shows a consistent pattern of connections.<br/>
 So which throttling pattern to use entirely depends on scraped targets, but Leaky Bucket is often the best approach!</p>

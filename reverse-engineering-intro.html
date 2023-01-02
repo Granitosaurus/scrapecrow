@@ -57,7 +57,6 @@
       <div class="navbar-menu" id="navMenu">
         <div class="navbar-start">
           <a class="navbar-item" href="/pages/about.html">about</a>
-          <a class="navbar-item" href="/pages/hire.html">hire</a>
           <a class="navbar-item" href="/pages/coffee.html">☕</a>
           <a class="navbar-item" href="https://matrix.to/#/#web-scraping:matrix.org">#web-scraping on matrix</a>
         </div>
@@ -161,7 +160,7 @@ identifies who is making the request. This is really important field for prevent
 If you right-click on a request, you can see that the Network Inspector allows exporting it in several formats: </p>
 <p><a href="/images/devtools_tab_network_copy_curl.png"><img class="" loading="lazy" src="/images/devtools_tab_network_copy_curl.png" width='title=""'/></a><figcaption></figcaption></p>
 <p>While there's no "copy as python" button there is "copy to curl" button which produces a <code>curl</code> command line tool command with all of the request details attached. Something like:</p>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
 <span class="normal"> 4</span>
@@ -176,24 +175,23 @@ If you right-click on a request, you can see that the Network Inspector allows e
 <span class="normal">13</span>
 <span class="normal">14</span>
 <span class="normal">15</span>
-<span class="normal">16</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="nt">curl</span> <span class="s1">'https://api.food.com/external/v1/nlp/search'</span> <span class="err">\</span>
-  <span class="nt">-H</span> <span class="s1">'Connection: keep-alive'</span> <span class="err">\</span>
-  <span class="nt">-H</span> <span class="s1">'Pragma: no-cache'</span> <span class="err">\</span>
-  <span class="nt">-H</span> <span class="s1">'Cache-Control: no-cache'</span> <span class="err">\</span>
-  <span class="nt">-H</span> <span class="s1">'Accept: application/json, text/javascript, */*; q=0.01'</span> <span class="err">\</span>
-  <span class="nt">-H</span> <span class="s1">'User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) QtWebEngine/5.15.2 Chrome/87.0.4280.144 Safari/537.36'</span> <span class="err">\</span>
-  <span class="nt">-H</span> <span class="s1">'Content-Type: application/json'</span> <span class="err">\</span>
-  <span class="nt">-H</span> <span class="s1">'Accept-Language: en-US,en;q=0.9'</span> <span class="err">\</span>
-  <span class="nt">-H</span> <span class="s1">'DNT: 1'</span> <span class="err">\</span>
-  <span class="nt">-H</span> <span class="s1">'Origin: https://www.food.com'</span> <span class="err">\</span>
-  <span class="nt">-H</span> <span class="s1">'Sec-Fetch-Site: same-site'</span> <span class="err">\</span>
-  <span class="nt">-H</span> <span class="s1">'Sec-Fetch-Mode: cors'</span> <span class="err">\</span>
-  <span class="nt">-H</span> <span class="s1">'Sec-Fetch-Dest: empty'</span> <span class="err">\</span>
-  <span class="nt">-H</span> <span class="s1">'Referer: https://www.food.com/'</span> <span class="err">\</span>
-  <span class="nt">--data-raw</span> <span class="s1">'{"contexts":</span><span class="cp">[]</span><span class="s1">,"searchTerm":"","pn":4}'</span> <span class="err">\</span>
-  <span class="nt">--compressed</span>
-</code></pre></div>
-</td></tr></table>
+<span class="normal">16</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nt">curl</span><span class="w"> </span><span class="s1">'https://api.food.com/external/v1/nlp/search'</span><span class="w"> </span><span class="err">\</span>
+<span class="w">  </span><span class="nt">-H</span><span class="w"> </span><span class="s1">'Connection: keep-alive'</span><span class="w"> </span><span class="err">\</span>
+<span class="w">  </span><span class="nt">-H</span><span class="w"> </span><span class="s1">'Pragma: no-cache'</span><span class="w"> </span><span class="err">\</span>
+<span class="w">  </span><span class="nt">-H</span><span class="w"> </span><span class="s1">'Cache-Control: no-cache'</span><span class="w"> </span><span class="err">\</span>
+<span class="w">  </span><span class="nt">-H</span><span class="w"> </span><span class="s1">'Accept: application/json, text/javascript, */*; q=0.01'</span><span class="w"> </span><span class="err">\</span>
+<span class="w">  </span><span class="nt">-H</span><span class="w"> </span><span class="s1">'User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) QtWebEngine/5.15.2 Chrome/87.0.4280.144 Safari/537.36'</span><span class="w"> </span><span class="err">\</span>
+<span class="w">  </span><span class="nt">-H</span><span class="w"> </span><span class="s1">'Content-Type: application/json'</span><span class="w"> </span><span class="err">\</span>
+<span class="w">  </span><span class="nt">-H</span><span class="w"> </span><span class="s1">'Accept-Language: en-US,en;q=0.9'</span><span class="w"> </span><span class="err">\</span>
+<span class="w">  </span><span class="nt">-H</span><span class="w"> </span><span class="s1">'DNT: 1'</span><span class="w"> </span><span class="err">\</span>
+<span class="w">  </span><span class="nt">-H</span><span class="w"> </span><span class="s1">'Origin: https://www.food.com'</span><span class="w"> </span><span class="err">\</span>
+<span class="w">  </span><span class="nt">-H</span><span class="w"> </span><span class="s1">'Sec-Fetch-Site: same-site'</span><span class="w"> </span><span class="err">\</span>
+<span class="w">  </span><span class="nt">-H</span><span class="w"> </span><span class="s1">'Sec-Fetch-Mode: cors'</span><span class="w"> </span><span class="err">\</span>
+<span class="w">  </span><span class="nt">-H</span><span class="w"> </span><span class="s1">'Sec-Fetch-Dest: empty'</span><span class="w"> </span><span class="err">\</span>
+<span class="w">  </span><span class="nt">-H</span><span class="w"> </span><span class="s1">'Referer: https://www.food.com/'</span><span class="w"> </span><span class="err">\</span>
+<span class="w">  </span><span class="nt">--data-raw</span><span class="w"> </span><span class="s1">'{"contexts":</span><span class="cp">[]</span><span class="s1">,"searchTerm":"","pn":4}'</span><span class="w"> </span><span class="err">\</span>
+<span class="w">  </span><span class="nt">--compressed</span>
+</code></pre></div></td></tr></table></div>
 <p>There are several tools that can convert this string into code! </p>
 <ul>
 <li><a href="https://curl.trillworks.com/">https://curl.trillworks.com/</a> - can convert it to multiple languages, python <code>requests</code> being one of them.</li>
@@ -226,24 +224,23 @@ Let's take a look at these requests and how we can replicate them in our web-scr
 <p>Here we can see that the request being made is a <code>POST</code> type request to <a href="https://api.food.com/external/v1/nlp/search">https://api.food.com/external/v1/nlp/search</a> and it's sending some JSON data. In return it received json document with 10 recipes and loads of meta information - like how many pages are there in total. That's exactly what we're looking for!</p>
 <p>Let's take a look at the document we need to send to receive this information.<br/>
 Under "Request Payload" we see json document:</p>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
 <span class="normal">2</span>
 <span class="normal">3</span>
 <span class="normal">4</span>
 <span class="normal">5</span>
 <span class="normal">6</span>
-<span class="normal">7</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="p">{</span>
-  <span class="nt">"contexts"</span><span class="p">:</span> <span class="p">[</span>
-    <span class="s2">"{\"name\":\"toast\",\"paths\":[\"/~asset/bread\"],\"type\":\"PRIMARY\",\"searchType\":\"NORMAL\",\"degreesSeparation\":0,\"cleanedName\":\"toast\",\"popularityFactor\":0,\"taggedContentCount\":2054,\"userToken\":true,\"searchGuess\":false,\"essenceContext\":false,\"matchingCandidate\":false}"</span>
-  <span class="p">],</span>
-  <span class="nt">"searchTerm"</span><span class="p">:</span> <span class="s2">"toast"</span><span class="p">,</span>
-  <span class="nt">"pn"</span><span class="p">:</span> <span class="mi">14</span>
+<span class="normal">7</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"contexts"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="s2">"{\"name\":\"toast\",\"paths\":[\"/~asset/bread\"],\"type\":\"PRIMARY\",\"searchType\":\"NORMAL\",\"degreesSeparation\":0,\"cleanedName\":\"toast\",\"popularityFactor\":0,\"taggedContentCount\":2054,\"userToken\":true,\"searchGuess\":false,\"essenceContext\":false,\"matchingCandidate\":false}"</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">"searchTerm"</span><span class="p">:</span><span class="w"> </span><span class="s2">"toast"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"pn"</span><span class="p">:</span><span class="w"> </span><span class="mi">14</span>
 <span class="p">}</span>
-</code></pre></div>
-</td></tr></table>
+</code></pre></div></td></tr></table></div>
 <p>Some context data seems to be sent, search term <code>"toast"</code> and <code>pn</code> integer argument which seems to be short for <code>page number</code>. Great, that means we can request any page for any search term! <br/>
 Let's replicate this request in Python:</p>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
 <span class="normal"> 4</span>
@@ -264,7 +261,7 @@ Let's replicate this request in Python:</p>
 <span class="normal">19</span>
 <span class="normal">20</span>
 <span class="normal">21</span>
-<span class="normal">22</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">requests</span>
+<span class="normal">22</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">import</span> <span class="nn">requests</span>
 
 <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span>
     <span class="c1"># when web scraping we always want to appear as </span>
@@ -286,8 +283,7 @@ Let's replicate this request in Python:</p>
 <span class="n">total_results_count</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">"response"</span><span class="p">][</span><span class="s2">"totalResultsCount"</span><span class="p">]</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">results</span><span class="p">)</span><span class="si">}</span><span class="s2"> results from </span><span class="si">{</span><span class="n">total_results_count</span><span class="si">}</span><span class="s2"> total"</span><span class="p">)</span>
 <span class="c1"># this will print: "found 10 results from 2246 total"</span>
-</code></pre></div>
-</td></tr></table>
+</code></pre></div></td></tr></table></div>
 <p>It works! We've successfully reverse engineering food.com's backend API for it's paging function and replicated it in this Python scraper script! </p>
 <p>If you noticed, we skipped the <code>contexts</code> object in our POST body entirely. The great part about reverse engineering something is that we can adjust its functions and have clean, efficient, beautiful programs. This is great for us as our scraper programs use less resources and are easier to follow and maintain, and it's also better for our target - food.com - as we consume fewer of their resources by only the scraping specific data targets rather than loading the whole page and all the extras such as images, videos etc.</p>
 <h2 id="summary-and-further-reading_1">Summary And Further Reading</h2>

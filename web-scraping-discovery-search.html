@@ -58,7 +58,6 @@
       <div class="navbar-menu" id="navMenu">
         <div class="navbar-start">
           <a class="navbar-item" href="/pages/about.html">about</a>
-          <a class="navbar-item" href="/pages/hire.html">hire</a>
           <a class="navbar-item" href="/pages/coffee.html">☕</a>
           <a class="navbar-item" href="https://matrix.to/#/#web-scraping:matrix.org">#web-scraping on matrix</a>
         </div>
@@ -122,17 +121,16 @@ Now, let's figure out how the search works. If you look at the inspector, no dat
 If we scroll to the bottom of the page and click next page, we can see the actual JSON data request being made for the second page:</p>
 <p><a href="/images/hm.com-xhr-req.png"><img class="bigc" loading="lazy" src="/images/hm.com-xhr-req.png" title=""/></a><figcaption></figcaption></p>
 <p>We see a request is being made to backend's search API and it returns us a JSON set of data with product metadata and location. Let's take a look at the request url, so we can replicate it in our scrapper:</p>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
 <span class="normal">2</span>
 <span class="normal">3</span>
 <span class="normal">4</span>
-<span class="normal">5</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code>https://www2.hm.com/en_us/search-results/_jcr_content/search.display.json?
+<span class="normal">5</span></pre></div></td><td class="code"><div><pre><span></span><code>https://www2.hm.com/en_us/search-results/_jcr_content/search.display.json?
 q=%20&amp;   # search term
 offset=0&amp;  # pagination offset
 page-size=40&amp;   # pagination limit
 sort=ascPrice  # sort type
-</code></pre></div>
-</td></tr></table>
+</code></pre></div></td></tr></table></div>
 <p class="info">Many modern web APIs are very flexible with parameters - we don't have to use all the junk we see in our web inspector. You can always experiment and see which are necessary and how the content changes when parameters do.<br/>
 In this example we stripped off a lot of uninteresting parameters and just kept query, offset/limit and sort</p>
 <p>This seems like a common offset/limit pagination technique. Which is great for web-scrapers as we can get multiple pages asynchronously - in other words we can request slices 0:100, 100:200, ... concurrently.</p>
@@ -163,7 +161,7 @@ We can sort our query by price and reach for results from both ends of the query
 <li>Collect responses and parse product data.</li>
 </ol>
 <p>Here's quick implementation using Python with asynchronous http client package <code>httpx</code>:</p>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
 <span class="normal"> 2</span>
 <span class="normal"> 3</span>
 <span class="normal"> 4</span>
@@ -228,7 +226,7 @@ We can sort our query by price and reach for results from both ends of the query
 <span class="normal">63</span>
 <span class="normal">64</span>
 <span class="normal">65</span>
-<span class="normal">66</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span>
+<span class="normal">66</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span>
 <span class="kn">import</span> <span class="nn">httpx</span>
 <span class="kn">import</span> <span class="nn">asyncio</span>
 
@@ -239,7 +237,7 @@ We can sort our query by price and reach for results from both ends of the query
     <span class="n">page_size</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>  <span class="c1"># note: we can increase this from default 40 to something higher!</span>
     <span class="n">sort</span><span class="o">=</span><span class="s2">"ascPrice"</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
-    <span class="sd">"""Scrape a single hm.com product query page"""</span>
+<span class="w">    </span><span class="sd">"""Scrape a single hm.com product query page"""</span>
     <span class="n">url</span> <span class="o">=</span> <span class="s2">"https://www2.hm.com/en_us/search-results/_jcr_content/search.display.json"</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"scraping range </span><span class="si">{</span><span class="n">offset</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">offset</span><span class="o">+</span><span class="n">page_size</span><span class="si">}</span><span class="s2"> sorted by: </span><span class="si">{</span><span class="n">sort</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
     <span class="n">response</span> <span class="o">=</span> <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
@@ -289,13 +287,12 @@ We can sort our query by price and reach for results from both ends of the query
             <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">scrape_task</span>
             <span class="n">products</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="s2">"products"</span><span class="p">])</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">products</span><span class="p">)</span><span class="si">}</span><span class="s2"> products in </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">tasks</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="si">}</span><span class="s2"> page requests"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">products</span><span class="p">)</span><span class="si">}</span><span class="s2"> products in </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">tasks</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2"> page requests"</span><span class="p">)</span>
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
     <span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">scrape_hmcom</span><span class="p">())</span>
-</code></pre></div>
-</td></tr></table>
+</code></pre></div></td></tr></table></div>
 <p>Here we used asynchronous python and <code>httpx</code> as our http client library to scrape all 13790 products with very few requests just in few minutes!</p>
 <h2 id="summary-and-further-reading_1">Summary and Further Reading</h2>
 <p>To summarize, reverse engineering website's search API is a brilliant scrape target discovery technique, however it's more difficult to develop as it requires reverse-engineer effort and all of the code becomes very domain specific. </p>
