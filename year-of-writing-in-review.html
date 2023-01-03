@@ -88,17 +88,18 @@ So, to wrap up this year, here's a list of my favorite articles I've worked on i
     <hr>
     <h2 id="introductions">Introductions</h2>
 <p>Web scraping is a very available niche. You can write a scraper in almost any programming language as long as it has a viable HTTP client (which is basically any language). </p>
-<p>At ScrapFly, we have a diverse client base using all sorts off programming languages to scrape the web using our API. 
-So, I wrote an in-depth and up-to-date introductions to web scraping in several languages which was quite a journey on it's own:</p>
+<p><a href="/images/hello-im.webp"><img class="center" loading="lazy" src="/images/hello-im.webp" title="" width="200"/></a><figcaption></figcaption></p>
+<p>At ScrapFly, we have a diverse client base using all sorts of programming languages to scrape the web using our API. 
+So, I wrote multiple in-depth and up-to-date introductions to web scraping in several languages which was quite a journey on its own:</p>
 <ul>
 <li><a href="https://scrapfly.io/blog/web-scraping-with-python/">Python</a> is the most popular language in this medium for a reason - it's a great data language with strong async support and some of the best community libraries out there.</li>
-<li><a href="https://scrapfly.io/blog/web-scraping-with-r/">R language</a> is surprisingly effective. The pipe operator really fits into web scraping flows.</li>
-<li><a href="https://scrapfly.io/blog/web-scraping-with-php-101/">PHP</a> has a lot of great web tools that fit into web scraping.</li>
+<li><a href="https://scrapfly.io/blog/web-scraping-with-r/">R language</a> is surprisingly effective. The pipe operator fits into web scraping flows perfectly and is really fun to use.</li>
+<li><a href="https://scrapfly.io/blog/web-scraping-with-php-101/">PHP</a> has a lot of great web tools that fit into web scraping though generally it's not a very good data language.</li>
 <li><a href="https://scrapfly.io/blog/web-scraping-with-ruby/">Ruby</a> feels a lot like Python just with a smaller community and fewer tools.</li>
 <li><a href="https://scrapfly.io/blog/web-scraping-with-nodejs/">Javascript/NodeJS</a> seems to be able to do everything and scraping is no exception. I'd say that it's not a very good data language so it wouldn't be my first choice for scraping.</li>
 </ul>
 <p>This was a great exercise to understand what makes a good web scraping environment. 
-Working on these articles provided really valuable horizontal growth as it presented the problem of web scraping from different perspectives. Every language seems to have something unique and special about it and having general overview can help you to create your own mutant of valuable ideas and techniques.</p>
+Working on these articles provided really valuable horizontal growth as it presented the problem of web scraping from different perspectives. Every language seems to have something unique and special about it and having a general overview did help me to improve my development techniques and workflows.</p>
 <h2 id="guides">Guides</h2>
 <p>Another way we tried to reach out to scraper developers is by writing hands-on <strong><a href="https://scrapfly.io/blog/tag/scrapeguide/">scrape guides</a></strong> for popular scraping targets like:   </p>
 <ul>
@@ -107,16 +108,25 @@ Working on these articles provided really valuable horizontal growth as it prese
 <li><a href="https://scrapfly.io/blog/how-to-scrape-amazon/">Amazon</a></li>
 <li><a href="https://scrapfly.io/blog/how-to-scrape-zillow/">Zillow</a></li>
 </ul>
-<p>And dozens of others.</p>
-<p>For these, I had to set on standard tools and libraries which was a difficult choice. Using browser automation tools like <a href="https://scrapfly.io/blog/web-scraping-with-selenium-and-python/">Selenium</a>, <a href="https://scrapfly.io/blog/web-scraping-with-playwright-and-python/">Playwright</a> or <a href="https://scrapfly.io/blog/web-scraping-with-puppeteer-and-nodejs/">Puppeteer</a> can often be easier but they don't 
-fit the tutorial format well as browser are complicated and work differently on different user machines. </p>
-<p>I've settled on Python with <a href="https://pypi.org/project/httpx/">httpx</a> and <a href="https://pypi.org/project/parsel/">parsel</a> as the de facto scraping environment as it really powerful and approachable.   </p>
-<p>Httpx is a brilliant http client which supports http2 and respects RFC standards. </p>
-<p>Parsel supports both CSS and XPath selectors for HTML parsing. Python itself comes with loads of built-in tools like <code>collections</code> and <code>urllib</code> libraries that really fit into the web scraping world.</p>
-<p>Each popular target is surprisingly different though I noticed how prevelant client-side rendering is in the modern web. More than half of the scrape guides didn't use much of HTML parsing at all! Instead, <a href="https://scrapfly.io/blog/how-to-scrape-hidden-web-data/">hidden web data</a> scraping turned out to be a much easier way to scrape this modern javascript-powered part of the web.</p>
+<p>And <a href="https://scrapfly.io/blog/tag/scrapeguide/">dozens of others</a>.</p>
+<p>For these, I had to choose a standard set of tools and libraries which was a difficult challenge. Using browser automation tools like <a href="https://scrapfly.io/blog/web-scraping-with-selenium-and-python/">Selenium</a>, <a href="https://scrapfly.io/blog/web-scraping-with-playwright-and-python/">Playwright</a> or <a href="https://scrapfly.io/blog/web-scraping-with-puppeteer-and-nodejs/">Puppeteer</a> can often be easier but they don't 
+fit the tutorial format well as browsers are complicated and work differently on different user machines. </p>
+<p><a href="/images/guide.svg"><img class="center" loading="lazy" src="/images/guide.svg" title="" width="200"/></a><figcaption></figcaption></p>
+<p>I've settled on <strong>Python</strong> with <a href="https://pypi.org/project/httpx/">httpx</a>, <a href="https://pypi.org/project/parsel/">parsel</a> and <a href="https://scrapfly.io/blog/parse-json-jmespath-python/">jmespath</a> as the de facto scraping environment as it's really powerful and approachable. </p>
+<p>With this setup, there's more focus on reverse engineering and web technologies rather than automation but it's easier to figure out how to explain technical concepts than to deal with replication issues of web browsers.</p>
+<p>As for the library stack:   </p>
+<ul>
+<li><code>httpx</code> is a brilliant http client which supports http2 and respects RFC standards. It's probably the best HTTP client out there outside of cURL.  </li>
+<li><code>parsel</code> supports both CSS and XPath selectors for HTML parsing which is by far the best way to parse HTML.  </li>
+<li><code>jmespath</code> is the most accessible way to parse JSON datasets. Usually, I'd favor <code>jsonpath</code> over <code>jmespath</code> as it allows non-root based selections (e.g. find me any node named <code>foo</code> anywhere) but jsonpath implementations aren't very great.  </li>
+</ul>
+<p>Finally, Python itself comes with loads of built-in tools like <code>collections</code> and <code>urllib</code> libraries that really fit into the web scraping world.</p>
+<p>Each popular target is surprisingly different though I noticed how prevalent client-side rendering is in the modern web.   </p>
+<p>More than half of the scrape guides didn't use much HTML parsing at all! Instead, <a href="https://scrapfly.io/blog/how-to-scrape-hidden-web-data/">hidden web data</a> scraping turned out to be a much easier way to scrape this modern javascript-powered part of the web.</p>
 <h2 id="key-subjects">Key Subjects</h2>
-<p>Once we started working on scrape guides we noticed a lot of repetition. </p>
+<p>Once we started working on scrape guides we noticed a lot of repetition.  </p>
 <p>Common subjects like <a href="https://scrapfly.io/blog/how-to-scrape-hidden-web-data/">how to scrape hidden web data</a>, <a href="https://scrapfly.io/blog/parse-json-jmespath-python/">how to parse JSON data</a> and how to use <a href="https://scrapfly.io/blog/parsing-html-with-css/">CSS</a> and <a href="https://scrapfly.io/blog/parsing-html-with-xpath/">XPath</a> selectors would have to be repeated in each article. </p>
+<p><a href="/images/books.svg"><img class="center" loading="lazy" src="/images/books.svg" title="" width="200"/></a><figcaption></figcaption></p>
 <p>So, it seemed like it'd be appropriate that we cover each of these subjects individually. This, lead us even further - what are some other key web scraping subjects that could be referenced anywhere? Here are a few we've settled on:</p>
 <ul>
 <li><a href="https://scrapfly.io/blog/how-to-ensure-web-scrapped-data-quality/">How to ensure web scraped data quality?</a> - data validation is boring but vital for consistent data delivery.</li>
@@ -126,17 +136,23 @@ fit the tutorial format well as browser are complicated and work differently on 
 <li><a href="https://scrapfly.io/blog/how-to-rate-limit-asynchronous-python-requests/">How to rate limit requests?</a></li>
 <li>How to use browser automation tools like <a href="https://scrapfly.io/blog/web-scraping-with-puppeteer-and-nodejs/">Puppeteer</a>, <a href="https://scrapfly.io/blog/web-scraping-with-playwright-and-python/">Playwright</a> and <a href="https://scrapfly.io/blog/web-scraping-with-selenium-and-python/">Selenium</a></li>
 </ul>
+<p>Most of the topics came up naturally as we were reviewing and developing our articles though some came from our customers and questions on popular forums like Stackoverflow or Reddit.</p>
 <h2 id="favorites">Favorites</h2>
 <p>The most difficult and interesting subject in web scraping is definitely <strong>scraper blocking</strong>. To cover it I've got a bunch of help from my teammates and put together a <a href="https://scrapfly.io/blog/how-to-scrape-without-getting-blocked-tutorial/">definitive guide on web scraper blocking</a> which took a lot of research and turned out to be our reader's favorite!</p>
-<p>I thought I was pretty well versed in the blocking subject but stuff like how powerful <a href="https://scrapfly.io/blog/how-to-avoid-web-scraping-blocking-tls/">TLS fingerprinting</a> is really blew my mind.</p>
-<p>My personal favorite article, however, is <a href="https://scrapfly.io/blog/search-engine-using-web-scraping/">creating search engines using web scraping</a> where we demo how any website can be quickly indexed with a bit of scraper code, some clever HTML parsing and index front-end like LunrJS.</p>
+<p><a href="/images/blue-heart.svg"><img class="center" loading="lazy" src="/images/blue-heart.svg" title="" width="200"/></a><figcaption></figcaption></p>
+<p>I thought I was pretty well versed in the blocking subject but stuff like how powerful <a href="https://scrapfly.io/blog/how-to-avoid-web-scraping-blocking-tls/">TLS fingerprinting</a> really blew my mind. There are just so many ways to fingerprint and identify users based on their connections.</p>
+<p>My favorite article, however, is <a href="https://scrapfly.io/blog/search-engine-using-web-scraping/">creating search engines using web scraping</a> where we demo how any website can be quickly indexed with a bit of scraper code, some clever HTML parsing and an index front-end like LunrJS. I've adopted this technique in many other different projects as having a quick data index is really useful!</p>
 <h2 id="lessons-learned">Lessons Learned</h2>
 <p>We spent a lot of time designing our blog to function as a knowledge graph rather than a series of individual guides. This paid off pretty well as SEO seems to like references. </p>
+<p><a href="/images/wizard.svg"><img class="center" loading="lazy" src="/images/wizard.svg" title="" width="200"/></a><figcaption></figcaption></p>
 <p>One slight disappointment was how cool features can backfire when it comes to SEO. For our <a href="https://scrapfly.io/blog/parsing-html-with-css/">CSS</a> and <a href="https://scrapfly.io/blog/parsing-html-with-xpath/">XPath</a> articles, we built real-time on-page testing widgets that were not liked by the search engines and took a while to optimize and finally pay off.</p>
-<p>Keyword management was another important challenge as we wanted all sorts of users to find our content be it beginners or advanced masters.</p>
+<p>We also tried structuring our articles with revealable components (like <code>&lt;details&gt;</code>) which increased readability but noticeably worsened SEO.</p>
+<p>Keyword diversity was another important challenge as we wanted all sorts of users to find our content - from beginners developers to senior developers discovering web scraping. </p>
+<p>Since web-scraping is still a small niche there aren't many well-established terms, so diversifying terms made a huge difference.</p>
 <h2 id="the-great-beyond">The Great Beyond!</h2>
-<p>Exploring web scraping subject is a real pleasure - it's vast and challenging thought the best part is that the end of the day you see concrete data results making all of that work worth it.</p>
-<p>We still have loads of ideas on educational web scraping content that we wil be working on in 2023. We've started work on a collection of <a href="https://scrapfly.io/web-scraping-tools">web scraping tools</a> and a few more secret projects that should pop up soon! :)</p>
+<p>Exploring web scraping subject is a real pleasure - it's vast and challenging though the best part is that at the end of the day you see concrete data results. Getting a quality dataset conjured up from nothing is immensely satisfying which makes all of that work worth it!</p>
+<p><a href="/images/rocket.svg"><img class="center" loading="lazy" src="/images/rocket.svg" title="" width="200"/></a><figcaption></figcaption></p>
+<p>We still have loads of ideas on educational web scraping content that we will be working on in 2023. We've started work on a collection of <a href="https://scrapfly.io/web-scraping-tools">web scraping tools</a> and a few more secret projects that should pop up soon! :)</p>
   </div>
 </div>
 <hr>

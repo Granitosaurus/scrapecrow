@@ -18,7 +18,7 @@ body
   max-width: 100ch
   margin: 0 auto
   padding: 20px
-  
+
   .article-buttons
     display: flex
     justify-content: center
@@ -27,7 +27,7 @@ body
     .article-button
       display: flex
       justify-content: center
-      vertical-align: middle  
+      vertical-align: middle
       align-items: center
       margin: 5px 10px
     .float-side
@@ -36,7 +36,7 @@ body
       top: 50vh
       right: 10px
       text-align: center
-      
+
       +desktop
         display: inline-block
       >*
@@ -56,7 +56,7 @@ nav.navbar
   display: flex
   align-content: center
   justify-content: center
-  
+
   .navbar-menu
     flex-grow: initial
     flex-shrink: initial
@@ -68,33 +68,38 @@ nav.navbar
 .content
   max-width: calc(min(#{$content-width}, 100vw))
   margin: 0 auto
-  
+
   h2 a
     color: black
-  
+
   img
     border: 2px solid $grey-lighter
     margin-top: 20px
+  
+  img.center
+    display: block
+    margin: 20px auto
+    border: none
 
-  figcaption 
+  figcaption
     text-align: center
     font-size: smaller
     color: slategrey
-  
-  h1 
+
+  h1
     text-align: center
     margin: 20px
-  
-  table 
-    margin-bottom: 0.5em;
+
+  table
+    margin-bottom: 0.5em
     table-layout: fixed
     margin-left: calc(min(calc((min(#{$content-width-big}, 100vw) - #{$content-width}) / 2 * -1), 0px))
     width: calc(min(#{$content-width-big}, calc(100vw - 40px)))
 
-    td, th 
+    td, th
       border: 2px solid $grey-lighter
       padding: 0
-    
+
     .linenos
       width: 5ch
 
@@ -102,7 +107,7 @@ nav.navbar
   max-width: 300px
   margin: 40px 5px
   margin-top: 0
-  
+
   .logo
     img
       width: fit-content
@@ -112,10 +117,10 @@ nav.navbar
     width: 200px
     text-align: center
     margin: 10px
-    a 
+    a
       display: inline-block
       color: rgba(0,0,0,0.3)
-    img 
+    img
       width: 100%
       border: 3px solid rgba(0,0,0,0.05)
 
@@ -129,14 +134,14 @@ nav.navbar
     text-transform: uppercase
     font-size: 11px
 
-.info:before, .tip:before, .warning:before, .related:before 
-	display: inline-grid 
-	float: left 
-	margin: 0px 
-	width: 50px 
-	height: 50px 
+.info:before, .tip:before, .warning:before, .related:before
+  display: inline-grid
+  float: left
+  margin: 0px
+  width: 50px
+  height: 50px
 
-.footer 
+.footer
   padding: 0 0 50px 0
   text-align: center
 
@@ -145,29 +150,29 @@ nav.navbar
 
 // Custom paragraphs
 
-.warning 
-	background-color: #fff6e6 
-	&:before 
-		content: "⚠" 
-.info 
-	&:before 
-		content: "ℹ️" 
-.related 
-	background-color: #F8F8F8 
-	&:before 
-		content: "📖" 
-.tip 
-	&:before 
-		content: "💡" 
-.tip, .info, .warning, .related 
-	font-size: smaller 
-	display: block 
-	padding: 20px 
-	text-wrap: normal 
-	color: lighten(black,50%) 
-.info, tip 
-	background: aliceblue 
-	color: lighten(black,50%) 
+.warning
+  background-color: #fff6e6
+  &:before
+    content: "⚠"
+.info
+  &:before
+    content: "ℹ️"
+.related
+  background-color: #F8F8F8
+  &:before
+    content: "📖"
+.tip
+  &:before
+    content: "💡"
+.tip, .info, .warning, .related
+  font-size: smaller
+  display: block
+  padding: 20px
+  text-wrap: normal
+  color: lighten(black,50%)
+.info, tip
+  background: aliceblue
+  color: lighten(black,50%)
 
 // This is backend engineer doing css - sorry :|
 // -20px is default min padding on the left
@@ -186,3 +191,6 @@ nav.navbar
   margin-left: calc(min(calc((min(#{$content-width-bigger}, 100vw) - #{$content-width}) / 2 * -1), -20px))
   max-width: calc(min(#{$content-width-bigger}, calc(100vw - 40px)))
   width: 100vw
+
+.twitter-feed
+  margin-top: 20px

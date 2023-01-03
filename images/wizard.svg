@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools -->
+
+<svg
+   width="800px"
+   height="800px"
+   viewBox="0 0 64 64"
+   id="wizard"
+   version="1.1"
+   sodipodi:docname="wizard.svg"
+   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <defs
+     id="defs2019" />
+  <sodipodi:namedview
+     id="namedview2017"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     showgrid="false"
+     inkscape:zoom="0.5"
+     inkscape:cx="670"
+     inkscape:cy="438"
+     inkscape:window-width="1716"
+     inkscape:window-height="1396"
+     inkscape:window-x="1720"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="wizard" />
+  <title
+     id="title1974">wizard</title>
+  <circle
+     cx="33"
+     cy="23"
+     r="23"
+     style="fill:#ffd578;fill-opacity:1"
+     id="circle1976" />
+  <line
+     x1="7"
+     y1="17"
+     x2="7"
+     y2="19"
+     style="fill:none;stroke:#54596e;stroke-linecap:round;stroke-linejoin:round;stroke-width:2px;stroke-opacity:1"
+     id="line1978" />
+  <line
+     x1="7"
+     y1="23"
+     x2="7"
+     y2="25"
+     style="fill:none;stroke:#54596e;stroke-linecap:round;stroke-linejoin:round;stroke-width:2px;stroke-opacity:1"
+     id="line1980" />
+  <path
+     d="M21.778,47H47.222A8.778,8.778,0,0,1,56,55.778V61a0,0,0,0,1,0,0H13a0,0,0,0,1,0,0V55.778A8.778,8.778,0,0,1,21.778,47Z"
+     style="fill:#62b3f6;stroke:#54596e;stroke-linecap:round;stroke-linejoin:round;stroke-width:2px;stroke-opacity:1;fill-opacity:1"
+     id="path1982" />
+  <polygon
+     points="32 61 28 61 34 49 38 49 32 61"
+     style="fill:#ffffff;stroke:#54596e;stroke-linecap:round;stroke-linejoin:round;stroke-width:2px;stroke-opacity:1"
+     id="polygon1984" />
+  <path
+     d="M59,39H11v4.236A5.763,5.763,0,0,0,16.764,49L34,55l19.236-6A5.763,5.763,0,0,0,59,43.236Z"
+     style="fill:#62b3f6;stroke:#54596e;stroke-linecap:round;stroke-linejoin:round;stroke-width:2px;stroke-opacity:1;fill-opacity:1"
+     id="path1986" />
+  <line
+     x1="3"
+     y1="21"
+     x2="5"
+     y2="21"
+     style="fill:none;stroke:#54596e;stroke-linecap:round;stroke-linejoin:round;stroke-width:2px;stroke-opacity:1"
+     id="line1988" />
+  <line
+     x1="9"
+     y1="21"
+     x2="11"
+     y2="21"
+     style="fill:none;stroke:#54596e;stroke-linecap:round;stroke-linejoin:round;stroke-width:2px;stroke-opacity:1"
+     id="line1990" />
+  <circle
+     cx="55.5"
+     cy="6.5"
+     r="2.5"
+     style="fill:none;stroke:#54596e;stroke-linecap:round;stroke-linejoin:round;stroke-width:2px;stroke-opacity:1"
+     id="circle1992" />
+  <circle
+     cx="13.984"
+     cy="6.603"
+     r="1.069"
+     style="fill:#4c241d;stroke:#54596e;stroke-opacity:1"
+     id="circle1994" />
+  <ellipse
+     cx="35"
+     cy="39"
+     rx="24"
+     ry="6"
+     style="fill:#778da2;stroke:#54596e;stroke-linecap:round;stroke-linejoin:round;stroke-width:2px;stroke-opacity:1;fill-opacity:1"
+     id="ellipse1996" />
+  <circle
+     cx="5.984"
+     cy="30.603"
+     r="1.069"
+     style="fill:none;stroke:#54596e;stroke-opacity:1"
+     id="circle1998" />
+  <path
+     d="M48,13V10.143A6.143,6.143,0,0,0,41.857,4H27.143A6.143,6.143,0,0,0,21,10.143V13"
+     style="fill:#62b3f6;stroke:#54596e;stroke-linecap:round;stroke-linejoin:round;stroke-width:2px;stroke-opacity:1;fill-opacity:1"
+     id="path2000" />
+  <rect
+     x="20"
+     y="17.81"
+     width="29"
+     height="14.19"
+     style="fill:#000000;stroke:#54596e;stroke-linecap:round;stroke-linejoin:round;stroke-width:2px;fill-opacity:0;stroke-opacity:1"
+     id="rect2002" />
+  <path
+     d="M41.972,13H48a4,4,0,0,1,4,4h0a4,4,0,0,1-4,4H21a4,4,0,0,1-4-4h0a4,4,0,0,1,4-4H37"
+     style="fill:#ffffff;stroke:#54596e;stroke-linecap:round;stroke-linejoin:round;stroke-width:2px;stroke-opacity:1"
+     id="path2004" />
+  <circle
+     cx="39.5"
+     cy="25.5"
+     r="1.136"
+     style="fill:#54596e;fill-opacity:1"
+     id="circle2006" />
+  <circle
+     cx="29.5"
+     cy="25.5"
+     r="1.136"
+     style="fill:#54596e;fill-opacity:1"
+     id="circle2008" />
+  <path
+     d="M43.875,32a6.472,6.472,0,0,0-5.219-2.2A5.2,5.2,0,0,0,35,31.974,5.2,5.2,0,0,0,31.344,29.8,6.472,6.472,0,0,0,26.125,32H20v4.5a14.5,14.5,0,0,0,29,0V32Z"
+     style="fill:#ffffff;stroke:#54596e;stroke-linecap:round;stroke-linejoin:round;stroke-width:2px;stroke-opacity:1"
+     id="path2010" />
+  <line
+     x1="33"
+     y1="36"
+     x2="37"
+     y2="36"
+     style="fill:#54596e;stroke:#54596e;stroke-linecap:round;stroke-linejoin:round;stroke-width:2px;fill-opacity:1;stroke-opacity:1"
+     id="line2012" />
+  <rect
+     x="32"
+     y="10"
+     width="5"
+     height="5"
+     transform="translate(1.266 28.056) rotate(-45)"
+     style="fill:#bd53b5;stroke:#54596e;stroke-linecap:round;stroke-linejoin:round;stroke-width:2px;stroke-opacity:1"
+     id="rect2014" />
+  <metadata
+     id="metadata2021">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:title>wizard</dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+</svg>
